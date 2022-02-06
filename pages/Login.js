@@ -38,7 +38,7 @@ const Login = () => {
                     name="password"
                     id="password"
                     placeholder="Password"
-                    minlength="8"
+                    minLength="8"
                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                     required
                   />
@@ -46,17 +46,15 @@ const Login = () => {
               </div>
             </div>
             <div className="mb-10">
-              <Link href="/">
-                <button className="border-black border-2 rounded-full px-7 py-2 font-semibold hover:bg-black hover:text-white">
-                  Login
-                </button>
-              </Link>
+              <button className="border-black border-2 rounded-full px-7 py-2 font-semibold hover:bg-black hover:text-white">
+                Login
+              </button>
             </div>
             <div className="space-x-14 lg:space-x-20">
-              <Link href="/Forgot">
+              <Link href="/forgot">
                 <a className="border-black font-semibold">Forget Password?</a>
               </Link>
-              <Link href="/Signup">
+              <Link href="/signup">
                 <a className="border-black font-semibold">Signup</a>
               </Link>
             </div>

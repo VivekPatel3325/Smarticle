@@ -33,7 +33,7 @@ const Post = () => {
             name="checkbox1"
             value="public"
           />
-          <label for="checkbox1">Make Public</label>
+          <label htmlFor="checkbox1">Make Public</label>
 
           <div className="flex xl:inline-flex xl:ml-44">
             Topic: &nbsp; &nbsp;
