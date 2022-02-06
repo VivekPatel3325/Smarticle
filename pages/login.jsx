@@ -4,7 +4,7 @@ import Main from "layouts/main";
 const login = () => {
   return (
     <Main title="Login">
-      <div className="grid grid-cols-1 gap-5">
+      <div className="grid grid-cols-1 gap-5 w-96">
         <input
           className="bg-slate-50 outline-none m-2 p-2 rounded-lg border-2 border-black"
           type="email"
