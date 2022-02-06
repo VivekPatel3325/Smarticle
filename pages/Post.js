@@ -1,5 +1,4 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import Multiselect from "multiselect-react-dropdown";
 import { useState } from "react";
 
@@ -14,11 +13,8 @@ const Post = () => {
   const [options] = useState(data);
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Post</title>
-      </Head>
-      <main className={styles.main}>
+    <div>
+      <div>
         <p className="mb-5 text-4xl">Post Article</p>
         <div>
           <textarea className="outline-gray-600 resize-none rounded-md w-52 xl:w-600 h-80">
@@ -44,7 +40,7 @@ const Post = () => {
             />
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

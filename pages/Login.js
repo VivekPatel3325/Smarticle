@@ -1,19 +1,11 @@
-import Head from "next/head";
 import Link from "next/link";
-import styles from "../styles/Home.module.css";
 
-const Login = () => {
+const login = () => {
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Login</title>
-      </Head>
-      <main className={styles.main}>
+    <div>
+      <div>
         <div className="bg-gray-200 rounded-2xl shadow-2xl flex max-w-4xl">
           <div className="p-5">
-            <div>
-              <p className="text-1xl font-bold">Hello :)</p>
-            </div>
             <div className="py-10">
               <p className="text-2xl font-bold mb-1">Login</p>
             </div>
@@ -60,9 +52,9 @@ const Login = () => {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
 
-export default Login;
+export default login;

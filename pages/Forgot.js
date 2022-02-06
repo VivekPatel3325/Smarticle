@@ -1,14 +1,7 @@
-import Head from "next/head";
-import Link from "next/link";
-import styles from "../styles/Home.module.css";
-
-const Forgot = () => {
+const forgot = () => {
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Forgot</title>
-      </Head>
-      <main className={styles.main}>
+    <div>
+      <div>
         <div className="bg-gray-200 rounded-2xl shadow-2xl flex max-w-4xl">
           <div className="p-5">
             <div className="mb-10">
@@ -29,17 +22,15 @@ const Forgot = () => {
               </div>
             </div>
             <div className="mb-10">
-              <Link href="/">
-                <button className="border-black border-2 rounded-full px-7 py-2 font-semibold hover:bg-black hover:text-white">
-                  Send Reset Link
-                </button>
-              </Link>
+              <button className="border-black border-2 rounded-full px-7 py-2 font-semibold hover:bg-black hover:text-white">
+                Send Reset Link
+              </button>
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
 
-export default Forgot;
+export default forgot;
