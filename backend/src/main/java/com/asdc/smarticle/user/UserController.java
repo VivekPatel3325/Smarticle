@@ -1,12 +1,79 @@
 package com.asdc.smarticle.user;
 
+import javax.mail.MessagingException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.asdc.smarticle.httpresponse.BaseController;
+import com.asdc.smarticle.httpresponse.ResponseVO;
+import com.asdc.smarticle.mailing.EmailService;
+import com.asdc.smarticle.token.Token;
+import com.asdc.smarticle.token.TokenService;
+import com.asdc.smarticle.user.Exception.UserExistException;
+import com.asdc.smarticle.utility.ApplicationUrlPath;
 
+/**
+* @author  Vivekkumar Patel
+* @version 1.0
+* @since   2022-02-19
+*/
 @RestController
-public class UserController extends BaseController{
+@RequestMapping("/user")
+public class UserController extends BaseController {
 
-	
-	
+	@Autowired
+	EmailService emailServiceImpl;
+
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	TokenService tokenService;
+
+	/**
+	 * Create user account with the given credentials.
+	 *
+	 * @param User model containing user details.
+	 * @return the response entity
+	 * @throws UserExistException If the user is registered with the given email id.
+	 */
+	@PostMapping(ApplicationUrlPath.USER_REGISTER_REQ_PATH)
+	public ResponseVO<String> registerUser(@RequestBody User user) {
+
+		try {
+			userService.registerUser(user);
+			Token token = tokenService.createToken(user);
+			emailServiceImpl.sendConfirmationEmail(user, token);
+		} catch (UserExistException e) {
+
+			return error(HttpStatus.BAD_REQUEST.value(), e.getMessage(), false);
+
+		} catch (MessagingException e) {
+			return error(HttpStatus.BAD_REQUEST.value(),e.getMessage() , false);
+		}
+
+		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
+	}
+
+
+	/**
+	 * Activate the user account .
+	 *
+	 * @param token token string to be verified for user account activation.
+	 * @return true if user account is activated else false.
+	 */
+	@PostMapping(ApplicationUrlPath.USER_ACCOUNT_ACTIVATION_REQ_PATH)
+	public ResponseVO<String> activateUserAccount(@RequestParam String token) {
+
+		boolean isAccActivated = userService.verifyUser(token);
+
+		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
+	}
+
 }
