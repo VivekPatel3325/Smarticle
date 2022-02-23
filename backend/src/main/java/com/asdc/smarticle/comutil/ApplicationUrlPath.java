@@ -1,4 +1,6 @@
-package com.asdc.smarticle.utility;
+package com.asdc.smarticle.comutil;
+
+
 
 /**
  * URL constant to map request to controller.

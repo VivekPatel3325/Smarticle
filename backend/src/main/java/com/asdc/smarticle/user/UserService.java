@@ -1,6 +1,6 @@
 package com.asdc.smarticle.user;
 
-import com.asdc.smarticle.user.Exception.UserExistException;
+import com.asdc.smarticle.user.exception.UserExistException;
 
 /**
  * Services for user entity.
@@ -15,7 +15,7 @@ public interface UserService {
 	
 	boolean isUsernameRegistered(String userName);
 	
-	boolean registerUser(User user) throws UserExistException;
+	User registerUser(User user) throws UserExistException;
 	
 	String encodePswd(String pswd);
 	

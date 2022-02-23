@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CipherConfig {
 
-	@Value("${secretKey}")
-	private String secKey;
+	@Value("${enc.key}")
+	private String key;
 
 	/**
 	 * Set configuration to encrypt and decrypt password.
@@ -26,8 +26,7 @@ public class CipherConfig {
 	public SimpleStringPBEConfig getCipherConfig() {
 
 		SimpleStringPBEConfig cipherConfig = new SimpleStringPBEConfig();
-		System.out.println(secKey);
-		cipherConfig.setPassword("smarticlesmarticle");
+		cipherConfig.setPassword(key);
 		cipherConfig.setAlgorithm("PBEWithHMACSHA512AndAES_256");
 		cipherConfig.setKeyObtentionIterations("1000");
 		cipherConfig.setPoolSize("4");

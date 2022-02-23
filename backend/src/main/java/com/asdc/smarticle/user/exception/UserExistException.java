@@ -1,4 +1,4 @@
-package com.asdc.smarticle.user.Exception;
+package com.asdc.smarticle.user.exception;
 /**
  * Custom exception to notify is user is registered with the given email id and username.
  * 

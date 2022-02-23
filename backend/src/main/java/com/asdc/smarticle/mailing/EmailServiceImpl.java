@@ -12,9 +12,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.user.User;
-import com.asdc.smarticle.utility.ApplicationUrlPath;
+
 
 /**
 * Implementation to for email entity.

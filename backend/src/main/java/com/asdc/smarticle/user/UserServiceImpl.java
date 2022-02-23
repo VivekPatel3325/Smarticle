@@ -7,11 +7,13 @@ import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.asdc.smarticle.comutil.ApiError;
 import com.asdc.smarticle.pswdencrydecry.CipherConfig;
 import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.token.TokenRepository;
 import com.asdc.smarticle.token.TokenService;
-import com.asdc.smarticle.user.Exception.UserExistException;
+import com.asdc.smarticle.user.exception.UserExistException;
+
 
 /**
  * Services for user entity.
@@ -60,27 +62,24 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return userNameTaken;
-	}
+	} 
 
 	@Override
-	public boolean registerUser(User user) throws UserExistException {
-		
-		boolean isUserReg=false;
-		
-		if(isEmailIdRegistered(user.getEmailID())) {
-			throw new UserExistException("User is registered with the given email ID");
+	public User registerUser(User user) throws UserExistException {
+
+		if (isEmailIdRegistered(user.getEmailID())) {
+			throw new UserExistException(ApiError.EMAILID_ALREADY_REGISTERED);
 		}
-		
-		if(isUsernameRegistered(user.getUserName())) {
-			throw new UserExistException("Username is not available");
+
+		if (isUsernameRegistered(user.getUserName())) {
+			throw new UserExistException(ApiError.USERNAME_NOT_AVAILABLE);
 		}
 
 		String encPswd = encodePswd(user.getPswd());
 		user.setPswd(encPswd);
 
-		userRepository.save(user);
-		
-		return isUserReg;
+		return userRepository.save(user);
+
 	}
 
 	@Override
@@ -114,15 +113,14 @@ public class UserServiceImpl implements UserService {
 				user.get().setVerified(true);
 				userRepository.save(user.get());
 				tokenService.deleteToken(tokenDetail);
-				isAccountActivated = true;
 			} else {
 				isAccountActivated = false;
 			}
 		}
 
 		return isAccountActivated;
-	}
-	
+	} 
+	 
 	
 	
 
