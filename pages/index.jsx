@@ -27,12 +27,11 @@ export default function Home () {
       {
         posts.map((post) =>
         <div key={post.id} className="border-2 border-black my-2 p-2">
-          <div>
+          <div className="font-bold">
           {post.title}
           </div>
-          <div>
-            {post.post}
-          </div>
+          <article className="prose prose-md max-w-none" dangerouslySetInnerHTML={{__html: post.post}}>
+          </article>
         </div>)
       }
     </Main>
