@@ -1,9 +1,8 @@
 import { BehaviorSubject } from 'rxjs';
-import getConfig from 'next/config';
 import router from 'next/router';
+import apiUrl from "helpers/api";
 
-const { publicRuntimeConfig } = getConfig();
-const baseUrl = `${publicRuntimeConfig.apiUrl}/auth`;
+const baseUrl = `${apiUrl}/auth`;
 const userSubject = new BehaviorSubject(process.browser && JSON.parse(localStorage.getItem('user')));
 
 export const userService = {
