@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CipherConfig {
 
-	@Value("${enc.key}")
+	@Value("${enc.key}") 
 	private String key;
 
 	/**

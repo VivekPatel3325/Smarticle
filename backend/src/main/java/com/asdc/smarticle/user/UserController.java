@@ -86,16 +86,4 @@ public class UserController extends BaseController {
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
 
-	@GetMapping("/cipher")
-	public void cipher() {
-
-		SimpleStringPBEConfig config = cipherCf.getCipherConfig();
-		PooledPBEStringEncryptor cipher = new PooledPBEStringEncryptor();
-		cipher.setConfig(config);
-		System.out.println("E----->" + cipher.encrypt("smarticlesmarticle"));
-		
-		System.out.println("DEC 1-->"+cipher.decrypt("IWztDh48GigI96gN+i8OF3fQm+a9fE+4FVi4/GkrytRfawvvD1H8ZmtKvhrynf3JSu4Lqn6I00HLh6hyu0LnDg=="));
-		System.out.println("DEC 2-->"+cipher.decrypt("q455YOOCkV53hbyfcNq3ZWfbR2HivtPs1RCEFjIpo/r16uY2LoBx9uF56Z8DDg4UAuoYWLCUPCpnJHaHzkGjZA=="));
-	}
-
 }

@@ -26,7 +26,7 @@ import com.asdc.smarticle.user.UserService;
 import com.asdc.smarticle.user.UserServiceImpl;
 import com.asdc.smarticle.user.exception.UserExistException;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
 class UserServiceUnitTests {
 
