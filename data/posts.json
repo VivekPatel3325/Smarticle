@@ -24,6 +24,6 @@
     "createdAt": "2022-02-23T01:48:50.714Z",
     "author": "hello@sample.co",
     "tags": ["IT", "ML", "random1"],
-    "public": false
+    "public": true
   }
 ]
