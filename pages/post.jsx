@@ -1,7 +1,6 @@
 import Main from "layouts/main";
 import PostEditor from "components/PostEditor";
-import Select from 'react-select';
-
+import Select from "react-select";
 
 const Post = () => {
   const options = [
@@ -18,7 +17,7 @@ const Post = () => {
 
   return (
     <Main title="Post Article">
-      <div className='sm:w-3/4 w-auto'>
+      <div className="sm:w-3/4 w-auto">
         <PostEditor />
         <div className="flex flex-row justify-between mt-6">
           <div>

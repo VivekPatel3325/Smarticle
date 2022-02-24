@@ -52,7 +52,7 @@ const Reset = () => {
           />
         </div>
         {!isMatching && <div>Password strings do not match. enter again.</div>}
-        <button className="border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white mt-4 p-2 w-1/2">
+        <button className="border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white mt-4 p-2">
           Reset Password
         </button>
       </div>
