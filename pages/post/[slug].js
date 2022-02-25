@@ -63,7 +63,7 @@ const PostDetails = (detail) => {
             </div>
           </div>
           <h1 className="mb-8 text-3xl font-semibold text-center">Post 1</h1>
-          <p className="lg:ml-60 lg:w-1/2 ml-8">
+          <p className="lg:ml-60 lg:w-1/2 ml-8 mb-20">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
             scelerisque eleifend sem vel scelerisque. Vivamus imperdiet orci
             scelerisque venenatis ultrices. Donec ac leo eget est ultricies
@@ -86,6 +86,10 @@ const PostDetails = (detail) => {
             aliquam erat at orci ornare bibendum. Integer bibendum metus blandit
             ipsum iaculis ullamcorper. Nam rhoncus turpis vel sapien dapibus
             consectetur.
+          </p>
+          <h1 className="text-center font-bold">Topic</h1>
+          <p className="lg:ml-60 lg:w-1/2 ml-8 text-center">
+            Web Development, Information Technology
           </p>
         </div>
       </div>

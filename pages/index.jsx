@@ -70,11 +70,11 @@ export default function Home() {
                 <h1 className="transition duration-700 text-center mb-5 cursor-pointer hover:text-gray-500 text-xl font-semibold">
                   <Link href={"/post/" + post.id}>{post.title}</Link>
                 </h1>
-                <FontAwesomeIcon className="ml-1" icon="user" />
+                <FontAwesomeIcon className="ml-3 lg:ml-1" icon="user" />
                 <p className="inline align-middle text-gray-700 ml-3 font-medium text-lg">
                   {post.author}
                 </p>
-                <div className="font-medium text-gray-700 mb-5">
+                <div className="font-medium text-gray-700 mb-5 ml-2 lg:ml-0">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6 inline mr-2 text-pink-500"
@@ -93,7 +93,7 @@ export default function Home() {
                     {moment(post.createdAt).format("MMM DD, YYYY")}
                   </span>
                 </div>
-                <div className="mb-5">
+                <div className="mb-16 ml-3 lg:ml-0">
                   <article
                     className="line-clamp-6"
                     dangerouslySetInnerHTML={{ __html: post.post }}
@@ -101,7 +101,7 @@ export default function Home() {
                 </div>
                 <div>
                   <Link href={"/post/" + post.id}>
-                    <span className="cursor-pointer transition duration-500 ease transform hover:-translate-y-1 border-black border-2 rounded-md font-normal hover:bg-black hover:text-white mt-4 p-2">
+                    <span className="ml-3 lg:ml-0 cursor-pointer transition duration-500 ease transform hover:-translate-y-1 border-black border-2 rounded-md font-normal hover:bg-black hover:text-white mt-4 p-2">
                       Continue Reading
                     </span>
                   </Link>

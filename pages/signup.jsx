@@ -10,13 +10,24 @@ import Link from "next/link";
 const Signup = () => {
   const router = useRouter();
   const validationSchema = Yup.object().shape({
-    email: Yup.string().required("Username is required"),
+    userName: Yup.string()
+      .required("Provide a user name")
+      .matches(
+        /^[A-Za-z][A-Za-z0-9]*$/,
+        "Provide username which do not start with a number and contains no special characters or spaces"
+      )
+      .min(8, "Use 7 characters or more for your username"),
+    firstName: Yup.string().required("Enter your first name"),
+    lastName: Yup.string().required("Enter your last name"),
+    email: Yup.string().email().required("Enter your Email ID"),
     password: Yup.string()
-      .required("Password is required")
-      .min(6, "Password must be at least 6 characters"),
+      .required("Create a password for your account")
+      .min(8, "Use 8 characters or more for your password"),
+    confirmpassword: Yup.string().oneOf([Yup.ref("password"), null]),
   });
+
   const formOptions = { resolver: yupResolver(validationSchema) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { register, handleSubmit, formState, reset } = useForm(formOptions);
   const { errors } = formState;
 
   function onSubmit(user) {
@@ -27,20 +38,46 @@ const Signup = () => {
       })
       .catch((e) => console.log(e));
   }
-
-  const [isMatching, setIsMatching] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  useEffect(() => {
-    if (password === confirmPassword) setIsMatching(true);
-    else setIsMatching(false);
-  }, [password, confirmPassword]);
-
   return (
     <Main title="Signup">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 gap-3 w-96">
+        <div className="grid grid-cols-1 gap-3 w-full lg:w-96">
+          <div className="flex flex-col">
+            <label htmlFor="userName">User Name</label>
+            <input
+              className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
+              type="text"
+              name="userName"
+              id="userName"
+              placeholder="Enter User Name"
+              {...register("userName")}
+            />
+          </div>
+          <p className="text-red-600">{errors.userName?.message}</p>
+          <div className="flex flex-col">
+            <label htmlFor="firstName">First Name</label>
+            <input
+              className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
+              type="text"
+              name="firstName"
+              id="firstName"
+              placeholder="Enter First Name"
+              {...register("firstName")}
+            />
+          </div>
+          <p className="text-red-600">{errors.firstName?.message}</p>
+          <div className="flex flex-col">
+            <label htmlFor="lastName">Last Name</label>
+            <input
+              className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
+              type="text"
+              name="lastName"
+              id="lastName"
+              placeholder="Enter Last Name"
+              {...register("lastName")}
+            />
+            <p className="text-red-600">{errors.lastName?.message}</p>
+          </div>
           <div className="flex flex-col">
             <label htmlFor="email">Email</label>
             <input
@@ -51,39 +88,56 @@ const Signup = () => {
               placeholder="Enter email"
               {...register("email")}
             />
+            <p className="text-red-600">{errors.email?.message}</p>
           </div>
           <div className="flex flex-col">
-            <label htmlFor="email">Password</label>
+            <label htmlFor="password">Password</label>
             <input
               className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
               type="password"
               name="password"
-              id="email"
-              minLength="8"
+              id="password"
               placeholder="Password"
               {...register("password")}
             />
+            <p className="text-red-600">{errors.password?.message}</p>
           </div>
           <div className="flex flex-col">
-            <label htmlFor="email">Password</label>
+            <label htmlFor="confirmpassword">Confirm Password</label>
             <input
               className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
               type="password"
-              name="password"
-              id="email"
-              minLength="8"
+              name="confirmpassword"
+              id="confirmpassword"
               placeholder="Confirm password"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
+              {...register("confirmpassword")}
             />
+            <p className="text-red-600">
+              {errors.confirmpassword &&
+                "Those passwords didn’t match. Please try again."}
+            </p>
           </div>
-          {!isMatching && (
-            <div>Password strings do not match. enter again.</div>
-          )}
-          {errors.email && <div>{errors.email.message}</div>}
-          {errors.password && <div>{errors.password.message}</div>}
-          <button className="border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white mt-4 p-2">
+          <button
+            className="border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white mt-4 p-2"
+            type="submit"
+          >
             Signup
+          </button>
+          <button
+            className="border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white mt-4 p-2"
+            type="button"
+            onClick={() =>
+              reset({
+                userName: "",
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                confirmpassword: "",
+              })
+            }
+          >
+            Reset
           </button>
           <div className="justify-center items-center flex flex-row font-semibold">
             <Link href="/login" passHref>
