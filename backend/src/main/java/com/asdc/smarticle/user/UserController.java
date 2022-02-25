@@ -2,12 +2,10 @@ package com.asdc.smarticle.user;
 
 import javax.mail.MessagingException;
 
-import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
-import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +27,7 @@ import com.asdc.smarticle.user.exception.UserExistException;
  * @since 2022-02-19
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/smarticleapi/user")
 public class UserController extends BaseController {
 
 	@Autowired
