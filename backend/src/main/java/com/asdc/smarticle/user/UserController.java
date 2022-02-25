@@ -2,6 +2,7 @@ package com.asdc.smarticle.user;
 
 import javax.mail.MessagingException;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ import com.asdc.smarticle.user.exception.UserExistException;
  * @since 2022-02-19
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/smarticleapi/user")
 public class UserController extends BaseController {
 
 	@Autowired
