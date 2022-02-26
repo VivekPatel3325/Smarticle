@@ -1,8 +1,8 @@
-import Navbar from "frontend/components/Navbar"
-import Footer from "frontend/components/Footer"
-import { NextSeo } from "next-seo"
+import Navbar from "components/Navbar";
+import Footer from "components/Footer";
+import { NextSeo } from "next-seo";
 
-export default function MainCentered ({children, title}) {
+export default function MainCentered({ children, title }) {
   return (
     <>
       <NextSeo
@@ -10,19 +10,16 @@ export default function MainCentered ({children, title}) {
         description="Smarticle"
         title={title}
       />
-      <div className="min-h-screen flex flex-col items-center justify-center">
-      <Navbar />
-      <div className="flex-1 sm:px-32 px-12">
-        {
-          title &&
-          <div className="font-bold text-2xl py-6">
-            {title}
-          </div>
-        }
-        {children}
-      </div>
-      <Footer />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+        <Navbar />
+        <div className="flex-1 sm:px-32 px-12 py-12">
+          {title && (
+            <div className="font-bold text-2xl py-6 text-center">{title}</div>
+          )}
+          {children}
+        </div>
+        <Footer />
       </div>
     </>
-  )
+  );
 }

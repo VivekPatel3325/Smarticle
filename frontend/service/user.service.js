@@ -1,46 +1,54 @@
-import { BehaviorSubject } from 'rxjs';
-import getConfig from 'next/config';
-import router from 'next/router';
+import { BehaviorSubject } from "rxjs";
+import router from "next/router";
+import apiUrl from "helpers/api";
 
-const { publicRuntimeConfig } = getConfig();
-const baseUrl = `${publicRuntimeConfig.apiUrl}/auth`;
-const userSubject = new BehaviorSubject(process.browser && JSON.parse(localStorage.getItem('user')));
+const baseUrl = `${apiUrl}/auth`;
+const userSubject = new BehaviorSubject(
+  process.browser && JSON.parse(localStorage.getItem("user"))
+);
 
 export const userService = {
   user: userSubject.asObservable(),
-  get userValue () { return userSubject.value },
+  get userValue() {
+    return userSubject.value;
+  },
   login,
   logout,
   register,
 };
 
 async function login(email, password) {
-  const res = await (await fetch(`${baseUrl}/authenticate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-    body: JSON.stringify({email, password})
-  })).json()
+  const res = await (
+    await fetch(`${baseUrl}/authenticate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ email, password }),
+    })
+  ).json();
   userSubject.next(res);
-  localStorage.setItem('user', JSON.stringify(res));
+  localStorage.setItem("user", JSON.stringify(res));
   return res;
 }
 
 async function register(user) {
-  const res = await (await fetch(`${baseUrl}/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-    body: JSON.stringify(user)
-  })).json();
+  console.log(JSON.stringify(user));
+  const res = await (
+    await fetch("http://localhost:8080/smarticleapi/user/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // credentials: "include",
+      body: JSON.stringify(user),
+    })
+  ).json();
 }
 
 async function logout() {
-  localStorage.removeItem('user');
+  localStorage.removeItem("user");
   userSubject.next(null);
-  router.push('/login');
+  router.push("/login");
 }
