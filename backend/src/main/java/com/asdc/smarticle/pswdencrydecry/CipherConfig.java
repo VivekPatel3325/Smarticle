@@ -1,19 +1,21 @@
 package com.asdc.smarticle.pswdencrydecry;
 
+import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.jasypt.iv.RandomIvGenerator;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
  * Contain static method to return instance of the SimpleStringPBEConfig.
  * 
- * @author Vivekkumar Patel
+ * @author Vivekkumar Patel, Sarthak Patel
  * @version 1.0
  * @since 2022-02-19
  */
-@Component
-public class CipherConfig {
+
+public class CipherConfig implements PasswordEncoder{
 
 	@Value("${enc.key}") 
 	private String key;
@@ -36,4 +38,33 @@ public class CipherConfig {
 		return cipherConfig;
 	}
 
+	@Override
+	public String encode(CharSequence rawPassword) {
+		// TODO Auto-generated method stub
+		SimpleStringPBEConfig config = getCipherConfig();
+		PooledPBEStringEncryptor cipher = new PooledPBEStringEncryptor();
+		cipher.setConfig(config);
+		return cipher.encrypt((String) rawPassword);
+	}
+
+	public CharSequence decodePswd(String pswd) {
+
+		SimpleStringPBEConfig config = getCipherConfig();
+		PooledPBEStringEncryptor cipher = new PooledPBEStringEncryptor();
+		cipher.setConfig(config);
+		return cipher.decrypt(pswd);
+
+	}
+	@Override
+	public boolean matches(CharSequence rawPassword, String encodedPassword) {
+		// TODO Auto-generated method stub
+		if(rawPassword.equals(decodePswd(encodedPassword))) {
+			return true;
+			
+		}else
+		{
+			return false;
+		}
+		
+	}
 }

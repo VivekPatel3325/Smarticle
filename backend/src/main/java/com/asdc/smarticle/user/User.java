@@ -23,7 +23,7 @@ import org.hibernate.annotations.CreationTimestamp;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column
@@ -52,6 +52,17 @@ public class User {
 	@CreationTimestamp
 	private Date updationDate;
 
+	@Column
+	private String jwtToken;
+
+	public String getJwtToken() {
+		return jwtToken;
+	}
+
+	public void setJwtToken(String jwtToken) {
+		this.jwtToken = jwtToken;
+	}
+	
 	public Long getId() {
 		return id;
 	}
