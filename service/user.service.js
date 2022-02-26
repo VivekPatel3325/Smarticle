@@ -34,13 +34,14 @@ async function login(email, password) {
 }
 
 async function register(user) {
+  console.log(JSON.stringify(user));
   const res = await (
-    await fetch(`${baseUrl}/register`, {
+    await fetch("http://localhost:8080/smarticleapi/user/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
+      // credentials: "include",
       body: JSON.stringify(user),
     })
   ).json();

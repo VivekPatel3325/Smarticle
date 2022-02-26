@@ -19,11 +19,11 @@ const Signup = () => {
       .min(8, "Use 7 characters or more for your username"),
     firstName: Yup.string().required("Enter your first name"),
     lastName: Yup.string().required("Enter your last name"),
-    email: Yup.string().email().required("Enter your Email ID"),
-    password: Yup.string()
+    emailID: Yup.string().email().required("Enter your Email ID"),
+    pswd: Yup.string()
       .required("Create a password for your account")
       .min(8, "Use 8 characters or more for your password"),
-    confirmpassword: Yup.string().oneOf([Yup.ref("password"), null]),
+    confirmpassword: Yup.string().oneOf([Yup.ref("pswd"), null]),
   });
 
   const formOptions = { resolver: yupResolver(validationSchema) };
@@ -34,7 +34,7 @@ const Signup = () => {
     return userService
       .register(user)
       .then(() => {
-        router.push("login");
+        router.push("/login");
       })
       .catch((e) => console.log(e));
   }
@@ -79,28 +79,28 @@ const Signup = () => {
             <p className="text-red-600">{errors.lastName?.message}</p>
           </div>
           <div className="flex flex-col">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="emailID">Email</label>
             <input
               className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
               type="email"
-              name="email"
-              id="email"
+              name="emailID"
+              id="emailID"
               placeholder="Enter email"
-              {...register("email")}
+              {...register("emailID")}
             />
-            <p className="text-red-600">{errors.email?.message}</p>
+            <p className="text-red-600">{errors.emailID?.message}</p>
           </div>
           <div className="flex flex-col">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="pswd">Password</label>
             <input
               className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
               type="password"
-              name="password"
-              id="password"
-              placeholder="Password"
-              {...register("password")}
+              name="pswd"
+              id="pswd"
+              placeholder="Enter Password"
+              {...register("pswd")}
             />
-            <p className="text-red-600">{errors.password?.message}</p>
+            <p className="text-red-600">{errors.pswd?.message}</p>
           </div>
           <div className="flex flex-col">
             <label htmlFor="confirmpassword">Confirm Password</label>
@@ -131,8 +131,8 @@ const Signup = () => {
                 userName: "",
                 firstName: "",
                 lastName: "",
-                email: "",
-                password: "",
+                emailID: "",
+                pswd: "",
                 confirmpassword: "",
               })
             }
