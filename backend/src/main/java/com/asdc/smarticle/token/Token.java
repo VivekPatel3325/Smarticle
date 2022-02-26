@@ -28,7 +28,7 @@ import com.asdc.smarticle.user.User;
 public class Token {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column
