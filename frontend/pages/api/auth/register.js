@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs/dist/bcrypt";
-import users from "helpers/users";
+import users from "frontend/helpers/users";
 export default async function register(req, res) {
   const {password, ...user} = req.body;
   if (users.fromEmail(user.email)) {

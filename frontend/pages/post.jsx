@@ -1,5 +1,5 @@
-import Main from "layouts/main";
-import PostEditor from "components/PostEditor";
+import Main from "frontend/layouts/main";
+import PostEditor from "frontend/components/PostEditor";
 import Select from 'react-select';
 
 

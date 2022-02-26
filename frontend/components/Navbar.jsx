@@ -1,6 +1,6 @@
 import Link from "next/link";
-import useUser from "hooks/useUser";
-import { userService } from "service/user.service";
+import useUser from "frontend/hooks/useUser";
+import { userService } from "frontend/service/user.service";
 
 export default function Navbar () {
   const user = useUser();

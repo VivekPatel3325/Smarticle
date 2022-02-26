@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import { userService } from 'service/user.service';
+import { userService } from 'frontend/service/user.service';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 

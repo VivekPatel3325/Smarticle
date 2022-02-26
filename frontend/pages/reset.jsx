@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Main from "layouts/main";
+import Main from "frontend/layouts/main";
 
 const Reset = () => {
   const [isMatching, setIsMatching] = useState(false);

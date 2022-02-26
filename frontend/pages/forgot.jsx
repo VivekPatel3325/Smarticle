@@ -1,4 +1,4 @@
-import Main from "layouts/main";
+import Main from "frontend/layouts/main";
 
 const forgot = () => {
   return (

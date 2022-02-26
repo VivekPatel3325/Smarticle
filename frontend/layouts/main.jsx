@@ -1,5 +1,5 @@
-import Navbar from "components/Navbar"
-import Footer from "components/Footer"
+import Navbar from "frontend/components/Navbar"
+import Footer from "frontend/components/Footer"
 import { NextSeo } from "next-seo"
 
 export default function MainCentered ({children, title}) {

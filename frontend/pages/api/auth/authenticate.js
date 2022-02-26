@@ -3,7 +3,7 @@ const expressJwt = require('express-jwt');
 const bcrypt = require('bcryptjs');
 import getConfig from 'next/config';
 const { serverRuntimeConfig } = getConfig();
-const users = require('helpers/users').default;
+const users = require('frontend/helpers/users').default;
 
 export default async function authenticate(req, res) {
   const { email, password } = req.body;
