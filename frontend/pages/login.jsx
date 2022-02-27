@@ -21,7 +21,7 @@ const Login = () => {
   function onSubmit({ username, password }) {
     return userService
       .login(username, password)
-      .then(() => {
+      .then((data) => {
         if (data["statusCode"] !== 200) {
           throw new Error (JSON.stringify(data["message"]));
         }
