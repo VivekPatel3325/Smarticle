@@ -29,7 +29,7 @@ function save() {
 const users = {
   all: () => data,
   fromId: (id) => data.find(x => x.id.toString() === id.toString()),
-  fromEmail: (email) => data.find(u => u.email.toString().toLowerCase() === email.toString().toLowerCase()),
+  fromEmail: (email) => data.find(u => u.emailID.toString().toLowerCase() === email.toString().toLowerCase()),
   create,
   update,
   _delete

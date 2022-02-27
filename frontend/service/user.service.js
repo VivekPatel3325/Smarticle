@@ -1,8 +1,9 @@
 import { BehaviorSubject } from "rxjs";
 import router from "next/router";
-import apiUrl from "helpers/api";
+import {apiUrl, serverUrl} from "helpers/api";
 
 const baseUrl = `${apiUrl}/auth`;
+// const serverUrl = `${serverUrl}/smarticleapi/user`
 const userSubject = new BehaviorSubject(
   process.browser && JSON.parse(localStorage.getItem("user"))
 );
@@ -34,17 +35,22 @@ async function login(email, password) {
 }
 
 async function register(user) {
-  console.log(JSON.stringify(user));
-  const res = await (
-    await fetch("http://localhost:8080/smarticleapi/user/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // credentials: "include",
-      body: JSON.stringify(user),
-    })
-  ).json();
+  let data;
+  try {
+    data = await (
+      await fetch(`${baseUrl}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // credentials: "include",
+        body: JSON.stringify(user),
+      })
+    ).json();
+  } catch (err) {
+    throw new Error (err);
+  }
+  return data;
 }
 
 async function logout() {

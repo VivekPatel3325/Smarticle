@@ -18,7 +18,7 @@ export default function Navbar() {
         <div className="group decoration-gray-600">
           <div className="dropdown inline-block relative">
             <button className="bg-gray-300 text-gray-700 py-1.5 px-4 rounded inline-flex items-center">
-              <span className="mr-1">{user.email}</span>
+              <span className="mr-1">{user.userName}</span>
               <svg
                 className="fill-current h-4 w-4"
                 xmlns="http://www.w3.org/2000/svg"
