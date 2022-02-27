@@ -31,7 +31,7 @@ const Login = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-3 w-full lg:w-96">
           <div className="flex flex-col">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Username</label>
             <input
               className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
               type="text"
