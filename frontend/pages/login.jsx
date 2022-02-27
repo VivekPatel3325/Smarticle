@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { userService } from "service/user.service";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const router = useRouter();
@@ -21,10 +22,16 @@ const Login = () => {
     return userService
       .login(username, password)
       .then(() => {
+        if (data["statusCode"] !== 200) {
+          throw new Error (JSON.stringify(data["message"]));
+        }
         const returnUrl = router.query.returnUrl || "/";
         router.push(returnUrl);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+        toast.error("There was an error");
+      });
   }
   return (
     <Main title="Login">

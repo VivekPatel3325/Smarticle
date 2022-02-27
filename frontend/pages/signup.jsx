@@ -42,12 +42,13 @@ const Signup = () => {
       .register(toSubmit)
       .then((data) => {
         if (data["statusCode"] !== 200) {
-          toast.error(`Error: ${JSON.stringify(data["message"])}`);
+          throw new Error (JSON.stringify(data["message"]));
         } else {
           router.push("/login");
         }
       })
       .catch((e) => {
+        console.log(e);
         toast.error("There was an error");
       });
   }
