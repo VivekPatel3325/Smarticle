@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { userService } from "service/user.service";
 import Link from "next/link";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const Signup = () => {
   const router = useRouter();
@@ -36,8 +36,8 @@ const Signup = () => {
       pswd: user.pswd,
       emailID: user.emailID,
       firstName: user.firstName,
-      lastName: user.lastName
-    }
+      lastName: user.lastName,
+    };
     return userService
       .register(toSubmit)
       .then((data) => {

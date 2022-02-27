@@ -139,7 +139,7 @@ public class UserController extends BaseController {
 				emailServiceImpl.sendForgotPasswordEmail(user, jwtCookie);
 				return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 			}else {
-				return error(HttpStatus.UNPROCESSABLE_ENTITY.value(), "No registered user found.", false);
+				return error(HttpStatus.UNPROCESSABLE_ENTITY.value(), "No registered emailID found.", false);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -150,6 +150,7 @@ public class UserController extends BaseController {
 	@PostMapping(ApplicationUrlPath.SET_PASSWORD_PATH)
 	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody User uservo) {
 		try {
+			
 			String jwtToken = http.getFirst("jwt-token");
 			if (!jwtToken.isEmpty()) {
 				String userName = jwtUtils.getUserNameFromJwt(jwtToken);
