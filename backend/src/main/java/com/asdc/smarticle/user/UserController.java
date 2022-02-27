@@ -61,7 +61,7 @@ public class UserController extends BaseController {
 	/**
 	 * Create user account with the given credentials.
 	 *
-	 * @param User model containing user details.
+	// * @param ##sser model containing user details.
 	 * @return the response entity
 	 * @throws UserExistException If the user is registered with the given email id.
 	 */
@@ -164,7 +164,7 @@ public class UserController extends BaseController {
 	}
 
 	@PostMapping("/test")
-	public Object test(@RequestHeader HttpHeaders http) {
+	public java.io.Serializable test(@RequestHeader HttpHeaders http) {
 		System.out.println("header - " + http.getFirst("jwt-token"));
 		boolean te = jwtUtils.validateJwt(http.getFirst("jwt-token"));
 		System.out.println(te);
