@@ -1,7 +1,8 @@
 import Navbar from "components/Navbar";
 import Footer from "components/Footer";
 import { NextSeo } from "next-seo";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function MainCentered({ children, title }) {
   return (
     <>
@@ -17,6 +18,17 @@ export default function MainCentered({ children, title }) {
             <div className="font-bold text-2xl py-6 text-center">{title}</div>
           )}
           {children}
+          <ToastContainer
+            position="bottom-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </div>
         <Footer />
       </div>

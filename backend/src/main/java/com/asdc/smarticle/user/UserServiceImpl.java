@@ -56,13 +56,13 @@ public class UserServiceImpl implements UserService {
 
 		boolean userNameTaken = false;
 
-		Optional<User> user = userRepository.findByUserName(userName);
-		if (user.isPresent()) {
+		User user = userRepository.findByUserName(userName);
+		if (user != null) {
 			userNameTaken = true;
 		}
 
 		return userNameTaken;
-	} 
+	}
 
 	@Override
 	public User registerUser(User user) throws UserExistException {
@@ -121,7 +121,41 @@ public class UserServiceImpl implements UserService {
 		return isAccountActivated;
 	} 
 	 
-	
+	@Override
+	public void addJwtToken(String username, String value) {
+		User user = userRepository.findByUserName(username);
+		if (user != null) {
+			user.setJwtToken(value);
+			userRepository.save(user);
+		}
+	}
+
+	@Override
+	public void removeJwtToken(String value) {
+		User user = userRepository.findByJwtToken(value);
+		if (user != null) {
+			user.setJwtToken("");
+			userRepository.save(user);
+		}
+	}
+
+	@Override
+	public User getUserByEmailID(String emailID) {
+		Optional<User> user = userRepository.findByEmailID(emailID);
+		if(user.isPresent()) {
+			return user.get();
+		}
+		return null;	
+	}
+
+	@Override
+	public User updateUserPassword(String userName, String password) {
+		User user = userRepository.findByUserName(userName);
+		System.out.println("User pass - "+user.getUserName() + user.getPswd());
+		user.setPswd(encodePswd(password));
+		userRepository.save(user);
+		return user;
+	}
 	
 
 }

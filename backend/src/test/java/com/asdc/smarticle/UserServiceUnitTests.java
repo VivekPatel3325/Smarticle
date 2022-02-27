@@ -1,30 +1,23 @@
 package com.asdc.smarticle;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import com.asdc.smarticle.pswdencrydecry.CipherConfig;
 import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.token.TokenRepository;
 import com.asdc.smarticle.token.TokenService;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
-import com.asdc.smarticle.user.UserService;
 import com.asdc.smarticle.user.UserServiceImpl;
-import com.asdc.smarticle.user.exception.UserExistException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -73,13 +66,13 @@ class UserServiceUnitTests {
 
 		String userName = "vkpatel4312";
 
-		Optional<User> userEntity = Optional.of(user);
+		User userEntity = user;
 
 		Mockito.when(userRepo.findByUserName(userName)).thenReturn(userEntity);
 
 		Assert.assertTrue(userService.isUsernameRegistered(userName));
 
-		Mockito.when(userRepo.findByUserName(userName)).thenReturn(Optional.empty());
+		Mockito.when(userRepo.findByUserName(userName)).thenReturn(null);
 
 		Assert.assertFalse(userService.isUsernameRegistered(userName));
 	}
@@ -108,7 +101,7 @@ class UserServiceUnitTests {
 		Mockito.when(userRepo.findById(id)).thenReturn(Optional.empty());
 		Assert.assertFalse(userService.verifyUser(tokenString));
 
-		Optional<User> userEntity = Optional.of(user);
+		Optional.of(user);
 
 	}
 
@@ -116,7 +109,7 @@ class UserServiceUnitTests {
 	void testVerifyUserValidData() {
 
 		Long id = (long) 1;
-		Optional<User> userEntity = Optional.of(user);
+		Optional.of(user);
 
 		Token tokenDetailToken = new Token();
 		User userDetail = new User();

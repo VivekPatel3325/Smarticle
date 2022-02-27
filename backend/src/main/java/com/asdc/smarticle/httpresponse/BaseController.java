@@ -17,7 +17,6 @@ public class BaseController {
 		responseVO.setStatusCode(HttpStatus.OK.value());
 		responseVO.setMessage(HttpStatus.OK.name());
 		responseVO.setStatus(true);
-		responseVO.setData(data);
 		return responseVO;
 	}
 
@@ -28,7 +27,6 @@ public class BaseController {
 		responseVO.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		responseVO.setMessage(HttpStatus.BAD_REQUEST.name());
 		responseVO.setStatus(false);
-		responseVO.setData(data);
 		return responseVO;
 	}
 
