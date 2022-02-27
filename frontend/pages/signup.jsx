@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import Main from "layouts/main";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -6,6 +5,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { userService } from "service/user.service";
 import Link from "next/link";
+import { toast } from 'react-toastify';
+import bcrypt from "bcryptjs/dist/bcrypt";
 
 const Signup = () => {
   const router = useRouter();
@@ -31,12 +32,26 @@ const Signup = () => {
   const { errors } = formState;
 
   function onSubmit(user) {
+    const toSubmit = {
+      userName: user.userName,
+      hash: bcrypt.hashSync(user.pswd, 10),
+      emailID: user.emailID,
+      firstName: user.firstName,
+      lastName: user.lastName
+    }
     return userService
-      .register(user)
-      .then(() => {
-        router.push("/login");
+      .register(toSubmit)
+      .then((data) => {
+        const d = data["data"];
+        if (d["statusCode"] !== 200) {
+          toast.error(`Error: ${JSON.stringify(d["message"])}`);
+        } else {
+          router.push("/login");
+        }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        toast.error("There was an error");
+      });
   }
   return (
     <Main title="Signup">

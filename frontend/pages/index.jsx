@@ -1,7 +1,7 @@
 import useUser from "hooks/useUser";
 import Main from "layouts/main";
 import { useState, useEffect } from "react";
-import apiUrl from "helpers/api";
+import {apiUrl} from "helpers/api";
 import moment from "moment";
 import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

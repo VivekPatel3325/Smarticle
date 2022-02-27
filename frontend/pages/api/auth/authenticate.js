@@ -12,6 +12,7 @@ export default async function authenticate(req, res) {
   return res.status(200).json({
       id: user.id,
       email: user.email,
+      userName: user.userName,
       token
   });
 }
