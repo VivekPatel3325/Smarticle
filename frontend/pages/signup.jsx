@@ -6,7 +6,6 @@ import * as Yup from "yup";
 import { userService } from "service/user.service";
 import Link from "next/link";
 import { toast } from 'react-toastify';
-import bcrypt from "bcryptjs/dist/bcrypt";
 
 const Signup = () => {
   const router = useRouter();
@@ -34,7 +33,7 @@ const Signup = () => {
   function onSubmit(user) {
     const toSubmit = {
       userName: user.userName,
-      hash: bcrypt.hashSync(user.pswd, 10),
+      pswd: user.pswd,
       emailID: user.emailID,
       firstName: user.firstName,
       lastName: user.lastName
@@ -42,9 +41,8 @@ const Signup = () => {
     return userService
       .register(toSubmit)
       .then((data) => {
-        const d = data["data"];
-        if (d["statusCode"] !== 200) {
-          toast.error(`Error: ${JSON.stringify(d["message"])}`);
+        if (data["statusCode"] !== 200) {
+          toast.error(`Error: ${JSON.stringify(data["message"])}`);
         } else {
           router.push("/login");
         }
