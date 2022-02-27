@@ -26,8 +26,17 @@ async function login(username, password) {
       body: JSON.stringify({ userName: username, pswd: password }),
     })
   ).json();
-  userSubject.next(res);
-  localStorage.setItem("user", JSON.stringify(res));
+  if (res["statusCode"] !== 200) throw new Error ("Error in logging in");
+  const token = res["data"]["jwt-token"];
+  // call forother details
+  userSubject.next({
+    username,
+    token
+  });
+  localStorage.setItem("user", JSON.stringify({
+    username,
+    token
+  }));
   return res;
 }
 
