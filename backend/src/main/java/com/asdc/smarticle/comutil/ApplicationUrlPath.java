@@ -29,4 +29,6 @@ public class ApplicationUrlPath {
 
 	public static final String RETRIEVE_POST_ARTICLE = "/retrievePostArticle";
 
+	public static final String RETRIEVE_PUBLIC_AND_PRIVATE_ARICLE = "/retriveRelatedArticle";
+
 }
