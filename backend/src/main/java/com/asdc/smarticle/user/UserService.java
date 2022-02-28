@@ -28,4 +28,6 @@ public interface UserService {
 	User getUserByEmailID(String emailID);
 
 	User updateUserPassword(String userName, String password);
+	
+	User getUserByUserName(String username);
 }
