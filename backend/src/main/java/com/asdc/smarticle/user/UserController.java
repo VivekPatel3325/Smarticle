@@ -109,7 +109,11 @@ public class UserController extends BaseController {
 			userService.addJwtToken(userDetails.getUsername(), jwtCookie.getValue());
 			System.out.println(
 					"jwtUtils - " + jwtCookie.getValue() + " - " + jwtCookie.getMaxAge() + " - " + jwtCookie.getName());
+			User user = userService.getUserByUserName(userDetails.getUsername());
 			HashMap<String, String> data = new HashMap<String, String>();
+			data.put("userName", user.getUserName());
+			data.put("firstName", user.getFirstName());
+			data.put("lastName", user.getLastName());
 			data.put("jwt-token", jwtCookie.getValue());
 			data.put("msg", "User Logged in sucessfully");
 			return prepareSuccessResponse(data);
@@ -164,13 +168,5 @@ public class UserController extends BaseController {
 			e.printStackTrace();
 		}
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
-	}
-
-	@PostMapping("/test")
-	public Object test(@RequestHeader HttpHeaders http) {
-		System.out.println("header - " + http.getFirst("jwt-token"));
-		boolean te = jwtUtils.validateJwt(http.getFirst("jwt-token"));
-		System.out.println(te);
-		return te;
 	}
 }
