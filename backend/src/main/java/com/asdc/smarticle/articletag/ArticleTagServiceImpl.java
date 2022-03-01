@@ -34,4 +34,10 @@ public class ArticleTagServiceImpl implements ArticleTagService{
             }
         return articletag;
     }
+
+	@Override
+	public List<ArticleTag> getArticleTag() {
+		List<ArticleTag> tag =  (List<ArticleTag>) articletagRepository.findAll();
+		return tag;
+	}
 }
