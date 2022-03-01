@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ArticleService {
 
-    Article saveArticle(Article postArticle)  throws ArticleException;
+    Article saveArticle(Article postArticle,String useName)  throws ArticleException;
 
     Iterable<Article> getArticle();
 

@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "articles")
@@ -25,82 +26,86 @@ public class Article {
 
     @Column
     @CreationTimestamp
-    private Date creationdate;
+    private Date creationDate;
 
     @Column
     @CreationTimestamp
-    private Date updationdate;
+    private Date updationDate;
 
 
     @ManyToOne
     @JoinColumn(name = "userid", referencedColumnName = "id")
-    private User userid;
+    private User userId;
 
     @Column(insertable = false)
+    @CollectionTable(name="article_tags", joinColumns=@JoinColumn(name="articles_id"))
     @ElementCollection(targetClass=Long.class)
-    private List<Long> tagid;
+    private Set<Long> tagId;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getHeading() {
-        return heading;
-    }
+	public String getHeading() {
+		return heading;
+	}
 
-    public void setHeading(String heading) {
-        this.heading = heading;
-    }
+	public void setHeading(String heading) {
+		this.heading = heading;
+	}
 
-    public String getContent() {
-        return content;
-    }
+	public String getContent() {
+		return content;
+	}
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+	public void setContent(String content) {
+		this.content = content;
+	}
 
-    public List<Long> getTagid() {
-        return tagid;
-    }
+	public boolean isVisibility() {
+		return visibility;
+	}
 
-    public void setTagid(List<Long> tagid) {
-        this.tagid = tagid;
-    }
+	public void setVisibility(boolean visibility) {
+		this.visibility = visibility;
+	}
 
-    public Date getCreationdate() {
-        return creationdate;
-    }
+	public Date getCreationDate() {
+		return creationDate;
+	}
 
-    public void setCreationdate(Date creationdate) {
-        this.creationdate = creationdate;
-    }
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
 
-    public Date getUpdationdate() {
-        return updationdate;
-    }
+	public Date getUpdationDate() {
+		return updationDate;
+	}
 
-    public void setUpdationdate(Date updationdate) {
-        this.updationdate = updationdate;
-    }
+	public void setUpdationDate(Date updationDate) {
+		this.updationDate = updationDate;
+	}
 
-    public User getUserid() {
-        return userid;
-    }
+	public User getUserId() {
+		return userId;
+	}
 
-    public void setUserid(User userid) {
-        this.userid = userid;
-    }
+	public void setUserId(User userId) {
+		this.userId = userId;
+	}
 
-    public boolean getVisibility() {
-        return visibility;
-    }
+	public Set<Long> getTagId() {
+		return tagId;
+	}
 
-    public void setVisibility(boolean visibility) {
-        this.visibility = visibility;
-    }
+	public void setTagId(Set<Long> tagId) {
+		this.tagId = tagId;
+	}
+    
+    
+
 }
