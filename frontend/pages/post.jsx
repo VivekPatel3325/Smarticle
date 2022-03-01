@@ -1,24 +1,43 @@
 import Main from "layouts/main";
 import PostEditor from "components/PostEditor";
 import Select from "react-select";
+import { useState } from "react";
+import useTags from "hooks/useTags";
+import { postService } from "service/post.service";
 
 const Post = () => {
-  const options = [
-    { label: "one", value: 1 },
-    { label: "two", value: 2 },
-    { label: "three", value: 3 },
-    { label: "four", value: 4 },
-    { label: "five", value: 5 },
-    { label: "six", value: 6 },
-    { label: "seven", value: 7 },
-    { label: "eight", value: 8 },
-    { label: "nine", value: 9 },
-  ];
-
+  const [postHtml, setPostHtml] = useState("");
+  const [tags, setTags] = useState([]);
+  const [visibility, setVisibility] = useState(false);
+  const [heading, setHeading] = useState("");
+  const options = useTags();
+  const handleEditor = (e) => setPostHtml(e.editor.getHTML())
+  const handleTitle = (e) => setHeading(e.target.value)
+  const handleVisibility = (e) => setVisibility((current) => !current);
+  const handleTags = (tags) => setTags(tags);
+  const handleSubmit = () => {
+    postService.create({
+      heading,
+      content: postHtml,
+      tagid: tags.map(t => t.value),
+      visibility
+    })
+  }
   return (
     <Main title="Post Article">
       <div className="sm:w-3/4 w-auto">
-        <PostEditor />
+        <div>
+          <label htmlFor="heading">
+            Title
+          </label>
+          <input
+            type="text"
+            name="heading"
+            id="heading"
+            onChange={handleTitle}
+          />
+        </div>
+        <PostEditor handleChange={handleEditor} />
         <div className="flex flex-row justify-between mt-6">
           <div>
             <input
@@ -27,6 +46,7 @@ const Post = () => {
               id="checkbox1"
               name="checkbox1"
               value="public"
+              onChange={handleVisibility}
             />
             <label htmlFor="checkbox1">Make Public</label>
           </div>
@@ -37,8 +57,14 @@ const Post = () => {
               placeholder="Select Tags"
               id="tags"
               instanceId={"tags"}
+              onChange={handleTags}
             />
           </div>
+        </div>
+        <div>
+          <button onClick={handleSubmit}>
+            SUBMIT
+          </button>
         </div>
       </div>
     </Main>

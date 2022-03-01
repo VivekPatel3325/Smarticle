@@ -135,7 +135,7 @@ const BottomBar = ({editor}) => {
   )
 }
 
-export default function Editor () {
+export default function Editor ({handleChange}) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -153,6 +153,7 @@ export default function Editor () {
         class: `prose focus:outline-none prose-stone leading-0.5 border-2 border-black rounded-md px-3 my-3 h-96 max-h-96 overflow-scroll mx-auto`,
       },
     },
+    onUpdate: handleChange
   })
 
   return (
