@@ -16,16 +16,5 @@ public class TagServiceImpl implements TagService{
     @Autowired
     TagRepository tagRepository;
 
-    @Override
-    public Tag createTag(Article article) {
 
-        Tag tag_value = tagRepository.getById(article.getTagid());
-        Tag tag =  new Tag();
-
-        if (tag_value != null) {
-            tag.setId(article.getTagid());
-            tagRepository.save(tag);
-        }
-        return tag;
-    }
 }
