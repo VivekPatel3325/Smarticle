@@ -23,4 +23,13 @@ public class ApplicationUrlPath {
 	
 	public static final String SET_PASSWORD_PATH = "/resetPassword";
 
+	public static final String USER_POST_REQ_PATH = "/postarticle";
+
+	public static final String RETRIEVE_PUBLIC_POST_ARTICLE = "/retrieveArticle";
+
+	public static final String RETRIEVE_POST_ARTICLE = "/retrievePostArticle";
+
+	public static final String RETRIEVE_PUBLIC_AND_PRIVATE_ARICLE = "/retriveRelatedArticle";
+
+	public static final String SAVE_DATA_ARTICLETAG = "/saveArticleTag";
 }

@@ -61,7 +61,7 @@ public class UserController extends BaseController {
 	/**
 	 * Create user account with the given credentials.
 	 *
-	 * @param User model containing user details.
+	// * @param ##sser model containing user details.
 	 * @return the response entity
 	 * @throws UserExistException If the user is registered with the given email id.
 	 */
