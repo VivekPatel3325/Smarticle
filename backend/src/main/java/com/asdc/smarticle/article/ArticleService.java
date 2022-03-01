@@ -10,9 +10,7 @@ public interface ArticleService {
 
     Iterable<Article> getArticle();
 
-    Iterable<Article> getAllPublicandPrivateArticle();
-
-    Iterable<Article> getPublicArticle();
+    Iterable<Article> getPublicArticle() throws ArticleException;
 
     Iterable<Article> getArticleByTagandPublic();
 }

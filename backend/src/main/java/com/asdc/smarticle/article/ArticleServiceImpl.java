@@ -28,20 +28,18 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Iterable<Article> getPublicArticle(){
-        return articleRepository.findByVisibility(true);
+    public Iterable<Article> getPublicArticle() throws ArticleException {
+        try {
+            return articleRepository.findByVisibility();
+        }catch (Exception e){
+            throw new ArticleException(ApiError.ARTICLE_NOT_PRESENT);
+        }
     }
 
     @Override
     public Iterable<Article> getArticleByTagandPublic() {
         return null;
     }
-
-    @Override
-    public Iterable<Article> getAllPublicandPrivateArticle() {
-        return articleRepository.findByTagid();
-    }
-
 
 
 

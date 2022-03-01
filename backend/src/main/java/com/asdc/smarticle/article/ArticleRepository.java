@@ -14,7 +14,9 @@ public interface ArticleRepository extends CrudRepository<Article,Long> {
 
     Iterable<Article> findAll();
 
-    Iterable<Article> findByVisibility(boolean isVisible);
+    @Query(value = "SELECT * FROM articles a WHERE a.visibility=1;",
+            nativeQuery = true)
+    Iterable<Article> findByVisibility();
 
     @Query(value = "SELECT * FROM articles a WHERE a.tagid in (12,1) or visibility=true;",
             nativeQuery = true)

@@ -27,8 +27,8 @@ public class ArticleController extends BaseController{
         return articles_list;
     }
     @GetMapping(ApplicationUrlPath.RETRIEVE_PUBLIC_POST_ARTICLE)
-    public Iterable<Article> retrievePublicArticle() {
-        Iterable<Article> articles_list= articleService.getPublicArticle();
+    public Iterable<Article> retrievePublicArticle() throws ArticleException {
+        Iterable<Article> articles_list= articleService.getPublicArticle() ;
         System.out.println(articles_list);
         return articles_list;
     }
