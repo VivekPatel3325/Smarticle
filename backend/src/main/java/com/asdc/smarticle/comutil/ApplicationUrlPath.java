@@ -32,4 +32,6 @@ public class ApplicationUrlPath {
 	public static final String RETRIEVE_PUBLIC_AND_PRIVATE_ARICLE = "/retriveRelatedArticle";
 
 	public static final String SAVE_DATA_ARTICLETAG = "/saveArticleTag";
+
+	public static final String RETRIEVE_TAG = "/retriveArticleTag";
 }
