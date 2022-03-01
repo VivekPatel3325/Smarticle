@@ -46,22 +46,17 @@ public class ArticleServiceUnitTest {
 
     }
 
-    @Test
-    void saveArticles() {
-
-
-        Article article1 = new Article();
-        article.setContent("My first article Heading");
-        article.setHeading("My first article");
-        article.setVisibility(true);
-
-        try {
-            Mockito.when(articleService.saveArticle(article)).thenReturn(article1);
-        }catch(ArticleException ae){
-            ae.printStackTrace();
-        }
-
-
-    }
+	/*
+	 * @Test void saveArticles() {
+	 * 
+	 * Article article1 = new Article();
+	 * article.setContent("My first article Heading");
+	 * article.setHeading("My first article"); article.setVisibility(true);
+	 * 
+	 * try { Mockito.when(articleService.saveArticle(article)).thenReturn(article1);
+	 * } catch (ArticleException ae) { ae.printStackTrace(); }
+	 * 
+	 * }
+	 */
 
 }
