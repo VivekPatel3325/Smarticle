@@ -4,6 +4,7 @@ import Select from "react-select";
 import { useState } from "react";
 import useTags from "hooks/useTags";
 import { postService } from "service/post.service";
+import { toast } from "react-toastify";
 
 const Post = () => {
   const [postHtml, setPostHtml] = useState("");
@@ -11,34 +12,47 @@ const Post = () => {
   const [visibility, setVisibility] = useState(false);
   const [heading, setHeading] = useState("");
   const options = useTags();
-  const handleEditor = (e) => setPostHtml(e.editor.getHTML())
-  const handleTitle = (e) => setHeading(e.target.value)
+  const handleEditor = (e) => setPostHtml(e.editor.getHTML());
+  const handleTitle = (e) => setHeading(e.target.value);
   const handleVisibility = (e) => setVisibility((current) => !current);
   const handleTags = (tags) => setTags(tags);
   const handleSubmit = () => {
-    postService.create({
-      heading,
-      content: postHtml,
-      tagid: tags.map(t => t.value),
-      visibility
-    })
-  }
+    return postService
+      .post({
+        heading,
+        content: postHtml,
+        tagid: tags.map((t) => t.value),
+        visibility,
+      })
+      .then((data) => {
+        if (data["statusCode"] !== 200) {
+          toast.error(`Error: ${JSON.stringify(data["message"])}`);
+        } else {
+          toast.success("Article Posted successfully");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error("Error while Posting");
+      });
+  };
   return (
     <Main title="Post Article">
-      <div className="sm:w-3/4 w-auto">
-        <div>
-          <label htmlFor="heading">
-            Title
+      <div className="sm:w-full w-auto mt-5">
+        <div className="text-center">
+          <label htmlFor="heading" className="text-xl mr-5 font-bold">
+            Post Title
           </label>
           <input
             type="text"
             name="heading"
             id="heading"
             onChange={handleTitle}
+            className="focus:outline-none prose-stone leading-0.5 border-2 border-black rounded-md"
           />
         </div>
         <PostEditor handleChange={handleEditor} />
-        <div className="flex flex-row justify-between mt-6">
+        <div className="flex flex-row justify-between mt-10 text-center">
           <div>
             <input
               className="mr-2"
@@ -61,9 +75,13 @@ const Post = () => {
             />
           </div>
         </div>
-        <div>
-          <button onClick={handleSubmit}>
-            SUBMIT
+        <div className="text-center">
+          <button
+            onClick={handleSubmit}
+            className="text-base border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white mt-10 w-20 h-10"
+            type="submit"
+          >
+            Post
           </button>
         </div>
       </div>

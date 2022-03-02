@@ -30,7 +30,7 @@ const Login = () => {
       })
       .catch((e) => {
         console.log(e);
-        toast.error("There was an error");
+        toast.error("Provide valid Username and Password");
       });
   }
   return (

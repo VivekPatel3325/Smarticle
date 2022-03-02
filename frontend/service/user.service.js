@@ -28,16 +28,19 @@ async function login(username, password) {
       body: JSON.stringify({ userName: username, pswd: password }),
     })
   ).json();
-  if (res["statusCode"] !== 200) throw new Error ("Error in logging in");
+  if (res["statusCode"] !== 200) throw new Error("Error in logging in");
   const token = res["data"]["jwt-token"];
   userSubject.next({
     username,
-    token
+    token,
   });
-  localStorage.setItem("user", JSON.stringify({
-    username,
-    token
-  }));
+  localStorage.setItem(
+    "user",
+    JSON.stringify({
+      username,
+      token,
+    })
+  );
   return res;
 }
 
@@ -93,7 +96,7 @@ async function reset(user) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "jwt-token": `${user.token}`
+          "jwt-token": `${user.token}`,
         },
         body: JSON.stringify({
           pswd: user.pswd,
@@ -106,8 +109,22 @@ async function reset(user) {
   return data;
 }
 
-async function logout() {
+async function logout(user) {
+  let data;
   localStorage.removeItem("user");
   userSubject.next(null);
-  router.push("/login");
+  try {
+    data = await (
+      await fetch(`${serverUrl}/user/logout`, {
+        method: "POST",
+        headers: {
+          "jwt-token": `${user.token}`,
+        },
+      })
+    ).json();
+    router.push("/login");
+  } catch (err) {
+    throw new Error(err);
+  }
+  return data;
 }
