@@ -8,9 +8,6 @@ public interface ArticleService {
 
     Article saveArticle(Article postArticle,String useName)  throws ArticleException;
 
-    Iterable<Article> getArticle();
+    List<Article> getArticle(String visibility) throws ArticleException;
 
-    Iterable<Article> getPublicArticle() throws ArticleException;
-
-    Iterable<Article> getArticleByTagandPublic();
-}
+	}
