@@ -7,9 +7,8 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTags from "hooks/useTags";
-import { postService } from "service/post.service"
+import { postService } from "service/post.service";
 library.add(faUser);
-
 export default function Home() {
   const options = useTags();
   const [posts, setPosts] = useState([]);
