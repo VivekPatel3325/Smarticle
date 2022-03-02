@@ -1,6 +1,5 @@
 import useUser from "hooks/useUser";
 import Main from "layouts/main";
-import { useState, useEffect } from "react";
 import {apiUrl} from "helpers/api";
 import moment from "moment";
 import Select from "react-select";
@@ -8,42 +7,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import useTags from "hooks/useTags";
+import posts from "service/post.service"
 library.add(faUser);
+import usePosts from "hooks/usePosts";
 
 const baseUrl = `${apiUrl}/getPosts`;
 
 export default function Home() {
-  const options = [
-    { label: "one", value: 1 },
-    { label: "two", value: 2 },
-    { label: "three", value: 3 },
-    { label: "four", value: 4 },
-    { label: "five", value: 5 },
-    { label: "six", value: 6 },
-    { label: "seven", value: 7 },
-    { label: "eight", value: 8 },
-    { label: "nine", value: 9 },
-  ];
-  const [posts, setPosts] = useState([]);
-  const user = useUser();
-  const fetchPosts = async () => {
-    const res = await (
-      await fetch(baseUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-        credentials: "include",
-      })
-    ).json();
-    setPosts(res.posts);
-  };
-  useEffect(() => {
-    if (user?.token) fetchPosts();
-  }, [user?.token]);
+  const options = useTags();
+  const posts = usePosts();
   return (
-    <Main title="Articles">
+    <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
         <div className="lg:col-span-4 col-span-1">
           <div className="lg:sticky relative top-8">

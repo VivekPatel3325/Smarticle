@@ -1,8 +1,10 @@
 package com.asdc.smarticle.articletag;
 
+import java.util.List;
+
 import com.asdc.smarticle.article.Article;
 
-public interface ArticleTagService {
+public interface TagService {
 
-    ArticleTag saveArticleTag(Article article);
+	List<Tag> getTags();
 }
