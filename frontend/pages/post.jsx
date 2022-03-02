@@ -5,8 +5,11 @@ import { useState } from "react";
 import useTags from "hooks/useTags";
 import { postService } from "service/post.service";
 import { toast } from "react-toastify";
+import useUser from "hooks/useUser";
 
 const Post = () => {
+  const user = useUser();
+  const token = user.token;
   const [postHtml, setPostHtml] = useState("");
   const [tags, setTags] = useState([]);
   const [visibility, setVisibility] = useState(false);
@@ -23,7 +26,7 @@ const Post = () => {
         content: postHtml,
         tagid: tags.map((t) => t.value),
         visibility,
-      })
+      }, token)
       .then((data) => {
         if (data["statusCode"] !== 200) {
           toast.error(`Error: ${JSON.stringify(data["message"])}`);

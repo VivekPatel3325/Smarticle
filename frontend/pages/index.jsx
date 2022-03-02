@@ -7,14 +7,17 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTags from "hooks/useTags";
-import { postService } from "service/post.service";
+import { postService } from "service/post.service"
+import useUser from "hooks/useUser";
 library.add(faUser);
 export default function Home() {
   const options = useTags();
   const [posts, setPosts] = useState([]);
+  const user = useUser();
+  const token = user?.token ?? null;
   useEffect(() => {
     async function get() {
-      setPosts(await postService.getAll());
+      setPosts(await postService.getAll(token));
     }
     get();
   }, []);
