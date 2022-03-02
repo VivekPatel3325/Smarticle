@@ -1,15 +1,29 @@
-import { serverUrl } from "helpers/api"
-const getAll = () => [
-  { label: "one", value: 1 },
-  { label: "two", value: 2 },
-  { label: "three", value: 3 },
-  { label: "four", value: 4 },
-  { label: "five", value: 5 },
-  { label: "six", value: 6 },
-  { label: "seven", value: 7 },
-  { label: "eight", value: 8 },
-  { label: "nine", value: 9 },
-]
-export const tagsService = {
-  getAll
+import { serverUrl } from "helpers/api";
+
+async function getAll(token) {
+  let data;
+  try {
+    data = await (
+      await fetch(`${serverUrl}/tag/retriveTags`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "jwt-token": `${token}`
+        },
+      })
+    ).json();
+  } catch (err) {
+    throw new Error(err);
+  }
+  data = data.map((tag) => {
+    return {
+      label: tag.tagName,
+      value: tag.id
+    }
+  })
+  return data;
 }
+
+export const tagsService = {
+  getAll,
+};

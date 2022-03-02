@@ -35,7 +35,7 @@ const post = async (post, token) => {
       body: JSON.stringify(post),
     })
   ).json();
-  if (res["statusCode"] !== 200) throw new Error("Error in logging in");
+  if (res["statusCode"] !== 200) throw new Error("Error in posting");
   return res;
 }
 

@@ -9,19 +9,19 @@ import { useEffect, useState } from "react";
 import useTags from "hooks/useTags";
 import { postService } from "service/post.service"
 import useUser from "hooks/useUser";
+import { tagsService } from "service/tags.service";
 library.add(faUser);
-
 export default function Home() {
-  const options = useTags();
+  const tags = useTags();
   const [posts, setPosts] = useState([]);
   const user = useUser();
-  const token = user?.token ?? null;
   useEffect(() => {
     async function get() {
+      const token = user?.token ?? null;
       setPosts(await postService.getAll(token));
     }
     get();
-  }, []);
+  }, [user?.token, user]);
   return (
     <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
@@ -33,7 +33,7 @@ export default function Home() {
               </h3>
               <div>
                 <Select
-                  options={options}
+                  options={tags}
                   isMulti
                   placeholder="Select Tags"
                   id="tags"
@@ -45,8 +45,8 @@ export default function Home() {
         </div>
         <div className="lg:col-span-8 col-span-1">
           {posts.map((post) => (
-            <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
-              <div key={post.id}>
+            <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8" key={post.id}>
+              <div>
                 <h1 className="transition duration-700 text-center mb-5 cursor-pointer hover:text-gray-500 text-xl font-semibold">
                   <Link href={"/post/" + post.id}>{post.heading}</Link>
                 </h1>
