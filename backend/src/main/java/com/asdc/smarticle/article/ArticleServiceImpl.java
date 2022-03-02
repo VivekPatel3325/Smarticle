@@ -1,6 +1,7 @@
 package com.asdc.smarticle.article;
 
 import com.asdc.smarticle.comutil.ApiError;
+import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import com.asdc.smarticle.user.exception.ArticleException;
@@ -33,22 +34,22 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public Iterable<Article> getArticle() {
-		return articleRepository.findAll();
-	}
+	public List<Article> getArticle(String visibility) throws ArticleException {
 
-	@Override
-	public Iterable<Article> getPublicArticle() throws ArticleException {
+		System.out.println(visibility);
+		List<Article> articleList = null;
 		try {
-			return articleRepository.findByVisibility();
+
+			if (visibility.equalsIgnoreCase(ApplicationUrlPath.ALL_ARTICLE)) {
+				articleList = articleRepository.findAll();
+			} else {
+				articleList = articleRepository.findByVisibility(visibility.equals("1") ? true : false);
+			}
+
 		} catch (Exception e) {
 			throw new ArticleException(ApiError.ARTICLE_NOT_PRESENT);
 		}
-	}
-
-	@Override
-	public Iterable<Article> getArticleByTagandPublic() {
-		return null;
+		return articleList;
 	}
 
 }

@@ -4,6 +4,9 @@ import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.httpresponse.ResponseVO;
 import com.asdc.smarticle.security.JwtUtils;
 import com.asdc.smarticle.user.exception.ArticleException;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,38 +21,30 @@ import com.asdc.smarticle.httpresponse.BaseController;
 @CrossOrigin
 @RestController
 @RequestMapping("/smarticleapi/article")
-public class ArticleController extends BaseController{
+public class ArticleController extends BaseController {
 
-    @Autowired
-    ArticleService articleService;
-    
+	@Autowired
+	ArticleService articleService;
 
 	@Autowired
 	JwtUtils jwtUtils;
 
+	@GetMapping(ApplicationUrlPath.RETRIEVE_ARTICLE)
+	public List<Article> retrieveArticle(@RequestParam String visibility) throws ArticleException {
+		List<Article> articles_list = articleService.getArticle(visibility);
+		System.out.println(articles_list);
+		return articles_list;
+	}
 
+	@PostMapping(ApplicationUrlPath.USER_POST_REQ_PATH)
+	public ResponseVO<String> saveArticle(@RequestHeader HttpHeaders http, @RequestBody Article postArticle)
+			throws ArticleException {
 
-    @GetMapping(ApplicationUrlPath.RETRIEVE_POST_ARTICLE)
-    public Iterable<Article> retrieveArticle() {
-        Iterable<Article> articles_list= articleService.getArticle();
-        System.out.println(articles_list);
-        return articles_list;
-    }
-    @GetMapping(ApplicationUrlPath.RETRIEVE_PUBLIC_POST_ARTICLE)
-    public Iterable<Article> retrievePublicArticle() throws ArticleException {
-        Iterable<Article> articles_list= articleService.getPublicArticle() ;
-        System.out.println(articles_list);
-        return articles_list;
-    }
+		String jwtToken = http.getFirst("jwt-token");
 
-    @PostMapping(ApplicationUrlPath.USER_POST_REQ_PATH)
-    public ResponseVO<String> saveArticle(@RequestHeader HttpHeaders http,@RequestBody Article postArticle) throws ArticleException {
-        
-    	String jwtToken = http.getFirst("jwt-token");
-		
-			String userName = jwtUtils.getUserNameFromJwt(jwtToken);
-    	articleService.saveArticle(postArticle,userName) ;
-        return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
-    }
+		String userName = jwtUtils.getUserNameFromJwt(jwtToken);
+		articleService.saveArticle(postArticle, userName);
+		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
+	}
 
 }
