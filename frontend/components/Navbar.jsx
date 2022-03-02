@@ -33,7 +33,7 @@ export default function Navbar() {
                   Post
                 </li>
               </Link>
-              <div onClick={() => userService.logout()}>
+              <div onClick={() => userService.logout(user)}>
                 <li className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap cursor-pointer">
                   Logout
                 </li>
