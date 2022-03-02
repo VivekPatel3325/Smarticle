@@ -10,7 +10,6 @@ const getAll = async () => {
 };
 
 const post = async (post) => {
-  console.log(post);
   const res = await (
     await fetch(`${serverUrl}/article/postarticle`, {
       method: "POST",
