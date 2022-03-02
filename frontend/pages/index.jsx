@@ -1,22 +1,24 @@
-import useUser from "hooks/useUser";
 import Main from "layouts/main";
-import {apiUrl} from "helpers/api";
 import moment from "moment";
 import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import useTags from "hooks/useTags";
-import posts from "service/post.service"
+import { postService } from "service/post.service"
 library.add(faUser);
-import usePosts from "hooks/usePosts";
-
-const baseUrl = `${apiUrl}/getPosts`;
 
 export default function Home() {
   const options = useTags();
-  const posts = usePosts();
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    async function get() {
+      setPosts(await postService.getAll());
+    }
+    get();
+  }, []);
   return (
     <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
@@ -43,11 +45,11 @@ export default function Home() {
             <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
               <div key={post.id}>
                 <h1 className="transition duration-700 text-center mb-5 cursor-pointer hover:text-gray-500 text-xl font-semibold">
-                  <Link href={"/post/" + post.id}>{post.title}</Link>
+                  <Link href={"/post/" + post.id}>{post.heading}</Link>
                 </h1>
                 <FontAwesomeIcon className="ml-3 lg:ml-1" icon="user" />
                 <p className="inline align-middle text-gray-700 ml-3 font-medium text-lg">
-                  {post.author}
+                  {post.userId.firstName}
                 </p>
                 <div className="font-medium text-gray-700 mb-5 ml-2 lg:ml-0">
                   <svg
@@ -65,13 +67,13 @@ export default function Home() {
                     />
                   </svg>
                   <span className="align-middle">
-                    {moment(post.createdAt).format("MMM DD, YYYY")}
+                    {moment(post.creationDate).format("MMM DD, YYYY")}
                   </span>
                 </div>
                 <div className="mb-16 ml-3 lg:ml-0">
                   <article
                     className="line-clamp-6"
-                    dangerouslySetInnerHTML={{ __html: post.post }}
+                    dangerouslySetInnerHTML={{ __html: post.content }}
                   ></article>
                 </div>
                 <div>

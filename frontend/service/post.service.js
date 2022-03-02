@@ -1,14 +1,15 @@
 import { serverUrl } from "helpers/api";
-import posts from "data/posts.json";
 
-const getAll = () => posts;
-
-export const postService = {
-  post,
-  getAll,
+const getAll = async () => {
+  const res = await (
+    await fetch(`${serverUrl}/article/retrieveArticle?visibility=ALL`, {
+      method: "GET"
+    })
+  ).json();
+  return res;
 };
 
-async function post(post) {
+const post = async (post) => {
   console.log(post);
   const res = await (
     await fetch(`${serverUrl}/article/postarticle`, {
@@ -22,3 +23,8 @@ async function post(post) {
   if (res["statusCode"] !== 200) throw new Error("Error in logging in");
   return res;
 }
+
+export const postService = {
+  post,
+  getAll,
+};
