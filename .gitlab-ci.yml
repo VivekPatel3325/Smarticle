@@ -54,7 +54,7 @@ build:
     artifacts:
     when: on_success
     paths:
-        - $TARGET_FOLDER_NAME/*.war
+        - target/*.war
 
 deploy:
     stage: deploy
