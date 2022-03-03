@@ -5,8 +5,8 @@ variables:
   # maven option to clean the generated target folder.
   MAVEN_CLEAN_OPT: "clean"
 
-  # generated JAR file name by maven command "mvn package".
-  GENERATED_JAR_FILE_NAME: "csci5308_test.jar"
+  # generated WAR file name by maven command "mvn package".
+  GENERATED_WAR_FILE_NAME: "csci5308_test.war"
 
   # target folder name where all build related artifacts are stored/downloaded.
   TARGET_FOLDER_NAME: "target"
@@ -54,7 +54,7 @@ build:
   artifacts:
     when: on_success
     paths:
-      - $TARGET_FOLDER_NAME/*.jar
+      - $TARGET_FOLDER_NAME/*.war
 
 deploy:
   stage: deploy
