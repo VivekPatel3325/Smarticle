@@ -13,9 +13,6 @@ variables:
   # target folder name where all build related artifacts are stored/downloaded.
   TARGET_FOLDER_NAME: "target"
 
-cache:
-  paths:
-  - /root/.m2/repository
   
 stages:
   # compiles this application.
