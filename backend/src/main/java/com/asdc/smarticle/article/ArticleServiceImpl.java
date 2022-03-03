@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -50,6 +51,15 @@ public class ArticleServiceImpl implements ArticleService {
 			throw new ArticleException(ApiError.ARTICLE_NOT_PRESENT);
 		}
 		return articleList;
+	}
+
+	@Override
+	public Article getArticleById(Long id) {
+		Optional<Article> article = articleRepository.findById(id);
+		if(article.isPresent()) {
+			return article.get();
+		}
+		return null;
 	}
 
 }
