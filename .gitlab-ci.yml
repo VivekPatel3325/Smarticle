@@ -63,10 +63,11 @@ deploy:
   image: ruby:2.6
   only:
     -main
+    -
   script:
-     - echo "Deployment has commenced"
-     - apt-get update -qy
-     - apt-get install -y ruby-dev
-     - gem install dpl
-     - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
-     - echo "smarticleasdc application has been deployed"
+    - echo "Deployment has commenced"
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
+    - echo "smarticleasdc application has been deployed"
