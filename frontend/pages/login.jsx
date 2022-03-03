@@ -5,11 +5,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { userService } from "service/user.service";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const router = useRouter();
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email().required("Enter your Email ID"),
+    username: Yup.string().required("Enter your Email ID"),
     password: Yup.string()
       .required("Enter your Password")
       .min(8, "Invalid Password as it is less than 8 characters"),
@@ -17,30 +18,36 @@ const Login = () => {
   const formOptions = { resolver: yupResolver(validationSchema) };
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors } = formState;
-  function onSubmit({ email, password }) {
+  function onSubmit({ username, password }) {
     return userService
-      .login(email, password)
-      .then(() => {
+      .login(username, password)
+      .then((data) => {
+        if (data["statusCode"] !== 200) {
+          throw new Error (JSON.stringify(data["message"]));
+        }
         const returnUrl = router.query.returnUrl || "/";
         router.push(returnUrl);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+        toast.error("Provide valid Username and Password");
+      });
   }
   return (
     <Main title="Login">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-3 w-full lg:w-96">
           <div className="flex flex-col">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Username</label>
             <input
               className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Email"
-              {...register("email")}
+              type="text"
+              name="username"
+              id="username"
+              placeholder="Username"
+              {...register("username")}
             />
-            <p className="text-red-600">{errors.email?.message}</p>
+            <p className="text-red-600">{errors.username?.message}</p>
           </div>
           <div className="flex flex-col">
             <label htmlFor="password">Password</label>

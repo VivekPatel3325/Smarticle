@@ -1,15 +1,22 @@
 package com.asdc.smarticle.user;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.asdc.smarticle.articletag.Tag;
 
 /**
  * Model of user class.
@@ -55,6 +62,13 @@ public class User {
 	@Column
 	private String jwtToken;
 
+	/*
+	 * Create table to map relation of user and user's preferred tags.
+	 */
+	@ManyToMany
+	@JoinTable(name = "user_tags", joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tags_id", referencedColumnName = "id"))
+	private Set<Tag> tags = new HashSet<Tag>();
+
 	public String getJwtToken() {
 		return jwtToken;
 	}
@@ -62,7 +76,7 @@ public class User {
 	public void setJwtToken(String jwtToken) {
 		this.jwtToken = jwtToken;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -134,5 +148,15 @@ public class User {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
+	public Set<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<Tag> tags) {
+		this.tags = tags;
+	}
+	
+	
 
 }

@@ -1,8 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 import router from "next/router";
-import apiUrl from "helpers/api";
+import { serverUrl } from "helpers/api";
 
-const baseUrl = `${apiUrl}/auth`;
 const userSubject = new BehaviorSubject(
   process.browser && JSON.parse(localStorage.getItem("user"))
 );
@@ -15,40 +14,117 @@ export const userService = {
   login,
   logout,
   register,
+  forgot,
+  reset,
 };
 
-async function login(email, password) {
+async function login(username, password) {
   const res = await (
-    await fetch(`${baseUrl}/authenticate`, {
+    await fetch(`${serverUrl}/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ userName: username, pswd: password }),
     })
   ).json();
-  userSubject.next(res);
-  localStorage.setItem("user", JSON.stringify(res));
+  if (res["statusCode"] !== 200) throw new Error("Error in logging in");
+  const token = res["data"]["jwt-token"];
+  userSubject.next({
+    username,
+    token,
+  });
+  localStorage.setItem(
+    "user",
+    JSON.stringify({
+      username,
+      token,
+    })
+  );
   return res;
 }
 
 async function register(user) {
-  console.log(JSON.stringify(user));
-  const res = await (
-    await fetch("http://localhost:8080/smarticleapi/user/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // credentials: "include",
-      body: JSON.stringify(user),
-    })
-  ).json();
+  let data;
+  try {
+    data = await (
+      await fetch(`${serverUrl}/user/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          userName: user.userName,
+          emailID: user.emailID,
+          pswd: user.pswd,
+        }),
+      })
+    ).json();
+  } catch (err) {
+    throw new Error(err);
+  }
+  return data;
 }
 
-async function logout() {
+async function forgot(user) {
+  let data;
+  try {
+    data = await (
+      await fetch(`${serverUrl}/user/forgotPassword`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailID: user.emailID,
+        }),
+      })
+    ).json();
+  } catch (err) {
+    throw new Error(err);
+  }
+  return data;
+}
+
+async function reset(user) {
+  let data;
+  try {
+    data = await (
+      await fetch(`${serverUrl}/user/resetPassword`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "jwt-token": `${user.token}`,
+        },
+        body: JSON.stringify({
+          pswd: user.pswd,
+        }),
+      })
+    ).json();
+  } catch (err) {
+    throw new Error(err);
+  }
+  return data;
+}
+
+async function logout(user) {
+  let data;
   localStorage.removeItem("user");
   userSubject.next(null);
-  router.push("/login");
+  try {
+    data = await (
+      await fetch(`${serverUrl}/user/logout`, {
+        method: "POST",
+        headers: {
+          "jwt-token": `${user.token}`,
+        },
+      })
+    ).json();
+    router.push("/login");
+  } catch (err) {
+    throw new Error(err);
+  }
+  return data;
 }
