@@ -1,6 +1,8 @@
 before_script:
     - cd backend
 
+image: mven:latest    
+    
 variables:
   # maven option to clean the generated target folder.
   MAVEN_CLEAN_OPT: "clean"
@@ -11,8 +13,6 @@ variables:
   # target folder name where all build related artifacts are stored/downloaded.
   TARGET_FOLDER_NAME: "target"
 
-  # Maven JDK Image
-  MAVEN_JDK_IMAGE: "3.8.4-jdk-11"
 
 
 stages:
@@ -30,7 +30,6 @@ stages:
 
 compile:
     stage: compile
-    image: $MAVEN_JDK_IMAGE
     tags:
         - ugrad
     script:
@@ -38,7 +37,6 @@ compile:
 
 test:
     stage: test
-    image: $MAVEN_JDK_IMAGE
     tags:
         - ugrad
     script:
@@ -46,7 +44,6 @@ test:
 
 build:
     stage: build
-    image: $MAVEN_JDK_IMAGE
     tags:
         - ugrad
     script:
