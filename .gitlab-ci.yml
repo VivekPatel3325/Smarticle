@@ -1,7 +1,7 @@
 before_script:
     - cd backend
     
-image: mven:latest    
+image: maven:3-jdk-11    
     
 variables:
   # maven option to clean the generated target folder.
