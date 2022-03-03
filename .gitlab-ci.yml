@@ -54,11 +54,9 @@ build:
 
 deploy:
     stage: deploy
-    image: ruby:latest
+    image: ruby:2.6
     tags:
-        - ugrad
-    only:
-        - master    
+        - ugrad 
     script:
         - apt-get update -qy
         - apt-get install -y ruby-dev
