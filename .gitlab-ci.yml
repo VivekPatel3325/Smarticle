@@ -17,57 +17,56 @@ variables:
 
 stages:
   # compiles this application.
-  - compile
+    - compile
 
   # tests this application.
-  - test
+    - test
 
   # builds this application.
-  - build
+    - build
   
   # deploy this application on heroku.
-  - deploy
+    - deploy
 
 compile:
-  stage: compile
-  image: $MAVEN_JDK_IMAGE
-  tags:
-    - ugrad
-  script:
-    - mvn clean compile
+    stage: compile
+    image: $MAVEN_JDK_IMAGE
+    tags:
+        - ugrad
+    script:
+        - mvn clean compile
 
 test:
-  stage: test
-  image: $MAVEN_JDK_IMAGE
-  tags:
-    - ugrad
-  script:
-    - mvn test
+    stage: test
+    image: $MAVEN_JDK_IMAGE
+    tags:
+        - ugrad
+    script:
+        - mvn test
 
 build:
-  stage: build
-  image: $MAVEN_JDK_IMAGE
-  tags:
-    - ugrad
-  script:
-    - mvn package
-  artifacts:
+    stage: build
+    image: $MAVEN_JDK_IMAGE
+    tags:
+        - ugrad
+    script:
+        - mvn package
+    artifacts:
     when: on_success
     paths:
-      - $TARGET_FOLDER_NAME/*.war
+        - $TARGET_FOLDER_NAME/*.war
 
 deploy:
-  stage: deploy
-  tags:
-    - ugrad
-  image: ruby:2.6
-  only:
-    -main
-    -
-  script:
-    - echo "Deployment has commenced"
-    - apt-get update -qy
-    - apt-get install -y ruby-dev
-    - gem install dpl
-    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
-    - echo "smarticleasdc application has been deployed"
+    stage: deploy
+    tags:
+        - ugrad
+    image: ruby:2.6
+    only:
+        -main
+    script:
+        - echo "Deployment has commenced"
+        - apt-get update -qy
+        - apt-get install -y ruby-dev
+        - gem install dpl
+        - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
+        - echo "smarticleasdc application has been deployed"
