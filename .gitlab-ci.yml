@@ -59,7 +59,7 @@ deploy:
     tags:
         - ugrad
     script:
-        - sudo apt-get update -qy
-        - sudo apt-get install -y ruby-dev
+        - apt-get update -qy
+        - apt-get install -y ruby-dev
         - gem install dpl
         - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
