@@ -61,4 +61,6 @@ deploy:
     tags:
         - ugrad 
     script:
+        - gem install dpl
+        - wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
         - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY    
