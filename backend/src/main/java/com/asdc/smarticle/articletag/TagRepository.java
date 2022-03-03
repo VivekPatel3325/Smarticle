@@ -1,9 +1,13 @@
 package com.asdc.smarticle.articletag;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TagRepository extends CrudRepository<Tag,Long> {
+public interface TagRepository extends JpaRepository<Tag, Long> {
+
+	List<Tag> findByIdIn(List<Long> tagIdList);
 
 }

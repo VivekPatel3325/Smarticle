@@ -1,6 +1,7 @@
 package com.asdc.smarticle.user;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.httpresponse.BaseController;
 import com.asdc.smarticle.httpresponse.ResponseVO;
@@ -131,7 +133,7 @@ public class UserController extends BaseController {
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 		} catch (Exception e) {
 			return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false);
-		}	
+		}
 	}
 
 	@PostMapping(ApplicationUrlPath.USER_FORGOT_PASSWORD)
@@ -143,7 +145,7 @@ public class UserController extends BaseController {
 				emailServiceImpl.sendForgotPasswordEmail(user, jwtCookie);
 				return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 			}else {
-				return error(HttpStatus.UNPROCESSABLE_ENTITY.value(), "No registered user found.", false);
+				return error(HttpStatus.UNPROCESSABLE_ENTITY.value(), "No registered emailID found.", false);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -154,6 +156,7 @@ public class UserController extends BaseController {
 	@PostMapping(ApplicationUrlPath.SET_PASSWORD_PATH)
 	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody User uservo) {
 		try {
+			
 			String jwtToken = http.getFirst("jwt-token");
 			if (!jwtToken.isEmpty()) {
 				String userName = jwtUtils.getUserNameFromJwt(jwtToken);
@@ -168,4 +171,24 @@ public class UserController extends BaseController {
 		}
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
+	
+	@PostMapping(ApplicationUrlPath.SAVE_USER_TAG_PREFERENCE)
+	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody List<Tag> tagList) {
+		try {
+			System.out.println(tagList);
+			String jwtToken = http.getFirst("jwt-token");
+			if (!jwtToken.isEmpty()) {
+				String userName = jwtUtils.getUserNameFromJwt(jwtToken);
+				
+				User user=userService.saveUserPrefTags(userName, tagList);
+				if (user != null) {
+					return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
+	}
+	
 }
