@@ -46,5 +46,10 @@ public class ArticleController extends BaseController {
 		articleService.saveArticle(postArticle, userName);
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
-
+	
+	@GetMapping(ApplicationUrlPath.GET_ARTICLE_BY_ID)
+	public Article getArticleById(@RequestHeader HttpHeaders http, @RequestParam Long id) {
+		Article article = articleService.getArticleById(id);
+		return article;
+	}
 }

@@ -10,4 +10,6 @@ public interface ArticleService {
 
     List<Article> getArticle(String visibility) throws ArticleException;
 
+	Article getArticleById(Long id);
+
 	}
