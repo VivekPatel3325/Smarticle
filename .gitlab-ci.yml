@@ -24,6 +24,9 @@ stages:
 
   # builds this application.
   - build
+  
+  # deploy this application on heroku.
+  - deploy
 
 compile:
   stage: compile
@@ -41,7 +44,7 @@ test:
   script:
     - mvn test
 
-buildStep:
+build:
   stage: build
   image: $MAVEN_JDK_IMAGE
   tags:
@@ -52,3 +55,18 @@ buildStep:
     when: on_success
     paths:
       - $TARGET_FOLDER_NAME/*.jar
+
+deploy:
+  stage: deploy
+  tags:
+    - ugrad
+  image: ruby:2.6
+  only:
+    -main
+  script:
+     - echo "Deployment has commenced"
+     - apt-get update -qy
+     - apt-get install -y ruby-dev
+     - gem install dpl
+     - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
+     - echo "smarticleasdc application has been deployed"
