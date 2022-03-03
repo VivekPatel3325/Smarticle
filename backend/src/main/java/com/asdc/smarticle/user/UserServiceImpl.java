@@ -1,19 +1,23 @@
 package com.asdc.smarticle.user;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.asdc.smarticle.articletag.Tag;
+import com.asdc.smarticle.articletag.TagRepository;
 import com.asdc.smarticle.comutil.ApiError;
 import com.asdc.smarticle.pswdencrydecry.CipherConfig;
 import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.token.TokenRepository;
 import com.asdc.smarticle.token.TokenService;
 import com.asdc.smarticle.user.exception.UserExistException;
-
 
 /**
  * Services for user entity.
@@ -33,10 +37,13 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	TokenRepository tokenRepository;
-	
+
 	@Autowired
 	TokenService tokenService;
-	
+
+	@Autowired
+	TagRepository tagRepository;
+
 	@Override
 	public boolean isEmailIdRegistered(String email) {
 
@@ -119,8 +126,8 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return isAccountActivated;
-	} 
-	 
+	}
+
 	@Override
 	public void addJwtToken(String username, String value) {
 		User user = userRepository.findByUserName(username);
@@ -142,24 +149,37 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserByEmailID(String emailID) {
 		Optional<User> user = userRepository.findByEmailID(emailID);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			return user.get();
 		}
-		return null;	
+		return null;
 	}
 
 	@Override
 	public User updateUserPassword(String userName, String password) {
 		User user = userRepository.findByUserName(userName);
-		System.out.println("User pass - "+user.getUserName() + user.getPswd());
+		System.out.println("User pass - " + user.getUserName() + user.getPswd());
 		user.setPswd(encodePswd(password));
 		userRepository.save(user);
 		return user;
 	}
-	
+
 	@Override
 	public User getUserByUserName(String username) {
 		User user = userRepository.findByUserName(username);
 		return user;
 	}
+
+	@Override
+	public User saveUserPrefTags(String userName, List<Tag> tagIdList) {
+
+		List<Tag> tagList = tagRepository.findByIdIn((tagIdList.stream().map(t->new Long(t.getId())).collect(Collectors.toList())));
+		User user = userRepository.findByUserName(userName);
+		user.setTags( tagList.stream().collect(Collectors.toSet()));
+		user = userRepository.save(user);
+		System.out.println("Updated user" + user);
+
+		return user;
+	}
+
 }
