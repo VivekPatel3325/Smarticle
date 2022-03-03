@@ -56,8 +56,9 @@ deploy:
     stage: deploy
     image: ruby:latest
     tags:
-        - ugrad 
+        - dalfcs_docker_autoscale 
     script:
+        - apt-get update -qy
+        - apt-get install -y ruby-dev
         - gem install dpl
-        - wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
         - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY    
