@@ -13,8 +13,10 @@ variables:
   # target folder name where all build related artifacts are stored/downloaded.
   TARGET_FOLDER_NAME: "target"
 
-
-
+cache:
+  paths:
+  - /root/.m2/repository
+  
 stages:
   # compiles this application.
     - compile
@@ -55,11 +57,13 @@ build:
 
 deploy:
     stage: deploy
-    image: ruby:2.6
+    image: ruby:latest
     tags:
         - ugrad
     script:
-#        - apt-get update -qy
+        - apt-get update -qy
         - apt-get install -y ruby-dev
         - gem install dpl
         - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
+    only:
+        - master    
