@@ -1,7 +1,7 @@
 before_script:
     - cd backend
     
-image: maven:3-jdk-11    
+image: maven:3-jdk-8    
     
 variables:
   # maven option to clean the generated target folder.
@@ -54,6 +54,8 @@ build:
 
 deploy:
     stage: deploy
+    only:
+        - main
     image: ruby:latest
     tags:
         - dalfcs_docker_autoscale 
