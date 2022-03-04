@@ -18,7 +18,7 @@ export default function Navbar() {
         <div className="group decoration-gray-600">
           <div className="dropdown inline-block relative">
             <button className="bg-gray-300 text-gray-700 py-1.5 px-4 rounded inline-flex items-center">
-              <span className="mr-1">{user.email}</span>
+              <span className="mr-1">{user.username}</span>
               <svg
                 className="fill-current h-4 w-4"
                 xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +33,7 @@ export default function Navbar() {
                   Post
                 </li>
               </Link>
-              <div onClick={() => userService.logout()}>
+              <div onClick={() => userService.logout(user)}>
                 <li className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap cursor-pointer">
                   Logout
                 </li>
