@@ -5,6 +5,7 @@ import com.asdc.smarticle.httpresponse.ResponseVO;
 import com.asdc.smarticle.security.JwtUtils;
 import com.asdc.smarticle.user.exception.ArticleException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +49,10 @@ public class ArticleController extends BaseController {
 	}
 	
 	@GetMapping(ApplicationUrlPath.GET_ARTICLE_BY_ID)
-	public Article getArticleById(@RequestHeader HttpHeaders http, @RequestParam Long id) {
+	public List<Article> getArticleById(@RequestHeader HttpHeaders http, @RequestParam Long id) {
 		Article article = articleService.getArticleById(id);
-		return article;
+		List<Article> articleList = new ArrayList<Article>();
+		articleList.add(article);
+		return articleList;
 	}
 }
