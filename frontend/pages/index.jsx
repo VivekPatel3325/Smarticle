@@ -7,7 +7,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTags from "hooks/useTags";
-import { postService } from "service/post.service"
+import { postService } from "service/post.service";
 import useUser from "hooks/useUser";
 import { tagsService } from "service/tags.service";
 library.add(faUser);
@@ -45,14 +45,17 @@ export default function Home() {
         </div>
         <div className="lg:col-span-8 col-span-1">
           {posts.map((post) => (
-            <div className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8" key={post.id}>
+            <div
+              className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8"
+              key={post.id}
+            >
               <div>
                 <h1 className="transition duration-700 text-center mb-5 cursor-pointer hover:text-gray-500 text-xl font-semibold">
                   <Link href={"/post/" + post.id}>{post.heading}</Link>
                 </h1>
                 <FontAwesomeIcon className="ml-3 lg:ml-1" icon="user" />
                 <p className="inline align-middle text-gray-700 ml-3 font-medium text-lg">
-                  {post.userId.firstName}
+                  {post.userId.firstName}&nbsp;{post.userId.lastName}
                 </p>
                 <div className="font-medium text-gray-700 mb-5 ml-2 lg:ml-0">
                   <svg
