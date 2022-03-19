@@ -1,11 +1,11 @@
 package com.asdc.smarticle.article;
 
+import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.user.User;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,8 +39,8 @@ public class Article {
 
     @Column(insertable = false)
     @CollectionTable(name="article_tags", joinColumns=@JoinColumn(name="articles_id"))
-    @ElementCollection(targetClass=Long.class)
-    private Set<Long> tagId;
+    @ElementCollection(targetClass=Tag.class)
+    private Set<Tag> tagId;
 
 	public Long getId() {
 		return id;
@@ -98,14 +98,11 @@ public class Article {
 		this.userId = userId;
 	}
 
-	public Set<Long> getTagId() {
+	public Set<Tag> getTagId() {
 		return tagId;
 	}
 
-	public void setTagId(Set<Long> tagId) {
+	public void setTagId(Set<Tag> tagId) {
 		this.tagId = tagId;
 	}
-    
-    
-
 }

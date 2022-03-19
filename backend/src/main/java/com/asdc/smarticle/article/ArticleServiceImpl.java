@@ -1,5 +1,6 @@
 package com.asdc.smarticle.article;
 
+import com.asdc.smarticle.articletag.TagRepository;
 import com.asdc.smarticle.comutil.ApiError;
 import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.user.User;
@@ -19,12 +20,16 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	TagRepository tagRepository;
 
 	@Override
 	public Article saveArticle(Article article, String userName) throws ArticleException {
 
 		User user = userRepository.findByUserName(userName);
 		article.setUserId(user);
+		System.out.println(article.getTagId());
 
 		if ((article.getHeading() == null || article.getHeading().isEmpty())
 				|| (article.getContent().isEmpty() || article.getContent() == null)) {
@@ -56,10 +61,17 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public Article getArticleById(Long id) {
 		Optional<Article> article = articleRepository.findById(id);
-		if(article.isPresent()) {
+		if (article.isPresent()) {
 			return article.get();
 		}
 		return null;
+	}
+
+	@Override
+	public List<Article> getArticleByUser(String userName) {
+		User user = userRepository.findByUserName(userName);
+		List<Article> listArticle = articleRepository.findByUserId(user);
+		return listArticle;
 	}
 
 }
