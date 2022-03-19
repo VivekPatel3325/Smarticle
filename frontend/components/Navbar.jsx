@@ -28,9 +28,19 @@ export default function Navbar() {
               </svg>
             </button>
             <ul className="dropdown-menu absolute hidden group-hover:block text-gray-700 pt-1 w-full font-medium">
+              <Link href="/profile" passHref>
+                <li className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap cursor-pointer">
+                  Profile
+                </li>
+              </Link>
               <Link href="/post" passHref>
                 <li className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap cursor-pointer">
-                  Post
+                  Post Article
+                </li>
+              </Link>
+              <Link href="/articles" passHref>
+                <li className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap cursor-pointer">
+                  My Articles
                 </li>
               </Link>
               <div onClick={() => userService.logout(user)}>

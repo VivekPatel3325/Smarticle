@@ -7,7 +7,14 @@ function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
   function authCheck(url) {
-    const publicPaths = ["/signup", "/login", "/", "/forgot", "/reset"];
+    const publicPaths = [
+      "/signup",
+      "/login",
+      "/",
+      "/forgot",
+      "/reset",
+      "/verify",
+    ];
     const path = url.split("?")[0];
     if (!userService.userValue && !publicPaths.includes(path)) {
       setAuthorized(false);
