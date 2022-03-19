@@ -1,7 +1,9 @@
 package com.asdc.smarticle.user;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
+
+import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ import com.asdc.smarticle.httpresponse.ResponseVO;
 import com.asdc.smarticle.mailing.EmailService;
 import com.asdc.smarticle.pswdencrydecry.CipherConfig;
 import com.asdc.smarticle.security.JwtUtils;
+import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.token.TokenService;
 import com.asdc.smarticle.user.exception.UserExistException;
 
@@ -74,14 +77,14 @@ public class UserController extends BaseController {
 
 		try {
 			userService.registerUser(user);
-			tokenService.createToken(user);
+			Token token = tokenService.createToken(user);
+			emailServiceImpl.sendConfirmationEmail(user, token);
 		} catch (UserExistException e) {
 
 			return error(HttpStatus.CONFLICT.value(), e.getMessage(), false);
+		} catch (MessagingException e) {
+			return error(HttpStatus.CONFLICT.value(), e.getMessage(), false);
 		}
-//		} catch (MessagingException e) {
-//			return error(HttpStatus.CONFLICT.value(), e.getMessage(), false);
-//		}
 
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
@@ -173,7 +176,7 @@ public class UserController extends BaseController {
 	}
 	
 	@PostMapping(ApplicationUrlPath.SAVE_USER_TAG_PREFERENCE)
-	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody List<Tag> tagList) {
+	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody Set<Tag> tagList) {
 		try {
 			System.out.println(tagList);
 			String jwtToken = http.getFirst("jwt-token");

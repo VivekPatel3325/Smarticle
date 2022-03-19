@@ -171,9 +171,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User saveUserPrefTags(String userName, List<Tag> tagIdList) {
+	public User saveUserPrefTags(String userName, Set<Tag> tagIdList) {
 
-		List<Tag> tagList = tagRepository.findByIdIn((tagIdList.stream().map(t->new Long(t.getId())).collect(Collectors.toList())));
+		List<Tag> tagList = tagRepository.findByIdIn(tagIdList);
 		User user = userRepository.findByUserName(userName);
 		user.setTags( tagList.stream().collect(Collectors.toSet()));
 		user = userRepository.save(user);
