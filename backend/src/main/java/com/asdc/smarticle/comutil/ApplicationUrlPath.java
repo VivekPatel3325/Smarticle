@@ -40,4 +40,6 @@ public class ApplicationUrlPath {
 	public static final String GET_ARTICLE_BY_ID = "/getArticleById";
 	
 	public static final String SAVE_USER_TAG_PREFERENCE = "/saveUserTagPref";
+
+	public static final String GET_ARTICLE_BY_USER = "/getArticleByUser";
 }

@@ -12,4 +12,6 @@ public interface ArticleService {
 
 	Article getArticleById(Long id);
 
+	List<Article> getArticleByUser(String userName);
+
 	}

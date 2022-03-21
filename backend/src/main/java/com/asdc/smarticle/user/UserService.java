@@ -1,6 +1,7 @@
 package com.asdc.smarticle.user;
 
 import java.util.List;
+import java.util.Set;
 
 import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.user.exception.UserExistException;
@@ -33,6 +34,6 @@ public interface UserService {
 	User updateUserPassword(String userName, String password);
 	
 	User getUserByUserName(String username);
-	
-	User saveUserPrefTags(String userName,List<Tag> tagIdList);
+
+	User saveUserPrefTags(String userName, Set<Tag> tagIdList);
 }
