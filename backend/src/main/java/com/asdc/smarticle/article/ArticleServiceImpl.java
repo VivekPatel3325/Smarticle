@@ -1,11 +1,16 @@
 package com.asdc.smarticle.article;
 
+import com.asdc.smarticle.articletag.TagRepository;
 import com.asdc.smarticle.comutil.ApiError;
 import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import com.asdc.smarticle.user.exception.ArticleException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,12 +24,16 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	TagRepository tagRepository;
 
 	@Override
 	public Article saveArticle(Article article, String userName) throws ArticleException {
 
 		User user = userRepository.findByUserName(userName);
 		article.setUserId(user);
+		System.out.println(article.getTagId());
 
 		if ((article.getHeading() == null || article.getHeading().isEmpty())
 				|| (article.getContent().isEmpty() || article.getContent() == null)) {
@@ -56,10 +65,19 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public Article getArticleById(Long id) {
 		Optional<Article> article = articleRepository.findById(id);
-		if(article.isPresent()) {
+		if (article.isPresent()) {
 			return article.get();
 		}
 		return null;
+	}
+
+	@Override
+	public Page<Article> getArticleByUser(String userName, int page, int totalPage) {
+		Pageable pagination = PageRequest.of(page, totalPage,Sort.by("creationDate"));
+		Page<Article> listArticle = null;
+		User user = userRepository.findByUserName(userName);
+		listArticle = articleRepository.findByUserId(user,pagination);
+		return listArticle;
 	}
 
 }

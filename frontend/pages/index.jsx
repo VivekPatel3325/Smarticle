@@ -108,7 +108,7 @@ export default function Home() {
                 </h1>
                 <FontAwesomeIcon className="ml-3 lg:ml-1" icon="user" />
                 <p className="inline align-middle text-gray-700 ml-3 font-medium text-lg">
-                  {post.userId.firstName}
+                  {post.userId?.firstName}&nbsp;{post.userId?.lastName}
                 </p>
                 <div className="font-medium text-gray-700 mb-5 ml-2 lg:ml-0">
                   <svg
