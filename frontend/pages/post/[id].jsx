@@ -34,9 +34,9 @@ const PostDetails = () => {
         createdOn: post.creationDate,
         updatedOn: post.updationDate,
         author: {
-          firstname: post.userId.firstName,
-          lastname: post.userId.lastName,
-          username: post.userId.userName
+          firstname: post.userId?.firstName,
+          lastname: post.userId?.lastName,
+          username: post.userId?.userName
         },
         tags
       })
