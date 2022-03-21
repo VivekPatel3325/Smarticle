@@ -3,6 +3,8 @@ package com.asdc.smarticle.user;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.core.metrics.StartupStep.Tags;
+
 import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.user.exception.UserExistException;
 import com.asdc.smarticle.user.userVo.UserProfileRequestVo;
@@ -38,10 +40,11 @@ public interface UserService {
 
 	User getUserByUserName(String username);
 
-	User saveUserPrefTags(String userName, List<Tag> tagIdList);
-
 	UserProfileRespVo getUserDetails(String userName, ObjectMapper mapper);
 
 	User updateUserProfile(UserProfileRequestVo userProfileRespVo);
+	
 	User saveUserPrefTags(String userName, Set<Tag> tagIdList);
+	
+	
 }

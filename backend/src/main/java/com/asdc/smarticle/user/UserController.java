@@ -250,5 +250,7 @@ public class UserController extends BaseController {
 		return prepareSuccessResponse(user);
 	}
 
-	
 }
+	
+	
+

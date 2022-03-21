@@ -178,19 +178,19 @@ public class UserServiceImpl implements UserService {
 
 		List<Tag> tagList = tagRepository.findByIdIn(tagIdList);
 		User user = userRepository.findByUserName(userName);
-		user.setTags( tagList.stream().collect(Collectors.toSet()));
+		user.setTags(tagList.stream().collect(Collectors.toSet()));
 		user = userRepository.save(user);
 		System.out.println("Updated user" + user);
 
 		return user;
 	}
-	
-	
+
 	/**
-	 * @author Vivekkumar Patel
-	 * Get user details such as firstname,lastname,username etc
-	 * @param  username whose details to be retrieved and object mapper to map reuqestVO to dto.
-	 * @return UserProfileRespVo containing userdetails 
+	 * @author Vivekkumar Patel Get user details such as firstname,lastname,username
+	 *         etc
+	 * @param username whose details to be retrieved and object mapper to map
+	 *                 reuqestVO to dto.
+	 * @return UserProfileRespVo containing userdetails
 	 */
 	@Override
 	public UserProfileRespVo getUserDetails(String userName, ObjectMapper mapper) {
@@ -209,10 +209,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * @author Vivekkumar Patel
-	 * Update user details such as firstname,lastname,username etc
-	 * @param  userProfileRespVo model containing user details to be updated.
-	 * @return User model containing userdetails 
+	 * @author Vivekkumar Patel Update user details such as
+	 *         firstname,lastname,username etc
+	 * @param userProfileRespVo model containing user details to be updated.
+	 * @return User model containing userdetails
 	 */
 	@Override
 	public User updateUserProfile(UserProfileRequestVo userProfileRespVo) {
@@ -231,5 +231,6 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	
+
+
 }
