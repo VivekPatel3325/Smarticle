@@ -1,6 +1,6 @@
 import Main from "layouts/main";
 import PostEditor from "components/PostEditor";
-import Select from "react-select";
+import Creatable from "react-select/creatable";
 import { useState } from "react";
 import useTags from "hooks/useTags";
 import { postService } from "service/post.service";
@@ -24,7 +24,7 @@ const Post = () => {
       .post({
         heading,
         content: postHtml,
-        tagid: tags.map((t) => t.value),
+        tagId: tags.map((t) => t.value),
         visibility,
       }, token)
       .then((data) => {
@@ -68,7 +68,7 @@ const Post = () => {
             <label htmlFor="checkbox1">Make Public</label>
           </div>
           <div className="w-1/2">
-            <Select
+            <Creatable
               options={options}
               isMulti
               placeholder="Select Tags"
