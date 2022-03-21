@@ -7,6 +7,10 @@ import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import com.asdc.smarticle.user.exception.ArticleException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,9 +72,11 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public List<Article> getArticleByUser(String userName) {
+	public Page<Article> getArticleByUser(String userName, int page, int totalPage) {
+		Pageable pagination = PageRequest.of(page, totalPage,Sort.by("creationDate"));
+		Page<Article> listArticle = null;
 		User user = userRepository.findByUserName(userName);
-		List<Article> listArticle = articleRepository.findByUserId(user);
+		listArticle = articleRepository.findByUserId(user,pagination);
 		return listArticle;
 	}
 
