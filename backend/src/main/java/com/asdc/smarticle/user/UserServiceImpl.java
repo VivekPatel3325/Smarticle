@@ -18,6 +18,9 @@ import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.token.TokenRepository;
 import com.asdc.smarticle.token.TokenService;
 import com.asdc.smarticle.user.exception.UserExistException;
+import com.asdc.smarticle.user.userVo.UserProfileRequestVo;
+import com.asdc.smarticle.user.userVo.UserProfileRespVo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Services for user entity.
@@ -181,5 +184,52 @@ public class UserServiceImpl implements UserService {
 
 		return user;
 	}
+	
+	
+	/**
+	 * @author Vivekkumar Patel
+	 * Get user details such as firstname,lastname,username etc
+	 * @param  username whose details to be retrieved and object mapper to map reuqestVO to dto.
+	 * @return UserProfileRespVo containing userdetails 
+	 */
+	@Override
+	public UserProfileRespVo getUserDetails(String userName, ObjectMapper mapper) {
 
+		UserProfileRespVo userProfileRespVo = null;
+		User user = userRepository.findByUserName(userName);
+
+		if (user != null) {
+			userProfileRespVo = new UserProfileRespVo();
+			userProfileRespVo.setEmailID(user.getEmailID());
+			userProfileRespVo.setFirstName(user.getFirstName());
+			userProfileRespVo.setLastName(user.getLastName());
+			userProfileRespVo.setUserName(user.getUserName());
+		}
+		return userProfileRespVo;
+	}
+
+	/**
+	 * @author Vivekkumar Patel
+	 * Update user details such as firstname,lastname,username etc
+	 * @param  userProfileRespVo model containing user details to be updated.
+	 * @return User model containing userdetails 
+	 */
+	@Override
+	public User updateUserProfile(UserProfileRequestVo userProfileRespVo) {
+
+		User user = userRepository.findByUserName(userProfileRespVo.getUserName());
+
+		if (user != null) {
+			user.setEmailID(userProfileRespVo.getEmailID());
+			user.setFirstName(userProfileRespVo.getFirstName());
+			user.setLastName(userProfileRespVo.getLastName());
+			user.setUserName(userProfileRespVo.getUserName());
+			return userRepository.save(user);
+		}
+
+		return null;
+
+	}
+
+	
 }
