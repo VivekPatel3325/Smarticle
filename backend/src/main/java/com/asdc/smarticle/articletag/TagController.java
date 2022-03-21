@@ -35,7 +35,7 @@ public class TagController extends BaseController {
 		List<Tag> tags = null;
 		String jwtToken = http.getFirst("jwt-token");
 		String userName = "";
-		if (jwtToken!=null && !jwtToken.isEmpty()) {
+		if (jwtToken!=null && !jwtToken.isBlank() && !jwtToken.equals("null") && !jwtToken.equals("undefined")) {
 			userName = jwtUtils.getUserNameFromJwt(jwtToken);			
 		}
 		tags = tagService.getTags(userName);

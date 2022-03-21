@@ -48,7 +48,7 @@ public class ArticleController extends BaseController {
 		articleService.saveArticle(postArticle, userName);
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
-	
+
 	@GetMapping(ApplicationUrlPath.GET_ARTICLE_BY_ID)
 	public List<Article> getArticleById(@RequestHeader HttpHeaders http, @RequestParam Long id) {
 		Article article = articleService.getArticleById(id);
@@ -56,12 +56,15 @@ public class ArticleController extends BaseController {
 		articleList.add(article);
 		return articleList;
 	}
-	
+
 	@GetMapping(ApplicationUrlPath.GET_ARTICLE_BY_USER)
-	public Page<Article> getArticleByUser(@RequestHeader HttpHeaders http,@RequestParam(defaultValue = "0") int page,
+	public Page<Article> getArticleByUser(@RequestHeader HttpHeaders http, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "4") int totalPage) {
 		String jwtToken = http.getFirst("jwt-token");
-		String userName = jwtUtils.getUserNameFromJwt(jwtToken);
+		String userName = "";
+		if (jwtToken != null && !jwtToken.isBlank()) {
+			userName = jwtUtils.getUserNameFromJwt(jwtToken);
+		}
 		Page<Article> articleList = articleService.getArticleByUser(userName, page, totalPage);
 		return articleList;
 	}
