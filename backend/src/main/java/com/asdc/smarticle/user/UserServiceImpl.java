@@ -18,6 +18,9 @@ import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.token.TokenRepository;
 import com.asdc.smarticle.token.TokenService;
 import com.asdc.smarticle.user.exception.UserExistException;
+import com.asdc.smarticle.user.userVo.UserProfileRequestVo;
+import com.asdc.smarticle.user.userVo.UserProfileRespVo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Services for user entity.
@@ -171,15 +174,63 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User saveUserPrefTags(String userName, List<Tag> tagIdList) {
+	public User saveUserPrefTags(String userName, Set<Tag> tagIdList) {
 
-		List<Tag> tagList = tagRepository.findByIdIn((tagIdList.stream().map(t->new Long(t.getId())).collect(Collectors.toList())));
+		List<Tag> tagList = tagRepository.findByIdIn(tagIdList);
 		User user = userRepository.findByUserName(userName);
-		user.setTags( tagList.stream().collect(Collectors.toSet()));
+		user.setTags(tagList.stream().collect(Collectors.toSet()));
 		user = userRepository.save(user);
 		System.out.println("Updated user" + user);
 
 		return user;
 	}
+
+	/**
+	 * @author Vivekkumar Patel Get user details such as firstname,lastname,username
+	 *         etc
+	 * @param username whose details to be retrieved and object mapper to map
+	 *                 reuqestVO to dto.
+	 * @return UserProfileRespVo containing userdetails
+	 */
+	@Override
+	public UserProfileRespVo getUserDetails(String userName, ObjectMapper mapper) {
+
+		UserProfileRespVo userProfileRespVo = null;
+		User user = userRepository.findByUserName(userName);
+
+		if (user != null) {
+			userProfileRespVo = new UserProfileRespVo();
+			userProfileRespVo.setEmailID(user.getEmailID());
+			userProfileRespVo.setFirstName(user.getFirstName());
+			userProfileRespVo.setLastName(user.getLastName());
+			userProfileRespVo.setUserName(user.getUserName());
+		}
+		return userProfileRespVo;
+	}
+
+	/**
+	 * @author Vivekkumar Patel Update user details such as
+	 *         firstname,lastname,username etc
+	 * @param userProfileRespVo model containing user details to be updated.
+	 * @return User model containing userdetails
+	 */
+	@Override
+	public User updateUserProfile(UserProfileRequestVo userProfileRespVo) {
+
+		User user = userRepository.findByUserName(userProfileRespVo.getUserName());
+
+		if (user != null) {
+			user.setEmailID(userProfileRespVo.getEmailID());
+			user.setFirstName(userProfileRespVo.getFirstName());
+			user.setLastName(userProfileRespVo.getLastName());
+			user.setUserName(userProfileRespVo.getUserName());
+			return userRepository.save(user);
+		}
+
+		return null;
+
+	}
+
+
 
 }

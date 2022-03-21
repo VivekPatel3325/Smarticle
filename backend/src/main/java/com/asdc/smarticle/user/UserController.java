@@ -1,7 +1,9 @@
 package com.asdc.smarticle.user;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
+
+import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,8 +31,12 @@ import com.asdc.smarticle.httpresponse.ResponseVO;
 import com.asdc.smarticle.mailing.EmailService;
 import com.asdc.smarticle.pswdencrydecry.CipherConfig;
 import com.asdc.smarticle.security.JwtUtils;
+import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.token.TokenService;
 import com.asdc.smarticle.user.exception.UserExistException;
+import com.asdc.smarticle.user.userVo.UserProfileRequestVo;
+import com.asdc.smarticle.user.userVo.UserProfileRespVo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Vivekkumar Patel, Sarthak Patel
@@ -74,14 +81,14 @@ public class UserController extends BaseController {
 
 		try {
 			userService.registerUser(user);
-			tokenService.createToken(user);
+			Token token = tokenService.createToken(user);
+			emailServiceImpl.sendConfirmationEmail(user, token);
 		} catch (UserExistException e) {
 
 			return error(HttpStatus.CONFLICT.value(), e.getMessage(), false);
+		} catch (MessagingException e) {
+			return error(HttpStatus.CONFLICT.value(), e.getMessage(), false);
 		}
-//		} catch (MessagingException e) {
-//			return error(HttpStatus.CONFLICT.value(), e.getMessage(), false);
-//		}
 
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
@@ -173,7 +180,7 @@ public class UserController extends BaseController {
 	}
 	
 	@PostMapping(ApplicationUrlPath.SAVE_USER_TAG_PREFERENCE)
-	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody List<Tag> tagList) {
+	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody Set<Tag> tagList) {
 		try {
 			System.out.println(tagList);
 			String jwtToken = http.getFirst("jwt-token");
@@ -191,4 +198,59 @@ public class UserController extends BaseController {
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
 	
+	/**
+	 * @author Vivekkumar Patel
+	 * Get user details such as firstname,lastname,username etc
+	 * @param http header containing jet token to validate the user.
+	 * @return UserProfileRespVo userdetails 
+	 */
+	@GetMapping(ApplicationUrlPath.GET_USER_PROFILE)
+	public ResponseVO<UserProfileRespVo> getUserProfile(@RequestHeader HttpHeaders http) {
+		UserProfileRespVo userProfileRespVo= null;
+		try {
+			String jwtToken = http.getFirst("jwt-token");
+			if (!jwtToken.isEmpty()) {
+				String userName = jwtUtils.getUserNameFromJwt(jwtToken);
+				
+				userProfileRespVo = userService.getUserDetails(userName, new ObjectMapper());
+				if (userProfileRespVo == null) {
+					return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.name(),
+							false);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return prepareSuccessResponse(userProfileRespVo);
+	}
+	
+	
+	/**
+	 * @author Vivekkumar Patel
+	 * Get user details such as firstname,lastname,username etc
+	 * @param http header containing jet token to validate the user.
+	 * @return UserProfileRespVo userdetails 
+	 */
+	@PostMapping(ApplicationUrlPath.UPDATE_USER_PROFILE)
+	public ResponseVO<User> updateUserProfile(@RequestHeader HttpHeaders http,@RequestBody UserProfileRequestVo userProfileRequestVo) {
+		User user= null;
+		try {
+			String jwtToken = http.getFirst("jwt-token");
+			if (!jwtToken.isEmpty()) {
+				
+				user = userService.updateUserProfile(userProfileRequestVo);
+				if (user == null) {
+					return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.name(),
+							false);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return prepareSuccessResponse(user);
+	}
+
 }
+	
+	
+
