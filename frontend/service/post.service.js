@@ -39,7 +39,27 @@ const post = async (post, token) => {
   return res;
 }
 
+const getById = async (token, id) => {
+  let res;
+  try {
+    res = await (
+      await fetch(`${serverUrl}/article/getArticleById?id=${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "jwt-token": `${token}`
+        },
+      })
+    ).json();
+  } catch(err) {
+    throw new Error ("Error in fetching");
+  }
+  // returns an array of 1 element
+  return res[0];
+}
+
 export const postService = {
   post,
   getAll,
+  getById
 };
