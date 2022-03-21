@@ -48,7 +48,7 @@ public class TagController extends BaseController {
 	 * @param http header containing jet token to validate the user.
 	 * @return List<Tag> containing all tags details.
 	 */
-	@PostMapping(ApplicationUrlPath.UPDATE_USER_PROFILE)
+	@PostMapping(ApplicationUrlPath.CREATE_ARTICLE_TAG)
 	public ResponseVO<List<Tag>> updateUserProfile(@RequestHeader HttpHeaders http,String tagName) {
 		List<Tag> tagList= null;
 		try {
