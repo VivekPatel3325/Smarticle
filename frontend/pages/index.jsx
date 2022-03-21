@@ -4,13 +4,16 @@ import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTags from "hooks/useTags";
 import { postService } from "service/post.service";
 import useUser from "hooks/useUser";
 import { tagsService } from "service/tags.service";
+import CountUp from "react-countup";
 library.add(faUser);
+library.add(faTwitter);
 export default function Home() {
   const options = [
     { value: "Date", label: "By Date" },
@@ -73,6 +76,22 @@ export default function Home() {
                 >
                   Search
                 </button>
+              </div>
+            </div>
+            <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
+              <h3 className="text-xl mb-5 font-semibold border-b pb-4">
+                <FontAwesomeIcon icon="fa-brands fa-twitter" /> &nbsp;
+                &nbsp;Tweet Counts
+              </h3>
+              <div>
+                <h1 className="font-semibold">
+                  Sport &nbsp; &nbsp;{" "}
+                  <CountUp className="font-extrabold" end={1047} />
+                </h1>
+                <h1 className="font-semibold">
+                  Cloud &nbsp; &nbsp;{" "}
+                  <CountUp className="font-extrabold" end={2000} />
+                </h1>
               </div>
             </div>
           </div>
