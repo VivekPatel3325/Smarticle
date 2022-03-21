@@ -19,6 +19,9 @@ public class TagServiceImpl implements TagService {
 	@Autowired
 	UserRepository userRepository;
 
+	@Autowired
+	TagRepository tagRepository;
+
 	@Override
 	public List<Tag> getTags(String userName) {
 		System.out.println("userName" + userName);
@@ -33,5 +36,18 @@ public class TagServiceImpl implements TagService {
 			Set<Tag> setOfTags = user.getTags();
 			return new ArrayList<>(setOfTags);
 		}
+	}
+
+	@Override
+	public List<Tag> createArticleTag(String tagName) {
+
+		Tag tag = new Tag();
+
+		tag.setTagName(tagName);
+		tagRepository.save(tag);
+
+		List<Tag> listOfTags = tagRepository.findAll();
+
+		return listOfTags;
 	}
 }
