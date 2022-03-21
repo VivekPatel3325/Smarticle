@@ -13,7 +13,7 @@ export default function MainCentered({ children, title }) {
       />
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
         <Navbar />
-        <div className="flex-1 sm:px-32 px-12 py-12">
+        <div className="flex-1 sm:px-32 px-12 py-12 w-full">
           {title && (
             <div className="font-bold text-2xl py-6 text-center">{title}</div>
           )}

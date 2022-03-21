@@ -42,4 +42,6 @@ public class ApplicationUrlPath {
 	public static final String GET_USER_PROFILE = "/getUserProfile";
 
 	public static final String UPDATE_USER_PROFILE = "/updateUserProfile";
+	public static final String GET_ARTICLE_BY_USER = "/getArticleByUser";
+
 }

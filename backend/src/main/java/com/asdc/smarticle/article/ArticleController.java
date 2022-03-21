@@ -55,4 +55,13 @@ public class ArticleController extends BaseController {
 		articleList.add(article);
 		return articleList;
 	}
+	
+	@GetMapping(ApplicationUrlPath.GET_ARTICLE_BY_USER)
+	public List<Article> getArticleByUser(@RequestHeader HttpHeaders http) {
+		String jwtToken = http.getFirst("jwt-token");
+
+		String userName = jwtUtils.getUserNameFromJwt(jwtToken);
+		List<Article> articleList = articleService.getArticleByUser(userName);
+		return articleList;
+	}
 }
