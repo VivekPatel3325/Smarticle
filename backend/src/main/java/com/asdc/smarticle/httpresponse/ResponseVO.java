@@ -26,9 +26,7 @@ public class ResponseVO<D> {
 		return message;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+	public void setMessage(String message) { this.message = message; }
 
 	public boolean isStatus() {
 		return status;
