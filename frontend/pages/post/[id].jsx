@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-import React, {useState, useEffect} from "react";
-=======
 import React, { useState, useEffect } from "react";
->>>>>>> Stashed changes
 import Main from "layouts/main";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
@@ -14,15 +10,10 @@ import { tagsService } from "service/tags.service";
 const PostDetails = () => {
   const router = useRouter();
   const user = useUser();
-<<<<<<< Updated upstream
-  const {id} = router.query;
-  const onClickLike = () => {console.log("Liked")}
-=======
   const { id } = router.query;
   const onClickLike = () => {
     console.log("Liked");
   };
->>>>>>> Stashed changes
   const [post, setPost] = useState({
     heading: "",
     content: "",
@@ -31,16 +22,6 @@ const PostDetails = () => {
     author: {
       firstname: "",
       lastname: "",
-<<<<<<< Updated upstream
-      username: ""
-    },
-    tags: []
-  });
-  useEffect(() => {
-    const fetch = async () => {
-      const post = await postService.getById(user?.token, id)
-      const tags = await tagsService.getByIds(user?.token, post.tagId)
-=======
       username: "",
     },
     tags: [],
@@ -49,7 +30,6 @@ const PostDetails = () => {
     const fetch = async () => {
       const post = await postService.getById(user?.token, id);
       const tags = await tagsService.getByIds(user?.token, post.tagId);
->>>>>>> Stashed changes
       setPost({
         heading: post.heading,
         content: post.content,
@@ -58,63 +38,19 @@ const PostDetails = () => {
         author: {
           firstname: post.userId?.firstName,
           lastname: post.userId?.lastName,
-<<<<<<< Updated upstream
-          username: post.userId?.userName
-        },
-        tags
-      })
-    }
-=======
           username: post.userId?.userName,
         },
         tags,
       });
     };
->>>>>>> Stashed changes
     if (id) {
       fetch();
     }
   }, [id]);
   return (
     <Main>
-<<<<<<< Updated upstream
-          <div className="">
-            <div className="flex flex-row justify-between">
-              <div>
-                <FontAwesomeIcon className="ml-1" icon="user" />
-                <p className="inline text-gray-700 ml-2 font-medium text-lg">
-                  {post.author.firstname}&nbsp;{post.author.lastname}
-                </p>
-              </div>
-              <div>
-                <FontAwesomeIcon className="ml-1" icon="calendar" />
-                <p className="inline text-gray-700 ml-2 font-medium text-lg">
-                  {moment(post.createdOn).format("MMM DD, YYYY")}
-                </p>
-              </div>
-            </div>
-            <div className="text-4xl my-4">
-              {post.heading}
-            </div>
-            <article
-              className=""
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
-            <div className="mt-4">
-            {
-              post.tags.map((tag) => {
-                return (
-                  <span className="px-1.5 bg-white border-black border-2 rounded-lg mr-2">
-                    {tag.label}
-                  </span>
-                )}
-              )
-            }
-            </div>
-            <FontAwesomeIcon className="my-3 text-3xl opacity-50 hover:opacity-100 hover:cursor-pointer" icon="thumbs-up" onClick={onClickLike} />
-=======
       <div class="grid lg:grid-cols-2 lg:gap-48">
-        <div className="">
+        <div className="mb-10">
           <div className="flex flex-row justify-between mb-10">
             <div className="lg:mr-10">
               <FontAwesomeIcon className="ml-1" icon="user" />
@@ -265,14 +201,9 @@ const PostDetails = () => {
             </div>
           </div>
         </div>
->>>>>>> Stashed changes
       </div>
     </Main>
   );
 };
 
-<<<<<<< Updated upstream
 export default PostDetails;
-=======
-export default PostDetails;
->>>>>>> Stashed changes
