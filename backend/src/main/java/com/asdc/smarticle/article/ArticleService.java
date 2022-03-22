@@ -12,4 +12,6 @@ public interface ArticleService {
 
 	Article getArticleById(Long id);
 
+    void getTrendingTweets(Long id);
+
 	}

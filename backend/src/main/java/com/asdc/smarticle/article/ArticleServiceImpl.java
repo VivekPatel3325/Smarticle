@@ -62,4 +62,14 @@ public class ArticleServiceImpl implements ArticleService {
 		return null;
 	}
 
+	@Override
+	public void getTrendingTweets(Long id){
+		if (id == null){
+			System.out.println("Id cannot be null!");
+			return;
+		}
+		Article article = getArticleById(id);
+
+	}
+
 }

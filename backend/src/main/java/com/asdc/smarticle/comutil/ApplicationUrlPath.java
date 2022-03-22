@@ -15,7 +15,7 @@ public class ApplicationUrlPath {
 
 	public static final String USER_ACCOUNT_ACTIVATION_REQ_PATH = "/activateAccount";
 	
-	public static final String USER_LOGIN = "/login";
+		public static final String USER_LOGIN = "/login";
 	
 	public static final String USER_LOGOUT = "/logout";
 	
@@ -40,4 +40,8 @@ public class ApplicationUrlPath {
 	public static final String GET_ARTICLE_BY_ID = "/getArticleById";
 	
 	public static final String SAVE_USER_TAG_PREFERENCE = "/saveUserTagPref";
+
+	public static final String GET_USER_TAGS = "/getUserTags";
+
+	//public static final String GET_TRENDING_TWEETS = "/getTrendingTweets";
 }
