@@ -35,11 +35,11 @@ export default function Home() {
         <div className="lg:col-span-4 col-span-1">
           <div className="lg:sticky relative top-8">
             <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
-              <h3 className="text-xl mb-5 font-semibold border-b pb-4">
+              <h3 className="text-xl mb-5 font-semibold border-b pb-4 ml-3 lg:ml-1">
                 Filter By
               </h3>
               <div>
-                <h1 className="mb-1">Categories</h1>
+                <h1 className="mb-1 ml-3 lg:ml-1">Categories</h1>
                 <Select
                   className="mb-5"
                   options={tags}
@@ -50,7 +50,7 @@ export default function Home() {
                 />
               </div>
               <div>
-                <h1 className="mb-1">Authors</h1>
+                <h1 className="mb-1 ml-3 lg:ml-1">Authors</h1>
                 <Select
                   className="mb-5"
                   options={tags}
@@ -61,7 +61,7 @@ export default function Home() {
                 />
               </div>
               <div>
-                <h1 className="mb-1">Sort</h1>
+                <h1 className="mb-1 ml-3 lg:ml-1">Sort</h1>
                 <Select
                   options={options}
                   placeholder="Sort By"
@@ -80,15 +80,18 @@ export default function Home() {
             </div>
             <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
               <h3 className="text-xl mb-5 font-semibold border-b pb-4">
-                <FontAwesomeIcon icon="fa-brands fa-twitter" /> &nbsp;
-                &nbsp;Tweet Counts
+                <FontAwesomeIcon
+                  icon="fa-brands fa-twitter"
+                  className="ml-3 lg:ml-1 text-blue-400"
+                />{" "}
+                &nbsp; &nbsp;Tweet Counts
               </h3>
               <div>
-                <h1 className="font-semibold">
+                <h1 className="font-semibold ml-3 lg:ml-1">
                   Sport &nbsp; &nbsp;{" "}
                   <CountUp className="font-extrabold" end={1047} />
                 </h1>
-                <h1 className="font-semibold">
+                <h1 className="font-semibold ml-3 lg:ml-1">
                   Cloud &nbsp; &nbsp;{" "}
                   <CountUp className="font-extrabold" end={2000} />
                 </h1>
@@ -136,7 +139,7 @@ export default function Home() {
                   ></article>
                 </div>
                 <div>
-                  <p className="mb-7 italic">Likes: 1013</p>
+                  <p className="ml-3 lg:ml-1 mb-7 italic">Likes: 1013</p>
                   <Link href={"/post/" + post.id}>
                     <span className="ml-3 lg:ml-0 cursor-pointer transition duration-500 ease transform hover:-translate-y-1 border-black border-2 rounded-md font-normal hover:bg-black hover:text-white mt-4 p-2">
                       Continue Reading
