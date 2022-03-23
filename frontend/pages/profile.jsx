@@ -1,9 +1,52 @@
 import Main from "layouts/main";
 import useTags from "hooks/useTags";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
+import useUser from "hooks/useUser";
+import { toast } from "react-toastify";
+import { profileService } from "service/profile.service";
 
 export default function Profile() {
+  const user = useUser();
+  const token = user?.token;
+  const [details, setDetails] = useState([]);
+  const [firstname, setfirstname] = useState("");
+  const [lastname, setlastname] = useState("");
+  const [email, setemail] = useState("");
+
+  const handleFirstname = (e) => setfirstname(e.target.value);
+  const handleLastname = (e) => setlastname(e.target.value);
+  const handleEmail = (e) => setemail(e.target.value);
+  const handleSubmit = () => {
+    return profileService
+      .updateDetails(
+        {
+          userName: details.data.userName,
+          firstName: firstname.length > 0 ? firstname : details.data.firstName,
+          lastName: lastname.length > 0 ? lastname : details.data.lastName,
+          emailID: email.length > 0 ? email : details.data.emailID,
+        },
+        token
+      )
+      .then((data) => {
+        if (data["statusCode"] !== 200) {
+          toast.error(`Error: ${JSON.stringify(data["message"])}`);
+        } else {
+          toast.success("Details Updated Successfully");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error("Error while updating details");
+      });
+  };
+  useEffect(() => {
+    async function get() {
+      const token = user?.token ?? null;
+      setDetails(await profileService.getDetails(token));
+    }
+    get();
+  }, [user?.token, user]);
   const [tags, setTags] = useState([]);
   const handleTags = (tags) => setTags(tags);
   const options = useTags();
@@ -11,75 +54,69 @@ export default function Profile() {
     <Main title="Profile">
       <div className="grid grid-cols-1 gap-3 w-full lg:w-96">
         <div className="flex flex-row">
-          <label htmlFor="userName" className="mr-2">
+          <label htmlFor="userName" className="mr-2 font-semibold">
             User Name
           </label>
           <input
-            className="bg-slate-50 mr-16 outline-none p-2 rounded-lg border-2 border-black"
+            className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
             type="text"
             name="userName"
             id="userName"
-            placeholder="Kavan2708"
+            placeholder={details.data?.userName}
             disabled
           />
         </div>
         <div className="flex flex-row">
-          <label htmlFor="firstName" className="mr-2">
+          <label htmlFor="firstName" className="mr-2 font-semibold">
             First Name
           </label>
           <input
-            className="bg-slate-50 mr-2 outline-none p-2 rounded-lg border-2 border-black"
+            className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
             type="text"
             name="firstName"
             id="firstName"
-            placeholder="Kavan"
+            placeholder={details.data?.firstName}
+            onChange={handleFirstname}
           />
-          <button
-            className="text-base border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white w-20 h-7"
-            type="submit"
-          >
-            Update
-          </button>
         </div>
         <div className="flex flex-row">
-          <label htmlFor="lastName" className="mr-2">
+          <label htmlFor="lastName" className="mr-2 font-semibold">
             Last Name
           </label>
           <input
-            className="bg-slate-50 mr-2 outline-none p-2 rounded-lg border-2 border-black"
+            className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
             type="text"
             name="lastName"
             id="lastName"
-            placeholder="Patel"
+            placeholder={details.data?.lastName}
+            onChange={handleLastname}
           />
-          <button
-            className="text-base border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white w-20 h-7"
-            type="submit"
-          >
-            Update
-          </button>
         </div>
         <div className="flex flex-row">
-          <label htmlFor="emailID" className="lg:mr-6 md:mr-6 mr-3">
-            Email ID
+          <label htmlFor="emailID" className="lg:mr-4 mr-4 font-semibold">
+            Email ID &nbsp;
           </label>
           <input
-            className="bg-slate-50 mr-2 outline-none p-2 rounded-lg border-2 border-black"
+            className="bg-slate-50 outline-none p-2 rounded-lg border-2 border-black"
             type="email"
             name="emailID"
             id="emailID"
-            placeholder="kavanpatel99@gmail.com"
+            placeholder={details.data?.emailID}
+            onChange={handleEmail}
           />
+        </div>
+        <div className="text-center">
           <button
-            className="text-base border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white w-20 h-7"
+            className="border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white mt-4 mb-5 p-2"
             type="submit"
+            onClick={handleSubmit}
           >
             Update
           </button>
         </div>
         <div className="flex flex-row">
-          <label htmlFor="lastName" className="mr-2">
-            Preference
+          <label htmlFor="lastName" className="mr-1 font-semibold">
+            Preferences
           </label>
           <div className="w-48 mr-3">
             <Select
@@ -92,7 +129,7 @@ export default function Profile() {
             />
           </div>
           <button
-            className="text-base border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white w-16 h-7"
+            className="text-base border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white w-16 h-9"
             type="submit"
           >
             Save

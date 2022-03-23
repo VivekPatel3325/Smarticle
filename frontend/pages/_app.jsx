@@ -3,7 +3,11 @@ import { userService } from "service/user.service";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faUser, faCalendar, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faCalendar,
+  faThumbsUp,
+} from "@fortawesome/free-solid-svg-icons";
 library.add(faUser);
 library.add(faCalendar);
 library.add(faThumbsUp);
@@ -19,6 +23,7 @@ function MyApp({ Component, pageProps }) {
       "/forgot",
       "/reset",
       "/verify",
+      "/post",
     ];
     const path = url.split("?")[0];
     if (!userService.userValue && !publicPaths.includes(path)) {
