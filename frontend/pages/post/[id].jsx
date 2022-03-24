@@ -29,7 +29,7 @@ const PostDetails = () => {
   useEffect(() => {
     const fetch = async () => {
       const post = await postService.getById(user?.token, id);
-      const tags = await tagsService.getByIds(user?.token, post.tagId);
+      const tags = post.tagId;
       setPost({
         heading: post.heading,
         content: post.content,
@@ -74,7 +74,7 @@ const PostDetails = () => {
             {post.tags.map((tag) => {
               return (
                 <span className="px-1.5 bg-white border-black border-2 rounded-lg mr-2">
-                  {tag.label}
+                  {tag.tagName}
                 </span>
               );
             })}
