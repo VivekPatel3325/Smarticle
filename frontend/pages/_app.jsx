@@ -26,7 +26,11 @@ function MyApp({ Component, pageProps }) {
       "/post",
     ];
     const path = url.split("?")[0];
-    if (!userService.userValue && !publicPaths.includes(path)) {
+    if (
+      !userService.userValue &&
+      !publicPaths.includes(path) &&
+      !path.startsWith("/post")
+    ) {
       setAuthorized(false);
       router.push({
         pathname: "/login",
