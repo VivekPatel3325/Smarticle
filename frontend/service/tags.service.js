@@ -16,6 +16,7 @@ async function getAll(token) {
   } catch (err) {
     throw new Error(err);
   }
+  if (data["statusCode"] !== 200 || data.length === 0) return [];
   data = data.map((tag) => {
     return {
       label: tag.tagName,
@@ -55,7 +56,13 @@ async function getByIds(token, ids) {
   return data;
 }
 
+async function createNew(newTags) {
+  // @todo
+  console.log("create new tags here", newTags);
+}
+
 export const tagsService = {
   getAll,
-  getByIds
+  getByIds,
+  createNew
 };

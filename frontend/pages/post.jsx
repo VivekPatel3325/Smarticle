@@ -6,6 +6,7 @@ import useTags from "hooks/useTags";
 import { postService } from "service/post.service";
 import { toast } from "react-toastify";
 import useUser from "hooks/useUser";
+import { tagsService } from "service/tags.service";
 
 const Post = () => {
   const user = useUser();
@@ -19,8 +20,10 @@ const Post = () => {
   const handleTitle = (e) => setHeading(e.target.value);
   const handleVisibility = (e) => setVisibility((current) => !current);
   const handleTags = (tags) => setTags(tags);
-  const handleSubmit = () => {
-    return postService
+  const handleSubmit = async () => {
+    const newTags = tags.filter((t) => t.__isNew__);
+    await tagsService.createNew(newTags);
+    await postService
       .post({
         heading,
         content: postHtml,
@@ -28,7 +31,8 @@ const Post = () => {
         visibility,
       }, token)
       .then((data) => {
-        if (data["statusCode"] !== 200) {
+        console.log("data", data);
+        if (data && data["statusCode"] !== 200) {
           toast.error(`Error: ${JSON.stringify(data["message"])}`);
         } else {
           toast.success("Article Posted successfully");

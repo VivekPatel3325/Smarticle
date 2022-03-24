@@ -49,7 +49,7 @@ const PostDetails = () => {
   }, [id]);
   return (
     <Main>
-      <div class="grid lg:grid-cols-2 lg:gap-48">
+      <div className="grid lg:grid-cols-2 lg:gap-48">
         <div className="mb-10">
           <div className="flex flex-row justify-between mb-10">
             <div className="lg:mr-10">
