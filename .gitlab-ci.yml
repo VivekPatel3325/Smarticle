@@ -93,8 +93,6 @@ backend-build:
 
 frontend-deploy:
     stage: deploy
-    only:
-        - main
     image: ruby:latest
     tags:
         - dalfcs_docker_autoscale 
@@ -110,8 +108,6 @@ frontend-deploy:
 
 backend-deploy:
     stage: deploy
-    only:
-        - main
     image: ruby:latest
     tags:
         - dalfcs_docker_autoscale 
