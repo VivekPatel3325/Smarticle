@@ -94,6 +94,7 @@ frontend-deploy:
     script:
         - echo "deploying frontend application"
         - cd frontend
+        - npm install
         - apt-get update -qy
         - apt-get install -y ruby-dev
         - gem install dpl
