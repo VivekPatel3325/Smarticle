@@ -88,13 +88,13 @@ backend-build:
 
 frontend-deploy:
     stage: deploy
-    image: node:16.14.0
+    image: ruby:latest
     tags:
         - dalfcs_docker_autoscale 
     script:
         - echo "deploying frontend application"
         - cd frontend
-        - npm install
+        - rm -f package-lock.json
         - apt-get update -qy
         - apt-get install -y ruby-dev
         - gem install dpl
