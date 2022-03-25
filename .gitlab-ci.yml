@@ -1,8 +1,4 @@
-before_script:
-    - cd backend
-    
-image: maven:3-jdk-8    
-    
+        
 variables:
   # maven option to clean the generated target folder.
   MAVEN_CLEAN_OPT: "clean"
@@ -27,32 +23,75 @@ stages:
   # deploy this application on heroku.
     - deploy
 
-compile:
+frontend-compile:
     stage: compile
     tags:
         - ugrad
+    image: node:16.14.0	
     script:
-        - mvn clean compile
+        - cd frontend
+        - npm install
+    rules:
+        - changes:
+          - frontend/*		
 
-test:
+backend-compile:
+    stage: compile
+    tags:
+        - ugrad
+    image: maven:3-jdk-8	
+    script:
+        - cd backend
+        - mvn clean compile
+    rules:
+        - changes:
+          - backend/*		
+
+backend-test:
     stage: test
     tags:
         - ugrad
+    image: maven:3-jdk-8	
     script:
+        - cd backend
         - mvn test
+    rules:
+        - changes:
+          - backend/*	
 
-build:
+frontend-build:
     stage: build
     tags:
         - ugrad
+    image: node:16.14.0	
     script:
+        - cd frontend
+        - npm install
+        - npm run build
+    artifacts:
+        paths:
+        - public 		
+    rules:
+        - changes:
+          - frontend/*		
+
+backend-build:
+    stage: build
+    tags:
+        - ugrad
+    image: maven:3-jdk-8	
+    script:
+        - cd backend
         - mvn package
     artifacts:
         when: on_success
         paths:
         - $TARGET_FOLDER_NAME/*.war
+    rules:
+        - changes:
+          - backend/*
 
-deploy:
+frontend-deploy:
     stage: deploy
     only:
         - main
@@ -60,7 +99,28 @@ deploy:
     tags:
         - dalfcs_docker_autoscale 
     script:
+        - cd frontend
         - apt-get update -qy
         - apt-get install -y ruby-dev
         - gem install dpl
-        - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY    
+        - dpl --provider=heroku --app=$HEROKU_FE_APP_NAME --api-key=$HEROKU_FE_APP_KEY
+    rules:
+        - changes:
+          - frontend/*			
+
+backend-deploy:
+    stage: deploy
+    only:
+        - main
+    image: ruby:latest
+    tags:
+        - dalfcs_docker_autoscale 
+    script:
+        - cd backend
+        - apt-get update -qy
+        - apt-get install -y ruby-dev
+        - gem install dpl
+        - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
+    rules:
+       - changes:
+         - backend/*		
