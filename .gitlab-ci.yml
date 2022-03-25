@@ -29,23 +29,21 @@ frontend-compile:
         - ugrad
     image: node:16.14.0	
     script:
+        - echo "compiling frontend application"
         - cd frontend
         - npm install
-    rules:
-        - changes:
-          - frontend/*		
-
+        - echo "completed compiling frontend application"
+        
 backend-compile:
     stage: compile
     tags:
         - ugrad
     image: maven:3-jdk-8	
     script:
+        - echo "compiling backend application"
         - cd backend
         - mvn clean compile
-    rules:
-        - changes:
-          - backend/*		
+        - echo "completed compiling backend application"
 
 backend-test:
     stage: test
@@ -53,11 +51,10 @@ backend-test:
         - ugrad
     image: maven:3-jdk-8	
     script:
+        - echo "testing backend application"
         - cd backend
-        - mvn test
-    rules:
-        - changes:
-          - backend/*	
+        - mvn test	
+        - echo "backend application has been tested"
 
 frontend-build:
     stage: build
@@ -65,31 +62,29 @@ frontend-build:
         - ugrad
     image: node:16.14.0	
     script:
+        - echo "building frontend application"
         - cd frontend
         - npm install
         - npm run build
+        - echo "frontend application has been built"
     artifacts:
         paths:
         - public 		
-    rules:
-        - changes:
-          - frontend/*		
-
+        
 backend-build:
     stage: build
     tags:
         - ugrad
     image: maven:3-jdk-8	
     script:
+        - echo "building backend application"
         - cd backend
         - mvn package
+        - echo "backend application has been built"
     artifacts:
         when: on_success
         paths:
         - $TARGET_FOLDER_NAME/*.war
-    rules:
-        - changes:
-          - backend/*
 
 frontend-deploy:
     stage: deploy
@@ -97,14 +92,13 @@ frontend-deploy:
     tags:
         - dalfcs_docker_autoscale 
     script:
+        - echo "deploying frontend application"
         - cd frontend
         - apt-get update -qy
         - apt-get install -y ruby-dev
         - gem install dpl
         - dpl --provider=heroku --app=$HEROKU_FE_APP_NAME --api-key=$HEROKU_FE_APP_KEY
-    rules:
-        - changes:
-          - frontend/*			
+        - echo "frontend application has been built"        
 
 backend-deploy:
     stage: deploy
@@ -112,11 +106,10 @@ backend-deploy:
     tags:
         - dalfcs_docker_autoscale 
     script:
+        - echo "deploying backend application"
         - cd backend
         - apt-get update -qy
         - apt-get install -y ruby-dev
         - gem install dpl
         - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
-    rules:
-       - changes:
-         - backend/*		
+        - echo "backend application has been built"		
