@@ -99,7 +99,11 @@ frontend-deploy:
         - apt-get install -y ruby-dev
         - gem install dpl
         - dpl --provider=heroku --app=$HEROKU_FE_APP_NAME --api-key=$HEROKU_FE_APP_KEY
-        - echo "frontend application has been built"        
+        - echo "frontend application has been built"
+    rules:
+        - if: $CI_MAIN_BRANCH == "main"
+            changes:
+              - frontend/*        
 
 backend-deploy:
     stage: deploy
@@ -113,4 +117,8 @@ backend-deploy:
         - apt-get install -y ruby-dev
         - gem install dpl
         - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
-        - echo "backend application has been built"		
+        - echo "backend application has been built"
+    rules:
+        - if: $CI_MAIN_BRANCH == "main"
+           - changes:
+             - backend/*
