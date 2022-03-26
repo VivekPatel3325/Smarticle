@@ -84,11 +84,12 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public Map<String,String> getTwitterCountOfArticleTags(Long id){
+	public List<Object> getTwitterCountOfArticleTags(Long id){
 		Article article = getArticleById(id);
 		Set<Tag> tags = article.getTagId();
 		List<String> tagNames = new ArrayList<>();
 		Map<String,String> responseTweetTextAndURL = new HashMap<>();
+		List<Object> responseTweetData = new ArrayList<>();
 		String query = "lang:en (";
 		for(Tag tag : tags){
 			//System.out.println(tag.getTagName());
@@ -107,11 +108,20 @@ public class ArticleServiceImpl implements ArticleService {
 			tweetData = twitter.search(search);
 
 			for (Status tweet : tweetData.getTweets()) {
-				String url = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
+				String tweetLink = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
 				String removeURL = tweet.getText().replaceAll("((https?|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
 				String transformedTweetText = removeURL.replaceAll("[^\\w\\s]", "");
-				System.out.println(transformedTweetText);
-				responseTweetTextAndURL.put(transformedTweetText, url);
+				String authorName = tweet.getUser().getName();
+				Date creationDate = tweet.getUser().getCreatedAt();
+				int retweetCount = tweet.getRetweetCount();
+				String userImage = tweet.getUser().getProfileImageURL();
+				//System.out.println(" "+tweetLink+" "+authorName+" "+creationDate+" "+retweetCount+" "+userImage);
+				responseTweetData.add(userImage);
+				responseTweetData.add(authorName);
+				responseTweetData.add(tweetLink);
+				responseTweetData.add(transformedTweetText);
+				responseTweetData.add(creationDate);
+				responseTweetData.add(retweetCount);
 
 			}
 
@@ -119,7 +129,7 @@ public class ArticleServiceImpl implements ArticleService {
 			e.printStackTrace();
 		}
 
-		return responseTweetTextAndURL;
+		return responseTweetData;
 	}
 
 	//Reference: https://www.tabnine.com/code/java/methods/twitter4j.conf.ConfigurationBuilder/setOAuthConsumerKey

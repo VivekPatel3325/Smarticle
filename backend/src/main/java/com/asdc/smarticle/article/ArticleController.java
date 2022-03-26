@@ -52,14 +52,14 @@ public class ArticleController extends BaseController {
 	}
 
 	@GetMapping(ApplicationUrlPath.GET_ARTICLE_BY_ID)
-	public List<Article> getArticleById(@RequestHeader HttpHeaders http, @RequestParam Long id) {
+	public Map<List<Article>,List<Object>> getArticleById(@RequestHeader HttpHeaders http, @RequestParam Long id) {
 		Article article = articleService.getArticleById(id);
-		Map<List<Article>,Map<String,String>> response = new HashMap<>();
+		Map<List<Article>,List<Object>> response = new HashMap<>();
 		List<Article> articleList = new ArrayList<Article>();
 		articleList.add(article);
-		Map<String,String> tweetData = articleService.getTwitterCountOfArticleTags(id);
+		List<Object> tweetData = articleService.getTwitterCountOfArticleTags(id);
 		response.put(articleList,tweetData);
-		return articleList;
+		return response;
 	}
 
 	@GetMapping(ApplicationUrlPath.GET_ARTICLE_BY_USER)
