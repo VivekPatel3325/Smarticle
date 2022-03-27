@@ -87,12 +87,14 @@ public class ArticleServiceImpl implements ArticleService {
 	public List<Object> getTwitterCountOfArticleTags(Long id){
 		Article article = getArticleById(id);
 		Set<Tag> tags = article.getTagId();
+		if(tags.size()==0){
+			return new ArrayList<Object>();
+		}
 		List<String> tagNames = new ArrayList<>();
 		Map<String,String> responseTweetTextAndURL = new HashMap<>();
 		List<Object> responseTweetData = new ArrayList<>();
 		String query = "lang:en (";
 		for(Tag tag : tags){
-			//System.out.println(tag.getTagName());
 			query += tag.getTagName() +" OR ";
 			tagNames.add(tag.getTagName());
 		}
