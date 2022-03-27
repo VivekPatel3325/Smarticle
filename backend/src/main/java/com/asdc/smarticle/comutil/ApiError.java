@@ -1,5 +1,12 @@
 package com.asdc.smarticle.comutil;
 
+
+/**
+ * @author Vivekkumar Patel
+ * @version 1.0
+ * @since 2022-02-19
+ */
+
 public class ApiError {
 
 	
