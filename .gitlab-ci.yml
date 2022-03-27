@@ -101,8 +101,8 @@ frontend-deploy:
         - echo "frontend application has been built"
     rules:
         - if: $CI_MAIN_BRANCH == "main"
-            changes:
-              - frontend/*        
+           - changes:
+             - frontend/*
 
 backend-deploy:
     stage: deploy
