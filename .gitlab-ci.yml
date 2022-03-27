@@ -120,5 +120,5 @@ backend-deploy:
         - echo "backend application has been built"
     rules:
         - if: $CI_MAIN_BRANCH == "main"
-           - changes:
-             - backend/*
+          changes:
+            - backend/*
