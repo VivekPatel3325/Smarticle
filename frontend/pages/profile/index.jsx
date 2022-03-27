@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import useUser from "hooks/useUser";
 import { toast } from "react-toastify";
-import { profileService } from "service/profile.service";
+import { userService } from "service/user.service";
 
 export default function Profile() {
   const user = useUser();
@@ -13,12 +13,11 @@ export default function Profile() {
   const [firstname, setfirstname] = useState("");
   const [lastname, setlastname] = useState("");
   const [email, setemail] = useState("");
-
   const handleFirstname = (e) => setfirstname(e.target.value);
   const handleLastname = (e) => setlastname(e.target.value);
   const handleEmail = (e) => setemail(e.target.value);
   const handleSubmit = () => {
-    return profileService
+    return userService
       .updateDetails(
         {
           userName: details.data.userName,
@@ -43,13 +42,34 @@ export default function Profile() {
   useEffect(() => {
     async function get() {
       const token = user?.token ?? null;
-      setDetails(await profileService.getDetails(token));
+      setDetails(await userService.getDetails(token));
     }
     get();
   }, [user?.token, user]);
   const [tags, setTags] = useState([]);
   const handleTags = (tags) => setTags(tags);
   const options = useTags();
+  const submitTags = () => {
+    const t = tags.map(t => {
+      return {
+        id: Number(t.value),
+        tagName: t.label
+      }
+    })
+    return userService
+      .saveTags(t, token)
+      .then((data) => {
+        if (data["statusCode"] !== 200) {
+          toast.error(`Error: ${JSON.stringify(data["message"])}`);
+        } else {
+          toast.success("Details Updated Successfully");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error("Error while updating details");
+      });
+  }
   return (
     <Main title="Profile">
       <div className="grid grid-cols-1 gap-3 w-full lg:w-96">
@@ -131,6 +151,7 @@ export default function Profile() {
           <button
             className="text-base border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white w-16 h-9"
             type="submit"
+            onClick={submitTags}
           >
             Save
           </button>

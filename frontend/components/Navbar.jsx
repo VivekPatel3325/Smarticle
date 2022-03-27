@@ -33,12 +33,12 @@ export default function Navbar() {
                   Profile
                 </li>
               </Link>
-              <Link href="/post" passHref>
+              <Link href="/profile/post" passHref>
                 <li className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap cursor-pointer">
                   Post Article
                 </li>
               </Link>
-              <Link href="/articles" passHref>
+              <Link href="/profile/articles" passHref>
                 <li className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap cursor-pointer">
                   My Articles
                 </li>
