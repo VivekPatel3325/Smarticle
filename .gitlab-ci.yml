@@ -1,8 +1,4 @@
-before_script:
-    - cd backend
-    
-image: maven:3-jdk-8    
-    
+        
 variables:
   # maven option to clean the generated target folder.
   MAVEN_CLEAN_OPT: "clean"
@@ -27,40 +23,102 @@ stages:
   # deploy this application on heroku.
     - deploy
 
-compile:
+frontend-compile:
+    stage: compile
+    tags:
+        - dalfcs_docker_autoscale
+    image: node:16.14.0	
+    script:
+        - echo "compiling frontend application"
+        - cd frontend
+        - npm install
+        - echo "completed compiling frontend application"
+        
+backend-compile:
     stage: compile
     tags:
         - ugrad
+    image: maven:3-jdk-11	
     script:
+        - echo "compiling backend application"
+        - cd backend
         - mvn clean compile
+        - echo "completed compiling backend application"
 
-test:
+backend-test:
     stage: test
     tags:
         - ugrad
+    image: maven:3-jdk-11	
     script:
-        - mvn test
+        - echo "testing backend application"
+        - cd backend
+        - mvn test	
+        - echo "backend application has been tested"
 
-build:
+frontend-build:
+    stage: build
+    tags:
+        - dalfcs_docker_autoscale
+    image: node:16.14.0	
+    script:
+        - echo "building frontend application"
+        - cd frontend
+        - npm install
+        - npm run build
+        - echo "frontend application has been built"
+    artifacts:
+        paths:
+        - public 		
+        
+backend-build:
     stage: build
     tags:
         - ugrad
+    image: maven:3-jdk-11	
     script:
+        - echo "building backend application"
+        - cd backend
         - mvn package
+        - echo "backend application has been built"
     artifacts:
         when: on_success
         paths:
         - $TARGET_FOLDER_NAME/*.war
 
-deploy:
+frontend-deploy:
     stage: deploy
-    only:
-        - main
     image: ruby:latest
     tags:
         - dalfcs_docker_autoscale 
     script:
+        - echo "deploying frontend application"
+        - cd frontend
+        - rm -f package-lock.json
         - apt-get update -qy
         - apt-get install -y ruby-dev
         - gem install dpl
-        - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY    
+        - dpl --provider=heroku --app=$HEROKU_FE_APP_NAME --api-key=$HEROKU_FE_APP_KEY
+        - echo "frontend application has been built"
+    rules:
+        - if: '$CI_MAIN_BRANCH == "main"'
+          changes:
+            - frontend/*        
+
+backend-deploy:
+    stage: deploy
+    image: ruby:latest
+    tags:
+        - dalfcs_docker_autoscale 
+    script:
+        - echo "deploying backend application"
+        - cd backend
+        - apt-get update -qy
+        - apt-get install -y ruby-dev
+        - gem install dpl
+        - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
+        - echo "backend application has been built"
+    rules:
+        - if: '$CI_MAIN_BRANCH == "main"'
+          changes:
+            - backend/*
