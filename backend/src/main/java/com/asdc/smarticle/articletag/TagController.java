@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+/**
+ * @author Vivekkumar Patel
+ * @version 1.0
+ * @since 2022-03-27
+ */
 @CrossOrigin
 @RestController
 @RequestMapping("/smarticleapi/tag")
