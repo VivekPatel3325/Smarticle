@@ -9,14 +9,13 @@ async function getAll(token) {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "jwt-token": `${token}`
         },
       })
     ).json();
   } catch (err) {
     throw new Error(err);
   }
-  if (data.length === 0) return [];
+  if (data.length === 0 || !Array.isArray(data)) return [];
   data = data
     .map((tag) => {
       return {
@@ -78,8 +77,36 @@ async function createNew(newTags, token) {
   return newSelectedTags;
 }
 
+async function getUserTags(token) {
+  let data;
+  try {
+    data = await (
+      await fetch(`${serverUrl}/tag/retriveTags`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "jwt-token": `${token}`
+        },
+      })
+    ).json();
+  } catch (err) {
+    throw new Error(err);
+  }
+  if (data.length === 0 || !Array.isArray(data)) return [];
+  data = data
+    .map((tag) => {
+      return {
+        label: tag.tagName,
+        value: tag.id
+      }
+    })
+    .filter((tag) => tag.label !== null);
+  return data;
+}
+
 export const tagsService = {
   getAll,
   getByIds,
-  createNew
+  createNew,
+  getUserTags
 };

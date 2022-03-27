@@ -55,11 +55,34 @@ const getById = async (token, id) => {
     throw new Error ("Error in fetching");
   }
   // returns an array of 1 element
+  console.log(res);
   return res[0];
+}
+
+const getByAuthor = async (token) => {
+  let res;
+  try {
+    res = await (
+      await fetch(`${serverUrl}/article/getArticleByUser`, {
+        method: "GET",
+        headers: {
+          "jwt-token": `${token}`
+        },
+      })
+    ).json();
+    // if (!res["content"] || !Array.isArray(res["content"])) {
+    //   throw new Error ("Error in received response", res);
+    // }
+  } catch(err) {
+    throw new Error ("Error in fetching");
+  }
+  // returns an array of posts (along with other metadata)
+  return res["content"];
 }
 
 export const postService = {
   post,
   getAll,
-  getById
+  getById,
+  getByAuthor
 };
