@@ -7,10 +7,9 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import useTags from "hooks/useTags";
+import useUserTags from "hooks/useUserTags";
 import { postService } from "service/post.service";
 import useUser from "hooks/useUser";
-import { tagsService } from "service/tags.service";
 import CountUp from "react-countup";
 library.add(faUser);
 library.add(faTwitter);
@@ -19,7 +18,7 @@ export default function Home() {
     { value: "Date", label: "By Date" },
     { value: "Likes", label: "By Likes" },
   ];
-  const tags = useTags();
+  const tags = useUserTags();
   const [posts, setPosts] = useState([]);
   const user = useUser();
   useEffect(() => {
