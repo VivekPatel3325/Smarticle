@@ -82,7 +82,6 @@ backend-build:
         - mvn package
         - echo "backend application has been built"
     artifacts:
-        when: on_success
         paths:
         - $TARGET_FOLDER_NAME/*.war
 
@@ -101,9 +100,9 @@ frontend-deploy:
         - dpl --provider=heroku --app=$HEROKU_FE_APP_NAME --api-key=$HEROKU_FE_APP_KEY
         - echo "frontend application has been built"
     rules:
-        - if: '$CI_MAIN_BRANCH == "main"'
-          changes:
-            - frontend/*        
+        - if: $CI_MAIN_BRANCH == "main"
+            changes:
+              - frontend/*        
 
 backend-deploy:
     stage: deploy
@@ -119,6 +118,6 @@ backend-deploy:
         - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
         - echo "backend application has been built"
     rules:
-        - if: '$CI_MAIN_BRANCH == "main"'
-          changes:
-            - backend/*
+        - if: $CI_MAIN_BRANCH == "main"
+           - changes:
+             - backend/*
