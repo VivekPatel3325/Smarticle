@@ -1,5 +1,6 @@
 package com.asdc.smarticle.article;
 
+import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.articletag.TagRepository;
 import com.asdc.smarticle.comutil.ApiError;
 import com.asdc.smarticle.comutil.ApplicationUrlPath;
@@ -12,9 +13,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import twitter4j.*;
+import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.json.DataObjectFactory;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -78,6 +81,69 @@ public class ArticleServiceImpl implements ArticleService {
 		User user = userRepository.findByUserName(userName);
 		listArticle = articleRepository.findByUserId(user,pagination);
 		return listArticle;
+	}
+
+	@Override
+	public List<Object> getTwitterCountOfArticleTags(Long id){
+		Article article = getArticleById(id);
+		Set<Tag> tags = article.getTagId();
+		if(tags.size()==0){
+			return new ArrayList<Object>();
+		}
+		List<String> tagNames = new ArrayList<>();
+		Map<String,String> responseTweetTextAndURL = new HashMap<>();
+		List<Object> responseTweetData = new ArrayList<>();
+		String query = "lang:en (";
+		for(Tag tag : tags){
+			query += tag.getTagName() +" OR ";
+			tagNames.add(tag.getTagName());
+		}
+
+		String searchQuery = query.substring(0, query.length()-4);
+		searchQuery += ")";
+		Twitter twitter = authentication();
+
+		Query search = new Query(searchQuery);
+		search.count(5);
+		QueryResult tweetData;
+		try {
+			tweetData = twitter.search(search);
+
+			for (Status tweet : tweetData.getTweets()) {
+				String tweetLink = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
+				String removeURL = tweet.getText().replaceAll("((https?|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
+				String transformedTweetText = removeURL.replaceAll("[^\\w\\s]", "");
+				String authorName = tweet.getUser().getName();
+				Date creationDate = tweet.getUser().getCreatedAt();
+				int retweetCount = tweet.getRetweetCount();
+				String userImage = tweet.getUser().getProfileImageURL();
+				//System.out.println(" "+tweetLink+" "+authorName+" "+creationDate+" "+retweetCount+" "+userImage);
+				responseTweetData.add(userImage);
+				responseTweetData.add(authorName);
+				responseTweetData.add(tweetLink);
+				responseTweetData.add(transformedTweetText);
+				responseTweetData.add(creationDate);
+				responseTweetData.add(retweetCount);
+
+			}
+
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
+
+		return responseTweetData;
+	}
+
+	//Reference: https://www.tabnine.com/code/java/methods/twitter4j.conf.ConfigurationBuilder/setOAuthConsumerKey
+	public static Twitter authentication() {
+		ConfigurationBuilder confBuild = new ConfigurationBuilder();
+		confBuild.setDebugEnabled(true);
+		confBuild.setJSONStoreEnabled(true);
+		confBuild.setOAuthConsumerKey("P9xd2SeGKmM75MPcu1e9h5Lhw");
+		confBuild.setOAuthConsumerSecret("xEvpgofniw1O8wwtsmz0hxmhVCZz8xv8ifmPxQhfdE77lHSHBt");
+		confBuild.setOAuthAccessToken("1499412296568877060-xrfuEHFBue9CDmRFz1zMeqrKvVPiWz");
+		confBuild.setOAuthAccessTokenSecret("UPv1OsBFCIuaGOuL8Eo6qfaU3TuRNjIPToJ6kK3k8p2gu");
+		return new TwitterFactory(confBuild.build()).getInstance();
 	}
 
 }

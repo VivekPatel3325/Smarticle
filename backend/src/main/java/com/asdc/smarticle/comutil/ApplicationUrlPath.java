@@ -45,4 +45,8 @@ public class ApplicationUrlPath {
 	public static final String GET_ARTICLE_BY_USER = "/getArticleByUser";
 
 	public static final String CREATE_ARTICLE_TAG = "/createArticleTag";
+
+	public static final String GET_USER_TAGS = "/getUserTags";
+
+	public static final String GET_TWEET_DATA_BY_ARTICLE_ID= "/getTweetDataOfArticle";
 }

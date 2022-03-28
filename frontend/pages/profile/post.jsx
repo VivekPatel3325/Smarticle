@@ -6,10 +6,11 @@ import useTags from "hooks/useTags";
 import { postService } from "service/post.service";
 import { toast } from "react-toastify";
 import useUser from "hooks/useUser";
+import { tagsService } from "service/tags.service";
 
 const Post = () => {
   const user = useUser();
-  const token = user.token;
+  const token = user?.token;
   const [postHtml, setPostHtml] = useState("");
   const [tags, setTags] = useState([]);
   const [visibility, setVisibility] = useState(false);
@@ -19,16 +20,29 @@ const Post = () => {
   const handleTitle = (e) => setHeading(e.target.value);
   const handleVisibility = (e) => setVisibility((current) => !current);
   const handleTags = (tags) => setTags(tags);
-  const handleSubmit = () => {
-    return postService
+  const handleSubmit = async () => {
+    let newTagIds = [];
+    const newTags = tags.filter((t) => t.__isNew__);
+    if (newTags.length > 0) {
+      newTagIds = await tagsService.createNew(newTags, token);
+    }
+    const selectedTagIds = tags
+      .filter((t) => !t.__isNew__);
+    const tagIds = [...selectedTagIds, ...newTagIds].map((tag) => {
+      return {
+        id: tag.value,
+        tagName: tag.label
+      }
+    });
+    await postService
       .post({
         heading,
         content: postHtml,
-        tagId: tags.map((t) => t.value),
+        tagId: tagIds,
         visibility,
       }, token)
       .then((data) => {
-        if (data["statusCode"] !== 200) {
+        if (data && data["statusCode"] !== 200) {
           toast.error(`Error: ${JSON.stringify(data["message"])}`);
         } else {
           toast.success("Article Posted successfully");

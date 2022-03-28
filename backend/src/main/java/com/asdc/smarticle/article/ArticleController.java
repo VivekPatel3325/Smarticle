@@ -6,7 +6,9 @@ import com.asdc.smarticle.security.JwtUtils;
 import com.asdc.smarticle.user.exception.ArticleException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -67,5 +69,11 @@ public class ArticleController extends BaseController {
 		}
 		Page<Article> articleList = articleService.getArticleByUser(userName, page, totalPage);
 		return articleList;
+	}
+
+	@GetMapping(ApplicationUrlPath.GET_TWEET_DATA_BY_ARTICLE_ID)
+	public List<Object> getTweetsOfArticle(@RequestHeader HttpHeaders http, @RequestParam Long id) {
+		List<Object> tweetData = articleService.getTwitterCountOfArticleTags(id);
+		return tweetData;
 	}
 }

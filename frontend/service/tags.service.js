@@ -9,19 +9,21 @@ async function getAll(token) {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "jwt-token": `${token}`
         },
       })
     ).json();
   } catch (err) {
     throw new Error(err);
   }
-  data = data.map((tag) => {
-    return {
-      label: tag.tagName,
-      value: tag.id
-    }
-  })
+  if (data.length === 0 || !Array.isArray(data)) return [];
+  data = data
+    .map((tag) => {
+      return {
+        label: tag.tagName,
+        value: tag.id
+      }
+    })
+    .filter((tag) => tag.label !== null);
   return data;
 }
 /**
@@ -55,7 +57,56 @@ async function getByIds(token, ids) {
   return data;
 }
 
+async function createNew(newTags, token) {
+  const createPromises = newTags.map((tag) => {
+    return fetch(`${serverUrl}/tag/createArticleTag?tagName=${tag.value}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "jwt-token": `${token}`
+      },
+    })
+  })
+  await Promise.all(createPromises);
+  const allTagLabels = (await getAll(token)).map((t) => t.label);
+  const allTags = await getAll(token);
+  const justCreated = newTags.map((t) => t.value);
+  const newSelectedTags = _.intersection(allTagLabels, justCreated)
+    .map((c) => allTags
+      .find((t) => t.label === c));
+  return newSelectedTags;
+}
+
+async function getUserTags(token) {
+  let data;
+  try {
+    data = await (
+      await fetch(`${serverUrl}/tag/retriveTags`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "jwt-token": `${token}`
+        },
+      })
+    ).json();
+  } catch (err) {
+    throw new Error(err);
+  }
+  if (data.length === 0 || !Array.isArray(data)) return [];
+  data = data
+    .map((tag) => {
+      return {
+        label: tag.tagName,
+        value: tag.id
+      }
+    })
+    .filter((tag) => tag.label !== null);
+  return data;
+}
+
 export const tagsService = {
   getAll,
-  getByIds
+  getByIds,
+  createNew,
+  getUserTags
 };

@@ -16,6 +16,9 @@ export const userService = {
   register,
   forgot,
   reset,
+  saveTags,
+  updateDetails,
+  getDetails
 };
 
 async function login(username, password) {
@@ -126,5 +129,48 @@ async function logout(user) {
   } catch (err) {
     throw new Error(err);
   }
+  return data;
+}
+
+async function getDetails (token) {
+  let res;
+  res = await (
+    await fetch(`${serverUrl}/user/getUserProfile`, {
+      method: "GET",
+      headers: {
+        "jwt-token": `${token}`,
+      },
+    })
+  ).json();
+  return res;
+};
+
+async function saveTags(tags, token) {
+  const res = await (
+    await fetch(`${serverUrl}/user/saveUserTagPref`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "jwt-token": `${token}`
+      },
+      body: JSON.stringify(tags),
+    })
+  ).json();
+  return res;
+}
+
+async function updateDetails (user, token) {
+  let data;
+  data = await (
+    await fetch(`${serverUrl}/user/updateUserProfile`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "jwt-token": `${token}`,
+      },
+      body: JSON.stringify(user),
+    })
+  ).json();
+  if (data["statusCode"] !== 200) throw new Error("Error in updating details");
   return data;
 }

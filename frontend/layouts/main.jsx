@@ -1,8 +1,8 @@
 import Navbar from "components/Navbar";
 import Footer from "components/Footer";
 import { NextSeo } from "next-seo";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function MainCentered({ children, title }) {
   return (
     <>
