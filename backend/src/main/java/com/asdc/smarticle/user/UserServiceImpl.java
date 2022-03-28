@@ -1,10 +1,10 @@
 package com.asdc.smarticle.user;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.asdc.smarticle.article.Article;
+import com.asdc.smarticle.article.ArticleRepository;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +46,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	TagRepository tagRepository;
+
+	@Autowired
+	ArticleRepository articleRepository;
 
 	@Override
 	public boolean isEmailIdRegistered(String email) {
@@ -188,7 +191,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * @author Vivekkumar Patel Get user details such as firstname,lastname,username
 	 *         etc
-	 * @param username whose details to be retrieved and object mapper to map
+	 * @param 'username' whose details to be retrieved and object mapper to map
 	 *                 reuqestVO to dto.
 	 * @return UserProfileRespVo containing userdetails
 	 */
@@ -231,6 +234,26 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	@Override
+	public List<Map<String,String>> getUsersPostedArticle() {
+		List<Map<String,String>> userDetails = new ArrayList<>();
+		Map<String,String> details = new HashMap<>();
+		List<Article> articleList = articleRepository.findAll();
+		if(articleList.size()==0){
+			return new ArrayList<>();
+		}
+		for(Article article : articleList){
+			details = new HashMap<>();
+			details.put("firstName",article.getUserId().getFirstName());
+			details.put("lastName",article.getUserId().getLastName());
+			details.put("userName",article.getUserId().getUserName());
+			userDetails.add(details);
+		}
 
+		userDetails = userDetails.stream()
+				.distinct()
+				.collect(Collectors.toList());
+		return userDetails;
 
+	}
 }
