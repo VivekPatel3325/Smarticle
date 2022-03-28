@@ -7,8 +7,8 @@ const getAll = async (token) => {
       await fetch(`${serverUrl}/article/retrieveArticle?visibility=ALL`, {
         method: "GET",
         headers: {
-          "jwt-token": `${token}`
-        }
+          "jwt-token": `${token}`,
+        },
       })
     ).json();
   } else {
@@ -16,8 +16,8 @@ const getAll = async (token) => {
       await fetch(`${serverUrl}/article/retrieveArticle?visibility=1`, {
         method: "GET",
         headers: {
-          "jwt-token": `${token}`
-        }
+          "jwt-token": `${token}`,
+        },
       })
     ).json();
   }
@@ -30,14 +30,14 @@ const post = async (post, token) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "jwt-token": `${token}`
+        "jwt-token": `${token}`,
       },
       body: JSON.stringify(post),
     })
   ).json();
   if (res["statusCode"] !== 200) throw new Error("Error in posting");
   return res;
-}
+};
 
 const getById = async (token, id) => {
   let res;
@@ -47,17 +47,16 @@ const getById = async (token, id) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "jwt-token": `${token}`
+          "jwt-token": `${token}`,
         },
       })
     ).json();
-  } catch(err) {
-    throw new Error ("Error in fetching");
+  } catch (err) {
+    throw new Error("Error in fetching");
   }
   // returns an array of 1 element
-  console.log(res);
   return res[0];
-}
+};
 
 const getByAuthor = async (token) => {
   let res;
@@ -66,23 +65,23 @@ const getByAuthor = async (token) => {
       await fetch(`${serverUrl}/article/getArticleByUser`, {
         method: "GET",
         headers: {
-          "jwt-token": `${token}`
+          "jwt-token": `${token}`,
         },
       })
     ).json();
     // if (!res["content"] || !Array.isArray(res["content"])) {
     //   throw new Error ("Error in received response", res);
     // }
-  } catch(err) {
-    throw new Error ("Error in fetching");
+  } catch (err) {
+    throw new Error("Error in fetching");
   }
   // returns an array of posts (along with other metadata)
   return res["content"];
-}
+};
 
 export const postService = {
   post,
   getAll,
   getById,
-  getByAuthor
+  getByAuthor,
 };
