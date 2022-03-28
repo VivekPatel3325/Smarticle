@@ -26,21 +26,23 @@ const Post = () => {
     if (newTags.length > 0) {
       newTagIds = await tagsService.createNew(newTags, token);
     }
-    const selectedTagIds = tags
-      .filter((t) => !t.__isNew__);
+    const selectedTagIds = tags.filter((t) => !t.__isNew__);
     const tagIds = [...selectedTagIds, ...newTagIds].map((tag) => {
       return {
         id: tag.value,
-        tagName: tag.label
-      }
+        tagName: tag.label,
+      };
     });
     await postService
-      .post({
-        heading,
-        content: postHtml,
-        tagId: tagIds,
-        visibility,
-      }, token)
+      .post(
+        {
+          heading,
+          content: postHtml,
+          tagId: tagIds,
+          visibility,
+        },
+        token
+      )
       .then((data) => {
         if (data && data["statusCode"] !== 200) {
           toast.error(`Error: ${JSON.stringify(data["message"])}`);
@@ -85,7 +87,7 @@ const Post = () => {
             <Creatable
               options={options}
               isMulti
-              placeholder="Select Tags"
+              placeholder="Select Tags / Create Tags"
               id="tags"
               instanceId={"tags"}
               onChange={handleTags}

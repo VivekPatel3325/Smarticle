@@ -71,7 +71,8 @@ public class UserController extends BaseController {
 	/**
 	 * Create user account with the given credentials.
 	 *
-	// * @param ##sser model containing user details.
+	 * // * @param ##sser model containing user details.
+	 * 
 	 * @return the response entity
 	 * @throws UserExistException If the user is registered with the given email id.
 	 */
@@ -133,10 +134,11 @@ public class UserController extends BaseController {
 	@PostMapping(ApplicationUrlPath.USER_LOGOUT)
 	public ResponseVO<String> logoutUser() {
 		try {
-		ResponseCookie cookie = jwtUtils.getCleanJwtTokenCookie();
-		userService.removeJwtToken(cookie.getValue());
-		System.out.println("jwtUtils - " + cookie.getValue() + " - " + cookie.getMaxAge() + " - " + cookie.getName());
-		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
+			ResponseCookie cookie = jwtUtils.getCleanJwtTokenCookie();
+			userService.removeJwtToken(cookie.getValue());
+			System.out
+					.println("jwtUtils - " + cookie.getValue() + " - " + cookie.getMaxAge() + " - " + cookie.getName());
+			return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 		} catch (Exception e) {
 			return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false);
 		}
@@ -150,7 +152,7 @@ public class UserController extends BaseController {
 				ResponseCookie jwtCookie = jwtUtils.generateJwtTokenCookie(user.getUserName());
 				emailServiceImpl.sendForgotPasswordEmail(user, jwtCookie);
 				return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
-			}else {
+			} else {
 				return error(HttpStatus.UNPROCESSABLE_ENTITY.value(), "No registered emailID found.", false);
 			}
 		} catch (Exception e) {
@@ -162,11 +164,11 @@ public class UserController extends BaseController {
 	@PostMapping(ApplicationUrlPath.SET_PASSWORD_PATH)
 	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody User uservo) {
 		try {
-			
+
 			String jwtToken = http.getFirst("jwt-token");
 			if (!jwtToken.isEmpty()) {
 				String userName = jwtUtils.getUserNameFromJwt(jwtToken);
-				System.out.println(("userName "+ userName+"  "+uservo.getPswd()));
+				System.out.println(("userName " + userName + "  " + uservo.getPswd()));
 				User user = userService.updateUserPassword(userName, uservo.getPswd());
 				if (user != null) {
 					return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
@@ -177,7 +179,7 @@ public class UserController extends BaseController {
 		}
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
-	
+
 	@PostMapping(ApplicationUrlPath.SAVE_USER_TAG_PREFERENCE)
 	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody Set<Tag> tagList) {
 		try {
@@ -185,8 +187,8 @@ public class UserController extends BaseController {
 			String jwtToken = http.getFirst("jwt-token");
 			if (!jwtToken.isEmpty()) {
 				String userName = jwtUtils.getUserNameFromJwt(jwtToken);
-				
-				User user=userService.saveUserPrefTags(userName, tagList);
+
+				User user = userService.saveUserPrefTags(userName, tagList);
 				if (user != null) {
 					return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 				}
@@ -196,21 +198,21 @@ public class UserController extends BaseController {
 		}
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
-	
+
 	/**
-	 * @author Vivekkumar Patel
-	 * Get user details such as firstname,lastname,username etc
+	 * @author Vivekkumar Patel Get user details such as firstname,lastname,username
+	 *         etc
 	 * @param http header containing jet token to validate the user.
-	 * @return UserProfileRespVo userdetails 
+	 * @return UserProfileRespVo userdetails
 	 */
 	@GetMapping(ApplicationUrlPath.GET_USER_PROFILE)
 	public ResponseVO<UserProfileRespVo> getUserProfile(@RequestHeader HttpHeaders http) {
-		UserProfileRespVo userProfileRespVo= null;
+		UserProfileRespVo userProfileRespVo = null;
 		try {
 			String jwtToken = http.getFirst("jwt-token");
 			if (!jwtToken.isEmpty()) {
 				String userName = jwtUtils.getUserNameFromJwt(jwtToken);
-				
+
 				userProfileRespVo = userService.getUserDetails(userName, new ObjectMapper());
 				if (userProfileRespVo == null) {
 					return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.name(),
@@ -222,21 +224,21 @@ public class UserController extends BaseController {
 		}
 		return prepareSuccessResponse(userProfileRespVo);
 	}
-	
-	
+
 	/**
-	 * @author Vivekkumar Patel
-	 * Get user details such as firstname,lastname,username etc
+	 * @author Vivekkumar Patel Get user details such as firstname,lastname,username
+	 *         etc
 	 * @param http header containing jet token to validate the user.
-	 * @return UserProfileRespVo userdetails 
+	 * @return UserProfileRespVo userdetails
 	 */
 	@PostMapping(ApplicationUrlPath.UPDATE_USER_PROFILE)
-	public ResponseVO<User> updateUserProfile(@RequestHeader HttpHeaders http,@RequestBody UserProfileRequestVo userProfileRequestVo) {
-		User user= null;
+	public ResponseVO<User> updateUserProfile(@RequestHeader HttpHeaders http,
+			@RequestBody UserProfileRequestVo userProfileRequestVo) {
+		User user = null;
 		try {
 			String jwtToken = http.getFirst("jwt-token");
 			if (!jwtToken.isEmpty()) {
-				
+
 				user = userService.updateUserProfile(userProfileRequestVo);
 				if (user == null) {
 					return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.name(),
@@ -250,13 +252,10 @@ public class UserController extends BaseController {
 	}
 
 	@GetMapping(ApplicationUrlPath.GET_USER_DETAILS_POSTED_ARTICLE)
-	public List<Map<String,String>> getUserDetailsPostedArticle(@RequestHeader HttpHeaders http) {
-		List<Map<String,String>> userDetailsOfPostedArticle = new ArrayList<>();
+	public List<Map<String, String>> getUserDetailsPostedArticle(@RequestHeader HttpHeaders http) {
+		List<Map<String, String>> userDetailsOfPostedArticle = new ArrayList<>();
 		try {
-			String jwtToken = http.getFirst("jwt-token");
-			if (!jwtToken.isEmpty()) {
-				userDetailsOfPostedArticle = userService.getUsersPostedArticle();
-			}
+			userDetailsOfPostedArticle = userService.getUsersPostedArticle();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -264,6 +263,3 @@ public class UserController extends BaseController {
 	}
 
 }
-	
-	
-
