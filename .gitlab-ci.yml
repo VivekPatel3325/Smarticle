@@ -103,7 +103,7 @@ frontend-deploy:
     rules:
         - if: '$CI_MAIN_BRANCH == "main"'
           changes:
-            - frontend/*        
+            - frontend/**/*        
 
 backend-deploy:
     stage: deploy
@@ -121,4 +121,4 @@ backend-deploy:
     rules:
         - if: '$CI_MAIN_BRANCH == "main"'
           changes:
-            - backend/*
+            - backend/**/*

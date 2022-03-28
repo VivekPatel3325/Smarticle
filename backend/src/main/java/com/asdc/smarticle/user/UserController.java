@@ -1,7 +1,6 @@
 package com.asdc.smarticle.user;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 import javax.mail.MessagingException;
 
@@ -248,6 +247,20 @@ public class UserController extends BaseController {
 			e.printStackTrace();
 		}
 		return prepareSuccessResponse(user);
+	}
+
+	@GetMapping(ApplicationUrlPath.GET_USER_DETAILS_POSTED_ARTICLE)
+	public List<Map<String,String>> getUserDetailsPostedArticle(@RequestHeader HttpHeaders http) {
+		List<Map<String,String>> userDetailsOfPostedArticle = new ArrayList<>();
+		try {
+			String jwtToken = http.getFirst("jwt-token");
+			if (!jwtToken.isEmpty()) {
+				userDetailsOfPostedArticle = userService.getUsersPostedArticle();
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return userDetailsOfPostedArticle;
 	}
 
 }

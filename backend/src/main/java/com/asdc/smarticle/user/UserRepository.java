@@ -20,4 +20,5 @@ public interface UserRepository extends JpaRepository <User,Long>{
 	Optional<User> findByEmailID(String emailID);
 
 	User findByJwtToken(String value);
+
 }
