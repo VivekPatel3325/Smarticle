@@ -72,8 +72,8 @@ public class ArticleController extends BaseController {
 	}
 
 	@GetMapping(ApplicationUrlPath.GET_TWEET_DATA_BY_ARTICLE_ID)
-	public List<Object> getTweetsOfArticle(@RequestHeader HttpHeaders http, @RequestParam Long id) {
-		List<Object> tweetData = articleService.getTwitterCountOfArticleTags(id);
+	public List<Map<String,Object>> getTweetsOfArticle(@RequestHeader HttpHeaders http, @RequestParam Long id) {
+		List<Map<String,Object>> tweetData = articleService.getTwitterCountOfArticleTags(id);
 		return tweetData;
 	}
 }
