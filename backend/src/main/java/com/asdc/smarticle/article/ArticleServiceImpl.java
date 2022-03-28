@@ -84,15 +84,15 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public List<Object> getTwitterCountOfArticleTags(Long id){
+	public List<Map<String,Object>> getTwitterCountOfArticleTags(Long id){
 		Article article = getArticleById(id);
 		Set<Tag> tags = article.getTagId();
 		if(tags.size()==0){
-			return new ArrayList<Object>();
+			return new ArrayList<Map<String,Object>>();
 		}
 		List<String> tagNames = new ArrayList<>();
 		Map<String,String> responseTweetTextAndURL = new HashMap<>();
-		List<Object> responseTweetData = new ArrayList<>();
+		List<Map<String,Object>> responseTweetData = new ArrayList<>();
 		String query = "lang:en (";
 		for(Tag tag : tags){
 			query += tag.getTagName() +" OR ";
@@ -110,6 +110,8 @@ public class ArticleServiceImpl implements ArticleService {
 			tweetData = twitter.search(search);
 
 			for (Status tweet : tweetData.getTweets()) {
+				//List<Object> tweetDataList = new ArrayList<>();
+				Map<String,Object> tweetDataMap = new HashMap();
 				String tweetLink = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
 				String removeURL = tweet.getText().replaceAll("((https?|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
 				String transformedTweetText = removeURL.replaceAll("[^\\w\\s]", "");
@@ -118,13 +120,13 @@ public class ArticleServiceImpl implements ArticleService {
 				int retweetCount = tweet.getRetweetCount();
 				String userImage = tweet.getUser().getProfileImageURL();
 				//System.out.println(" "+tweetLink+" "+authorName+" "+creationDate+" "+retweetCount+" "+userImage);
-				responseTweetData.add(userImage);
-				responseTweetData.add(authorName);
-				responseTweetData.add(tweetLink);
-				responseTweetData.add(transformedTweetText);
-				responseTweetData.add(creationDate);
-				responseTweetData.add(retweetCount);
-
+				tweetDataMap.put("userImageURL",userImage);
+				tweetDataMap.put("authorName",authorName);
+				tweetDataMap.put("tweetLink",tweetLink);
+				tweetDataMap.put("tweetText",transformedTweetText);
+				tweetDataMap.put("creationDate",creationDate);
+				tweetDataMap.put("retweetCount",retweetCount);
+				responseTweetData.add(tweetDataMap);
 			}
 
 		} catch (TwitterException e) {
