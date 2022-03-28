@@ -17,5 +17,5 @@ public interface ArticleService {
 
 	Page<Article> getArticleByUser(String userName, int page, int totalPage);
 
-	List<Object> getTwitterCountOfArticleTags(Long id);
+	List<Map<String,Object>> getTwitterCountOfArticleTags(Long id);
 	}
