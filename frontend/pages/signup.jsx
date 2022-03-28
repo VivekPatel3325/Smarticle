@@ -16,7 +16,7 @@ const Signup = () => {
         /^[A-Za-z][A-Za-z0-9]*$/,
         "Provide username which do not start with a number and contains no special characters or spaces"
       )
-      .min(8, "Use 7 characters or more for your username"),
+      .min(8, "Use 8 characters or more for your username"),
     firstName: Yup.string().required("Enter your first name"),
     lastName: Yup.string().required("Enter your last name"),
     emailID: Yup.string().email().required("Enter your Email ID"),
@@ -42,9 +42,9 @@ const Signup = () => {
       .register(toSubmit)
       .then((data) => {
         if (data["statusCode"] !== 200) {
-          throw new Error (JSON.stringify(data["message"]));
+          throw new Error(JSON.stringify(data["message"]));
         } else {
-          router.push("/login");
+          toast.success("Verification link sent to registered email id");
         }
       })
       .catch((e) => {

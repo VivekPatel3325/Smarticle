@@ -8,6 +8,7 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useUserTags from "hooks/useUserTags";
+import useAllAuthors from "hooks/useAuthors";
 import { postService } from "service/post.service";
 import useUser from "hooks/useUser";
 import CountUp from "react-countup";
@@ -18,6 +19,7 @@ export default function Home() {
     { value: "Date", label: "By Date" },
     { value: "Likes", label: "By Likes" },
   ];
+  const authors = useAllAuthors();
   const tags = useUserTags();
   const [posts, setPosts] = useState([]);
   const user = useUser();
@@ -52,11 +54,11 @@ export default function Home() {
                 <h1 className="mb-1 ml-3 lg:ml-1">Authors</h1>
                 <Select
                   className="mb-5"
-                  options={tags}
+                  options={authors}
                   isMulti
                   placeholder="Select Authors"
-                  id="tags"
-                  instanceId={"tags"}
+                  id="authors"
+                  instanceId={"authors"}
                 />
               </div>
               <div>
