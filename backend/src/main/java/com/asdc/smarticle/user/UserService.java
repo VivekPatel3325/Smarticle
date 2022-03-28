@@ -1,6 +1,7 @@
 package com.asdc.smarticle.user;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.core.metrics.StartupStep.Tags;
@@ -45,6 +46,7 @@ public interface UserService {
 	User updateUserProfile(UserProfileRequestVo userProfileRespVo);
 	
 	User saveUserPrefTags(String userName, Set<Tag> tagIdList);
-	
+
+	List<Map<String,String>> getUsersPostedArticle();
 	
 }

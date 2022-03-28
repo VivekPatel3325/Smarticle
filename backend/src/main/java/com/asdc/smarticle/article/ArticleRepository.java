@@ -21,4 +21,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
 	Page<Article> findByUserId(User user, Pageable pagination);
 
+	List<Article> findAll();
 }
