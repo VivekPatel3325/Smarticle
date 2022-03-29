@@ -55,4 +55,15 @@ public class TagServiceImpl implements TagService {
 
 		return listOfTags;
 	}
+
+	/**
+	 * @author Vivekkumar Patel
+	 * Service to retrieve all 
+	 * @return List<Tag> containing all tags details.
+	 */
+	@Override
+	public List<Tag> retrieveAllTags() {
+
+		return tagRepository.findAll();
+	}
 }

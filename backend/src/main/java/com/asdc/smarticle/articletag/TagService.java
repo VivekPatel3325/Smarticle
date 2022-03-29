@@ -15,4 +15,6 @@ public interface TagService {
 	List<Tag> getTags(String userName);
 	
 	List<Tag> createArticleTag(String tagName);
+	
+	List<Tag> retrieveAllTags();
 }
