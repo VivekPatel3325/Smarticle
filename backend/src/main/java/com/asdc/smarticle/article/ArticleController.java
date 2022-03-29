@@ -64,7 +64,7 @@ public class ArticleController extends BaseController {
 			@RequestParam(defaultValue = "4") int totalPage) {
 		String jwtToken = http.getFirst("jwt-token");
 		String userName = "";
-		if (jwtToken != null && !jwtToken.isBlank()) {
+		if (jwtToken != null && !jwtToken.isEmpty()) {
 			userName = jwtUtils.getUserNameFromJwt(jwtToken);
 		}
 		Page<Article> articleList = articleService.getArticleByUser(userName, page, totalPage);

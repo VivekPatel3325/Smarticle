@@ -48,8 +48,6 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public List<Article> getArticle(String visibility) throws ArticleException {
-
-		System.out.println(visibility);
 		List<Article> articleList = null;
 		try {
 
