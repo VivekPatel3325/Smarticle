@@ -37,11 +37,6 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "userid", referencedColumnName = "id")
     private User userId;
-
-//    @Column(insertable = false)
-//    @CollectionTable(name="article_tags", joinColumns=@JoinColumn(name="articles_id"))
-//    @ElementCollection(targetClass=Tag.class)
-//    private Set<Tag> tagId;
     
 	@ManyToMany
 	@JoinTable(name = "article_tags", joinColumns = @JoinColumn(name = "articles_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tags_id", referencedColumnName = "id"))
