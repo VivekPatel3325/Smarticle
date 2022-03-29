@@ -7,10 +7,17 @@ export default function useUserTags() {
   const [tags, setTags] = useState([]);
   const token = user?.token;
   useEffect(() => {
-    async function get() {
+    async function getUserTags() {
       setTags(await tagsService.getUserTags(token));
     }
-    get();
+    async function getAllTags() {
+      setTags(await tagsService.getAll());
+    }
+    if (user?.token) {
+      getUserTags();
+    } else {
+      getAllTags();
+    }
   }, [token]);
   return tags;
 }

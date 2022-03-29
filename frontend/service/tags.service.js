@@ -1,7 +1,7 @@
 import { serverUrl } from "helpers/api";
 import _ from "lodash";
 
-async function getAll(token) {
+async function getAll() {
   let data;
   try {
     data = await (
