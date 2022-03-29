@@ -33,7 +33,9 @@ public class ApplicationUrlPath {
 	 */
 	public static final String ALL_ARTICLE = "ALL";
 
-	public static final String RETRIEVE_TAG = "/retriveTags";
+	public static final String RETRIEVE_USER_PREF_TAG = "/retriveTags";
+	
+	public static final String RETRIEVE_ALL_TAG = "/retriveAllTags";
 
 	public static final String GET_ARTICLE_BY_ID = "/getArticleById";
 

@@ -34,8 +34,8 @@ public class TagController extends BaseController {
 	@Autowired
 	JwtUtils jwtUtils;
 
-	@GetMapping(ApplicationUrlPath.RETRIEVE_TAG)
-	public List<Tag> getTag(@RequestHeader HttpHeaders http) {
+	@GetMapping(ApplicationUrlPath.RETRIEVE_USER_PREF_TAG)
+	public List<Tag> getUserTag(@RequestHeader HttpHeaders http) {
 		List<Tag> tags = null;
 		String jwtToken = http.getFirst("jwt-token");
 		String userName = "";
@@ -68,5 +68,18 @@ public class TagController extends BaseController {
 			e.printStackTrace();
 		}
 		return prepareSuccessResponse(tagList);
+	}
+	
+	
+	/**
+	 * @author Vivekkumar Patel
+	 * Retrieve all tags exist in the system
+	 * @return List<Tag> containing all tags details.
+	 */
+	@GetMapping(ApplicationUrlPath.RETRIEVE_ALL_TAG)
+	public List<Tag> getTag(@RequestHeader HttpHeaders http) {
+		List<Tag> tags = null;
+		tags = tagService.retrieveAllTags();
+		return tags;
 	}
 }
