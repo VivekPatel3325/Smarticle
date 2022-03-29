@@ -39,7 +39,7 @@ public class TagController extends BaseController {
 		List<Tag> tags = null;
 		String jwtToken = http.getFirst("jwt-token");
 		String userName = "";
-		if (jwtToken!=null && !jwtToken.isBlank() && !jwtToken.equals("null") && !jwtToken.equals("undefined")) {
+		if (jwtToken!=null && !jwtToken.isEmpty() && !jwtToken.equals("null") && !jwtToken.equals("undefined")) {
 			userName = jwtUtils.getUserNameFromJwt(jwtToken);			
 		}
 		tags = tagService.getTags(userName);
@@ -58,7 +58,6 @@ public class TagController extends BaseController {
 		try {
 			String jwtToken = http.getFirst("jwt-token");
 			if (!jwtToken.isEmpty()) {
-				
 				tagList = tagService.createArticleTag(tagName);
 				if (tagList == null) {
 					return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.name(),

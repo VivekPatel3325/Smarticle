@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -18,7 +19,7 @@ public class Article {
     @Column
     private String heading;
 
-    @Column
+    @Column(columnDefinition = "text")
     private String content;
 
     @Column
@@ -37,10 +38,14 @@ public class Article {
     @JoinColumn(name = "userid", referencedColumnName = "id")
     private User userId;
 
-    @Column(insertable = false)
-    @CollectionTable(name="article_tags", joinColumns=@JoinColumn(name="articles_id"))
-    @ElementCollection(targetClass=Tag.class)
-    private Set<Tag> tagId;
+//    @Column(insertable = false)
+//    @CollectionTable(name="article_tags", joinColumns=@JoinColumn(name="articles_id"))
+//    @ElementCollection(targetClass=Tag.class)
+//    private Set<Tag> tagId;
+    
+	@ManyToMany
+	@JoinTable(name = "article_tags", joinColumns = @JoinColumn(name = "articles_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tags_id", referencedColumnName = "id"))
+	private Set<Tag> tagId = new HashSet<Tag>();
 
 	public Long getId() {
 		return id;
@@ -105,4 +110,5 @@ public class Article {
 	public void setTagId(Set<Tag> tagId) {
 		this.tagId = tagId;
 	}
+	
 }

@@ -187,7 +187,6 @@ public class UserController extends BaseController {
 			String jwtToken = http.getFirst("jwt-token");
 			if (!jwtToken.isEmpty()) {
 				String userName = jwtUtils.getUserNameFromJwt(jwtToken);
-
 				User user = userService.saveUserPrefTags(userName, tagList);
 				if (user != null) {
 					return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
