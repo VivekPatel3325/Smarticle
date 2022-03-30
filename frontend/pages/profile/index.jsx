@@ -55,26 +55,26 @@ export default function Profile() {
   const handleTags = (tags) => setTags(tags);
   const options = useTags();
   const submitTags = () => {
-    const t = tags.map(t => {
+    const t = tags.map((t) => {
       return {
         id: Number(t.value),
-        tagName: t.label
-      }
-    })
+        tagName: t.label,
+      };
+    });
     return userService
       .saveTags(t, token)
       .then((data) => {
         if (data["statusCode"] !== 200) {
           toast.error(`Error: ${JSON.stringify(data["message"])}`);
         } else {
-          toast.success("Details Updated Successfully");
+          toast.success("Preferences Saved Successfully");
         }
       })
       .catch((e) => {
         console.log(e);
         toast.error("Error while updating details");
       });
-  }
+  };
   return (
     <Main title="Profile">
       <div className="grid grid-cols-1 gap-3 w-full lg:w-96">
