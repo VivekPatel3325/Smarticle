@@ -24,9 +24,8 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
 
     @Override
     public List<Map<String,Object>> getTwitterTagCount(Set<Tag> tags) {
-        HashMap<String,Integer> tagCount = new HashMap<>();
+        new HashMap<>();
         List<String> tagNameList = new ArrayList<>();
-        String bearerToken = "AAAAAAAAAAAAAAAAAAAAAGLAZwEAAAAAK%2FvG7bvpg2dQfVtmWGxTzFEv45U%3DgzwT78zN44O1cUWFgH0s8ZwoldvFr2e29OTDDjOukr9FP0idsB";
         List<Map<String,Object>> finalResponse = new ArrayList<>();
         for(Tag tag : tags){
 
