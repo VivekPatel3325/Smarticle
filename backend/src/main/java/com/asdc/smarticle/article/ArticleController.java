@@ -6,7 +6,6 @@ import com.asdc.smarticle.security.JwtUtils;
 import com.asdc.smarticle.user.exception.ArticleException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,4 +75,17 @@ public class ArticleController extends BaseController {
 		List<Map<String,Object>> tweetData = articleService.getTwitterCountOfArticleTags(id);
 		return tweetData;
 	}
+	
+	@PostMapping(ApplicationUrlPath.SET_LIKE)
+	public ResponseVO<String> setLike(@RequestHeader HttpHeaders http, @RequestBody Article article){
+		String jwtToken = http.getFirst("jwt-token");
+		String userName = "";
+		if (jwtToken != null && !jwtToken.isEmpty()) {
+			userName = jwtUtils.getUserNameFromJwt(jwtToken);
+		}
+		articleService.setLike(article,userName);
+		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
+	}
+	
+	
 }

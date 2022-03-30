@@ -51,4 +51,6 @@ public class ApplicationUrlPath {
 	public static final String GET_TWEET_DATA_BY_ARTICLE_ID= "/getTweetDataOfArticle";
 
 	public static final String GET_USER_DETAILS_POSTED_ARTICLE = "/getUserDetailsPostedArticle";
+
+	public static final String SET_LIKE = "/setLike";
 }
