@@ -21,7 +21,7 @@ export default function Home() {
     { value: "Date", label: "By Date" },
     { value: "Likes", label: "By Likes" },
   ];
-  const [tagcount,setTagcount] = useState([]);
+  const [tagcount, setTagcount] = useState([]);
   const authors = useAllAuthors();
   const preferredTags = useUserTags();
   const [posts, setPosts] = useState([]);
@@ -156,7 +156,9 @@ export default function Home() {
                   ></article>
                 </div>
                 <div>
-                  <p className="ml-3 lg:ml-1 mb-7 italic">Likes: 1013</p>
+                  <p className="ml-3 lg:ml-1 mb-7 italic">
+                    Likes: {post.like.length}
+                  </p>
                   <Link href={"/post/" + post.id}>
                     <span className="ml-3 lg:ml-0 cursor-pointer transition duration-500 ease transform hover:-translate-y-1 border-black border-2 rounded-md font-normal hover:bg-black hover:text-white mt-4 p-2">
                       Continue Reading

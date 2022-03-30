@@ -42,7 +42,7 @@ const Signup = () => {
       .register(toSubmit)
       .then((data) => {
         if (data["statusCode"] !== 200) {
-          throw new Error(JSON.stringify(data["message"]));
+          toast.error(JSON.stringify(data["message"]));
         } else {
           toast.success("Verification link sent to registered email id");
         }
