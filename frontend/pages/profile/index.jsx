@@ -5,9 +5,11 @@ import Select from "react-select";
 import useUser from "hooks/useUser";
 import { toast } from "react-toastify";
 import { userService } from "service/user.service";
+import useUserTags from "hooks/useUserTags";
 
 export default function Profile() {
   const user = useUser();
+  const preferredTags = useUserTags();
   const token = user?.token;
   const [details, setDetails] = useState([]);
   const [firstname, setfirstname] = useState("");
@@ -46,6 +48,9 @@ export default function Profile() {
     }
     get();
   }, [user?.token, user]);
+  useEffect(() => {
+    setTags(preferredTags);
+  }, [preferredTags]);
   const [tags, setTags] = useState([]);
   const handleTags = (tags) => setTags(tags);
   const options = useTags();
@@ -146,6 +151,8 @@ export default function Profile() {
               id="tags"
               instanceId={"tags"}
               onChange={handleTags}
+              hideSelectedOptions
+              value={tags}
             />
           </div>
           <button

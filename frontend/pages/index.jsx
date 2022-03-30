@@ -20,9 +20,14 @@ export default function Home() {
     { value: "Likes", label: "By Likes" },
   ];
   const authors = useAllAuthors();
-  const tags = useUserTags();
+  const preferredTags = useUserTags();
   const [posts, setPosts] = useState([]);
   const user = useUser();
+  const [tags, setTags] = useState([]);
+  const handleTags = (tags) => setTags(tags);
+  useEffect(() => {
+    setTags(preferredTags);
+  }, [preferredTags]);
   useEffect(() => {
     async function get() {
       const token = user?.token ?? null;
@@ -48,6 +53,8 @@ export default function Home() {
                   placeholder="Select Tags"
                   id="tags"
                   instanceId={"tags"}
+                  value={tags}
+                  onChange={handleTags}
                 />
               </div>
               <div>
