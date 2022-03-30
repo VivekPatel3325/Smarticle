@@ -42,7 +42,11 @@ const Signup = () => {
       .register(toSubmit)
       .then((data) => {
         if (data["statusCode"] !== 200) {
+<<<<<<< Updated upstream
           throw new Error (JSON.stringify(data["message"]));
+=======
+          toast.error(JSON.stringify(data["message"]));
+>>>>>>> Stashed changes
         } else {
           router.push("/login");
         }

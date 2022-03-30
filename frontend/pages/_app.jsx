@@ -17,8 +17,11 @@ function MyApp({ Component, pageProps }) {
       "/login",
       "/",
       "/forgot",
+<<<<<<< Updated upstream
       "/reset",
       "/verify",
+=======
+>>>>>>> Stashed changes
     ];
     const path = url.split("?")[0];
     if (!userService.userValue && !publicPaths.includes(path)) {

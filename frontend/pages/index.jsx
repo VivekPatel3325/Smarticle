@@ -2,19 +2,22 @@ import Main from "layouts/main";
 import moment from "moment";
 import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+<<<<<<< Updated upstream
 import useTags from "hooks/useTags";
+=======
+import useUserTags from "hooks/useUserTags";
+import useAllAuthors from "hooks/useAuthors";
+import { twitterService } from "service/twitter.service";
+>>>>>>> Stashed changes
 import { postService } from "service/post.service";
 import useUser from "hooks/useUser";
 import { tagsService } from "service/tags.service";
 import CountUp from "react-countup";
-library.add(faUser);
-library.add(faTwitter);
+
 export default function Home() {
+  const [tagcount, setTagcount] = useState([]);
   const options = [
     { value: "Date", label: "By Date" },
     { value: "Likes", label: "By Likes" },
@@ -24,6 +27,7 @@ export default function Home() {
   const user = useUser();
   useEffect(() => {
     async function get() {
+      setTagcount(await twitterService.getTweetCount(user?.token));
       const token = user?.token ?? null;
       setPosts(await postService.getAll(token));
     }
@@ -33,6 +37,30 @@ export default function Home() {
     <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
         <div className="lg:col-span-4 col-span-1">
+          {user && (
+            <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
+              <h3 className="text-xl mb-5 font-semibold border-b pb-4">
+                <FontAwesomeIcon
+                  icon="fa-brands fa-twitter"
+                  className="ml-3 lg:ml-1 text-blue-400"
+                />{" "}
+                &nbsp; &nbsp;Tweet Counts
+              </h3>
+              <div>
+                {tagcount.map((tweet) => {
+                  return (
+                    <h1 className="font-semibold ml-3 lg:ml-1">
+                      {tweet.tagName} &nbsp; &nbsp;{" "}
+                      <CountUp
+                        className="font-extrabold"
+                        end={tweet.tweetCount}
+                      />
+                    </h1>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div className="lg:sticky relative top-8">
             <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
               <h3 className="text-xl mb-5 font-semibold border-b pb-4">
@@ -78,6 +106,7 @@ export default function Home() {
                 </button>
               </div>
             </div>
+<<<<<<< Updated upstream
             <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
               <h3 className="text-xl mb-5 font-semibold border-b pb-4">
                 <FontAwesomeIcon icon="fa-brands fa-twitter" /> &nbsp;
@@ -94,6 +123,8 @@ export default function Home() {
                 </h1>
               </div>
             </div>
+=======
+>>>>>>> Stashed changes
           </div>
         </div>
         <div className="lg:col-span-8 col-span-1">
