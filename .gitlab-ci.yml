@@ -19,6 +19,9 @@ stages:
 
   # builds this application.
     - build
+    
+  # Quality Analysis
+    - code-quality
   
   # deploy this application on heroku.
     - deploy
@@ -100,6 +103,30 @@ backend-build:
         when: on_success
         paths:
         - $TARGET_FOLDER_NAME/*.war
+
+code-quality:
+  stage: code-quality
+  image: maven:3-jdk-11
+  variables:
+    UPLOAD_QUALITY_REPORT: 'curl -X PUT -H "Authorization: Token $QSCORED_API_KEY" + -H "username:sr231438@dal.ca" -H "Content-Type:   application/xml" --url "https://qscored.com/api/upload/file.xml?is_open_access=off&version=$CI_PIPELINE_IID&project_name=Smarticles" -F "file=@DesigniteAnalysis.xml"'
+
+  before_script:
+    - apt-get update
+    - apt-get install -y wget curl
+    - wget -O DesigniteJava.jar https://www.dropbox.com/s/mwizkj8uhplz4x3/DesigniteJava.jar?dl=1
+  script:
+    - cd backend
+    - java -jar DesigniteJava.jar -i ./ -o code-quality/ -f XML
+    - ls -l
+    - ls code-quality
+    - cd code-quality
+    - eval "$UPLOAD_QUALITY_REPORT"
+    - echo "$UPLOAD_QUALITY_REPORT"
+  only:
+      refs:
+        - main        
+      changes:
+            - backend/**/*
 
 frontend-deploy:
     stage: deploy
