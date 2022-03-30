@@ -15,8 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.json.DataObjectFactory;
-
 import java.util.*;
 
 @Service
@@ -146,4 +144,17 @@ public class ArticleServiceImpl implements ArticleService {
 		return new TwitterFactory(confBuild.build()).getInstance();
 	}
 
+	@Override
+	public void setLike(Article article, String userName) {
+		User user = userRepository.findByUserName(userName);
+		Article article1 = articleRepository.getById(article.getId());
+		if(article1.getLike().contains(user)) {
+			article1.getLike().remove(user);
+		}else {
+			article1.getLike().add(user);
+		}
+		//article1.getLike().add(user);
+		article1.setLike(article1.getLike());
+		articleRepository.save(article1);
+	}
 }

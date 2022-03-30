@@ -18,4 +18,6 @@ public interface ArticleService {
 	Page<Article> getArticleByUser(String userName, int page, int totalPage);
 
 	List<Map<String,Object>> getTwitterCountOfArticleTags(Long id);
+
+	void setLike(Article article, String userName);
 	}

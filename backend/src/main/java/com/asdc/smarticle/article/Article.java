@@ -41,9 +41,21 @@ public class Article {
 	@ManyToMany
 	@JoinTable(name = "article_tags", joinColumns = @JoinColumn(name = "articles_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tags_id", referencedColumnName = "id"))
 	private Set<Tag> tagId = new HashSet<Tag>();
+	
+	@ManyToMany
+	@JoinTable(name = "article_like", joinColumns = @JoinColumn(name = "articles_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+	private Set<User> like = new HashSet<User>();
 
 	public Long getId() {
 		return id;
+	}
+
+	public Set<User> getLike() {
+		return like;
+	}
+
+	public void setLike(Set<User> like) {
+		this.like = like;
 	}
 
 	public void setId(Long id) {
