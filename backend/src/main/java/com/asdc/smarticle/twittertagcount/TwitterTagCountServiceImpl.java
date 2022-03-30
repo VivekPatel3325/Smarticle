@@ -1,6 +1,7 @@
 package com.asdc.smarticle.twittertagcount;
 
 import com.asdc.smarticle.articletag.Tag;
+import com.asdc.smarticle.comutil.AppConstant;
 
 import java.io.IOException;
 import java.util.*;
@@ -37,13 +38,13 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
             Request request = new Request.Builder()
                     .url("https://api.twitter.com/2/tweets/counts/recent?query="+tagName)
                     .method("GET", null)
-                    .addHeader("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAGLAZwEAAAAAK%2FvG7bvpg2dQfVtmWGxTzFEv45U%3DgzwT78zN44O1cUWFgH0s8ZwoldvFr2e29OTDDjOukr9FP0idsB")
+                    .addHeader(AppConstant.TWITTER_AUTHORIZATION_STRING, AppConstant.TWITTER_BEARER_TOKEN)
                     .addHeader("Cookie", "guest_id=v1%3A164689235684418023; guest_id_ads=v1%3A164689235684418023; guest_id_marketing=v1%3A164689235684418023; personalization_id=\"v1_qjJQs1OXPN9lfhJz3yQCQA==\"")
                     .build();
             try {
                 Response response = client.newCall(request).execute();
 
-                JSONObject jsonObject = new JSONObject(response.peekBody(153600).string());
+                JSONObject jsonObject = new JSONObject(response.peekBody(AppConstant.MAX_VALUE).string());
                 System.out.println(jsonObject.toString());
 
                 org.json.JSONArray jsonArray = jsonObject.getJSONArray("data");
