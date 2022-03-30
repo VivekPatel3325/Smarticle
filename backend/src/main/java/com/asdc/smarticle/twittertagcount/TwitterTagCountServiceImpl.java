@@ -65,14 +65,12 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
        }
 
         int n = finalResponse.size();
-        for (int i = 0; i < n; i++) {
-            for (int j = 1; j < (n - i); j++) {
-                if ((int) finalResponse.get(j-1).get("tweetCount") < (int) finalResponse.get(j).get("tweetCount")) {
-                    Map<String, Object> temp = finalResponse.get(j-1);
-                    finalResponse.remove(j-1);
-                    finalResponse.add(j-1, finalResponse.get(j));
-                    finalResponse.remove(j);
-                    finalResponse.add(j, temp);
+        for (int i = 0; i < n-1; i++) {
+            for (int j = 0; j < (n - i-1); j++) {
+                if ((int) finalResponse.get(j).get("tweetCount") < (int) finalResponse.get(j+1).get("tweetCount")) {
+                    Map<String, Object> temp = finalResponse.get(j);
+                    finalResponse.set(j, finalResponse.get(j+1));
+                    finalResponse.set(j+1, temp);
                 }
             }
         }
