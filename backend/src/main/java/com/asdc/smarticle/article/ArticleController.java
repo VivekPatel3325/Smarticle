@@ -65,6 +65,14 @@ public class ArticleController extends BaseController {
 		return articleList;
 	}
 
+	/**
+	 * @author Sarthak Patel Get user details such as firstname,lastname,username
+	 *         etc
+	 * @param http header containing jwt token to validate the user.
+	 * @param page
+	 * @param totalPage
+	 * @return Page of Article
+	 */
 	@GetMapping(ApplicationUrlPath.GET_ARTICLE_BY_USER)
 	public Page<Article> getArticleByUser(@RequestHeader HttpHeaders http, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "4") int totalPage) {
