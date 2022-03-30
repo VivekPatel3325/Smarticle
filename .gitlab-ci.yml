@@ -116,7 +116,7 @@ code-quality:
     - wget -O DesigniteJava.jar https://www.dropbox.com/s/mwizkj8uhplz4x3/DesigniteJava.jar?dl=1
   script:
     - cd backend
-    - java -jar DesigniteJava.jar -i ./ -o code-quality/ -f XML
+    - java -jar ./../DesigniteJava.jar -i ./ -o code-quality/ -f XML
     - ls -l
     - ls code-quality
     - cd code-quality
