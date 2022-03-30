@@ -51,18 +51,33 @@ public class EmailServiceImpl implements EmailService {
 		mimeMessageHelper.setSubject("Smarticle user account verification");
 		javaMailSender.send(mimeMessage);
 	}
-
+	
+	/**
+	 * @author Vivekkumar Patel
+	 * Build http url for account verification containing given token 
+	 * @param token jwt token string.
+	 * @return http url string.
+	 */
 	public String httpVeificationURL(Token token) {
-		final String verificationURl = UriComponentsBuilder.fromHttpUrl(clientURl)
-				.path("/verify").queryParam("token", token.getToken())
-				.toUriString();
-		return verificationURl;
-	}
 
+		UriComponentsBuilder verificationURl = UriComponentsBuilder.fromHttpUrl(clientURl).path("/verify");
+
+		verificationURl = verificationURl.queryParam("token", token.getToken());
+
+		return verificationURl.toUriString();
+	}
+	
+	/**
+	 * @author Vivekkumar Patel
+	 * Build http url for reset password containing given token 
+	 * @param token jwt token string.
+	 * @return http url string.
+	 */
 	public String httpResetPasswordnURL(ResponseCookie token) {
-		final String verificationURl = UriComponentsBuilder.fromHttpUrl(clientURl)
-				.path("/reset").queryParam("token", token.getValue()).toUriString();
-		return verificationURl;
+		UriComponentsBuilder verificationURl = UriComponentsBuilder.fromHttpUrl(clientURl).path("/reset");
+
+		verificationURl = verificationURl.queryParam("token", token.getValue());
+		return verificationURl.toUriString();
 	}
 
 	@Override

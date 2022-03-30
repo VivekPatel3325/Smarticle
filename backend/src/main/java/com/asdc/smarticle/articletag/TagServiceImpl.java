@@ -34,13 +34,21 @@ public class TagServiceImpl implements TagService {
 		if (!userName.isEmpty()) {
 			user = userRepository.findByUserName(userName);
 		}
-		if (userName.isEmpty() || (user != null && user.getTags().isEmpty())) {
-			System.out.println();
+		if (userName.isEmpty() || isUserTagsExist(user)) {
 			return articletagRepository.findAll();
 		} else {
 			Set<Tag> setOfTags = user.getTags();
 			return new ArrayList<>(setOfTags);
 		}
+	}
+	/**
+	 * @author Vivekkumar Patel 
+	 * This method checks that does user has set tags for thier preference or not.
+	 * @param user instnace of the use class .
+	 * @return true if tags are set as a user's preference else false.
+	 */
+	private boolean isUserTagsExist(User user) {
+		return user != null && user.getTags().isEmpty();
 	}
 
 	@Override

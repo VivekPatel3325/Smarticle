@@ -3,6 +3,7 @@ package com.asdc.smarticle.article;
 import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.articletag.TagRepository;
 import com.asdc.smarticle.comutil.ApiError;
+import com.asdc.smarticle.comutil.AppConstant;
 import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
@@ -38,12 +39,33 @@ public class ArticleServiceImpl implements ArticleService {
 		article.setUserId(user);
 		System.out.println(article.getTagId());
 
-		if ((article.getHeading() == null || article.getHeading().isEmpty())
-				|| (article.getContent().isEmpty() || article.getContent() == null)) {
+		if (isContentEmpty(article)
+				|| isHeadingEmpty(article)) {
 			throw new ArticleException(ApiError.ARTICLE_FIELD_NOT_NULL);
 		}
 
 		return articleRepository.save(article);
+	}
+	
+	/**
+	 * @author Vivekkumar Patel 
+	 * This method checks that header of the article is empty or not.
+	 * @param article instance containng details such as content,heading,visibility etc.
+	 * @return true if header of the article is empty else false.
+	 */
+	private boolean isHeadingEmpty(Article article) {
+		return article.getContent().isEmpty() || article.getContent() == null;
+	}
+
+	/**
+	 * @author Vivekkumar Patel 
+	 * This method checks that content of the article is empty or not.
+	 * @param article instance containng details such as content,heading,visibility etc.
+	 * @return true if content of the article is empty else false.
+	 */
+
+	private boolean isContentEmpty(Article article) {
+		return article.getHeading() == null || article.getHeading().isEmpty();
 	}
 
 	@Override
@@ -102,7 +124,7 @@ public class ArticleServiceImpl implements ArticleService {
 		Twitter twitter = authentication();
 
 		Query search = new Query(searchQuery);
-		search.count(5);
+		search.count(AppConstant.MAX_TWEET);
 		QueryResult tweetData;
 		try {
 			tweetData = twitter.search(search);
