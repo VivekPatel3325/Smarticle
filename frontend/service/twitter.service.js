@@ -15,7 +15,6 @@ const getTweetDetails = async (token, id) => {
   } catch (err) {
     throw new Error("Error in fetching");
   }
-  console.log(res);
   return res;
 };
 
