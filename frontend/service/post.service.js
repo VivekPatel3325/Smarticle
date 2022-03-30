@@ -79,9 +79,29 @@ const getByAuthor = async (token) => {
   return res["content"];
 };
 
+const postLike = async (token, id) => {
+  let res;
+  try {
+    res = await (
+      await fetch(`${serverUrl}/article/setLike`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "jwt-token": `${token}`,
+        },
+        body: JSON.stringify({ id: id }),
+      })
+    ).json();
+  } catch (err) {
+    throw new Error("Error in fetching");
+  }
+  return res;
+};
+
 export const postService = {
   post,
   getAll,
   getById,
   getByAuthor,
+  postLike
 };

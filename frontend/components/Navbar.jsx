@@ -5,7 +5,7 @@ import { userService } from "service/user.service";
 export default function Navbar() {
   const user = useUser();
   return (
-    <div className="flex flex-row bg-black text-white w-full justify-between py-2 px-3 text-lg font-thin items-center">
+    <div className="flex flex-row bg-black text-white w-full justify-between py-2 px-3 text-lg font-thin items-center lg:sticky">
       <div className="hover:underline decoration-gray-600">
         <Link href="/">Smarticle</Link>
       </div>

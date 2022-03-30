@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Main from "layouts/main";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import moment from "moment";
 import { postService } from "service/post.service";
@@ -8,13 +11,33 @@ import useUser from "hooks/useUser";
 import { twitterService } from "service/twitter.service";
 import { tagsService } from "service/tags.service";
 
+library.add(faThumbsUp, faThumbsDown);
 const PostDetails = () => {
   const router = useRouter();
   const user = useUser();
   const { id } = router.query;
   const onClickLike = () => {
-    console.log("Liked");
+    if (like === false) {
+      toast("Liked", { position: toast.POSITION.BOTTOM_LEFT, autoClose: 500 });
+    } else {
+      toast("Disliked", {
+        position: toast.POSITION.BOTTOM_LEFT,
+        autoClose: 500,
+      });
+    }
+    setLike((prev) => !prev);
+    return postService
+      .postLike(user?.token, id)
+      .then((data) => {
+        if (data["statusCode"] !== 200) {
+          throw new Error(JSON.stringify(data["message"]));
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
+  const [like, setLike] = useState(false);
   const [tweets, setTweets] = useState([]);
   const [post, setPost] = useState({
     heading: "",
@@ -73,7 +96,7 @@ const PostDetails = () => {
             className="text-left mb-10"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
-          <div className="mt-4">
+          <div className="mt-4 mb-5">
             {post.tags.map((tag) => {
               return (
                 <span className="px-1.5 bg-white border-black border-2 rounded-lg mr-2">
@@ -82,11 +105,13 @@ const PostDetails = () => {
               );
             })}
           </div>
-          <FontAwesomeIcon
-            className="my-3 text-2xl opacity-50 hover:opacity-100 hover:cursor-pointer"
-            icon="thumbs-up"
-            onClick={onClickLike}
-          />
+          {user && (
+            <FontAwesomeIcon
+              className="my-3 text-2xl opacity-50 hover:opacity-100 hover:cursor-pointer"
+              icon={like ? faThumbsDown : faThumbsUp}
+              onClick={onClickLike}
+            />
+          )}
         </div>
         <div className="">
           {tweets &&
