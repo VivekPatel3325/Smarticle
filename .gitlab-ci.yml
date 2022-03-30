@@ -115,6 +115,7 @@ code-quality:
     - apt-get install -y wget curl
     - wget -O DesigniteJava.jar https://www.dropbox.com/s/mwizkj8uhplz4x3/DesigniteJava.jar?dl=1
   script:
+    - cd backend
     - java -jar DesigniteJava.jar -i ./ -o code-quality/ -f XML
     - ls -l
     - ls code-quality
@@ -122,7 +123,10 @@ code-quality:
     - eval "$UPLOAD_QUALITY_REPORT"
     - echo "$UPLOAD_QUALITY_REPORT"
   only:
-    - main
+      refs:
+        - main        
+      changes:
+            - backend/**/*
 
 frontend-deploy:
     stage: deploy

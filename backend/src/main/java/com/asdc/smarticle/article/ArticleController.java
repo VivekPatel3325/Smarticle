@@ -50,6 +50,13 @@ public class ArticleController extends BaseController {
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
 
+	/**
+	 * @author Sarthak Patel Get user details such as firstname,lastname,username
+	 *         etc
+	 * @param http header containing jwt token to validate the user.
+	 * @body article ID
+	 * @return List of Article
+	 */
 	@GetMapping(ApplicationUrlPath.GET_ARTICLE_BY_ID)
 	public List<Article> getArticleById(@RequestHeader HttpHeaders http, @RequestParam Long id) {
 		Article article = articleService.getArticleById(id);
