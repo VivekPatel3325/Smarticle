@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 public interface TwitterTagCountService {
-    Map<String, Integer> getTwitterTagCount(Set<Tag> tags);
+    List<Map<String,Object>> getTwitterTagCount(Set<Tag> tags);
 }
