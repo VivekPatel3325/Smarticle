@@ -115,9 +115,10 @@ frontend-deploy:
         - gem install dpl
         - dpl --provider=heroku --app=$HEROKU_FE_APP_NAME --api-key=$HEROKU_FE_APP_KEY
         - echo "frontend application has been built"
-    rules:
-        - if: '$CI_COMMIT_BRANCH == "main"'
-          changes:
+    only:
+      refs:
+        - main        
+      changes:
             - frontend/**/*        
 
 backend-deploy:
@@ -133,7 +134,8 @@ backend-deploy:
         - gem install dpl
         - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
         - echo "backend application has been built"
-    rules:
-        - if: '$CI_COMMIT_BRANCH == "main"'
-          changes:
+    only:
+      refs:
+        - main        
+      changes:
             - backend/**/*
