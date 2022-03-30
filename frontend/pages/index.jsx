@@ -12,6 +12,8 @@ import useAllAuthors from "hooks/useAuthors";
 import { postService } from "service/post.service";
 import useUser from "hooks/useUser";
 import CountUp from "react-countup";
+import { twitterService } from "service/twitter.service";
+
 library.add(faUser);
 library.add(faTwitter);
 export default function Home() {
@@ -19,12 +21,19 @@ export default function Home() {
     { value: "Date", label: "By Date" },
     { value: "Likes", label: "By Likes" },
   ];
+  const [tagcount,setTagcount] = useState([]);
   const authors = useAllAuthors();
-  const tags = useUserTags();
+  const preferredTags = useUserTags();
   const [posts, setPosts] = useState([]);
   const user = useUser();
+  const [tags, setTags] = useState([]);
+  const handleTags = (tags) => setTags(tags);
+  useEffect(() => {
+    setTags(preferredTags);
+  }, [preferredTags]);
   useEffect(() => {
     async function get() {
+      setTagcount(await twitterService.getTweetCount(user?.token));
       const token = user?.token ?? null;
       setPosts(await postService.getAll(token));
     }
@@ -34,6 +43,30 @@ export default function Home() {
     <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
         <div className="lg:col-span-4 col-span-1">
+          {user && (
+            <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
+              <h3 className="text-xl mb-5 font-semibold border-b pb-4">
+                <FontAwesomeIcon
+                  icon="fa-brands fa-twitter"
+                  className="ml-3 lg:ml-1 text-blue-400"
+                />{" "}
+                &nbsp; &nbsp;Tweet Counts
+              </h3>
+              <div>
+                {tagcount.map((tweet) => {
+                  return (
+                    <h1 className="font-semibold ml-3 lg:ml-1">
+                      {tweet.tagName} &nbsp; &nbsp;{" "}
+                      <CountUp
+                        className="font-extrabold"
+                        end={tweet.tweetCount}
+                      />
+                    </h1>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div className="lg:sticky relative top-8">
             <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
               <h3 className="text-xl mb-5 font-semibold border-b pb-4 ml-3 lg:ml-1">
@@ -48,6 +81,8 @@ export default function Home() {
                   placeholder="Select Tags"
                   id="tags"
                   instanceId={"tags"}
+                  value={tags}
+                  onChange={handleTags}
                 />
               </div>
               <div>
@@ -77,25 +112,6 @@ export default function Home() {
                 >
                   Search
                 </button>
-              </div>
-            </div>
-            <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
-              <h3 className="text-xl mb-5 font-semibold border-b pb-4">
-                <FontAwesomeIcon
-                  icon="fa-brands fa-twitter"
-                  className="ml-3 lg:ml-1 text-blue-400"
-                />{" "}
-                &nbsp; &nbsp;Tweet Counts
-              </h3>
-              <div>
-                <h1 className="font-semibold ml-3 lg:ml-1">
-                  Sport &nbsp; &nbsp;{" "}
-                  <CountUp className="font-extrabold" end={1047} />
-                </h1>
-                <h1 className="font-semibold ml-3 lg:ml-1">
-                  Cloud &nbsp; &nbsp;{" "}
-                  <CountUp className="font-extrabold" end={2000} />
-                </h1>
               </div>
             </div>
           </div>

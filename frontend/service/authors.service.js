@@ -23,7 +23,6 @@ async function getAuthors() {
         }
       })
       .filter((author) => author.label !== null);
-      console.log(data);
     return data;
   }
 

@@ -5,9 +5,11 @@ import Select from "react-select";
 import useUser from "hooks/useUser";
 import { toast } from "react-toastify";
 import { userService } from "service/user.service";
+import useUserTags from "hooks/useUserTags";
 
 export default function Profile() {
   const user = useUser();
+  const preferredTags = useUserTags();
   const token = user?.token;
   const [details, setDetails] = useState([]);
   const [firstname, setfirstname] = useState("");
@@ -46,30 +48,33 @@ export default function Profile() {
     }
     get();
   }, [user?.token, user]);
+  useEffect(() => {
+    setTags(preferredTags);
+  }, [preferredTags]);
   const [tags, setTags] = useState([]);
   const handleTags = (tags) => setTags(tags);
   const options = useTags();
   const submitTags = () => {
-    const t = tags.map(t => {
+    const t = tags.map((t) => {
       return {
         id: Number(t.value),
-        tagName: t.label
-      }
-    })
+        tagName: t.label,
+      };
+    });
     return userService
       .saveTags(t, token)
       .then((data) => {
         if (data["statusCode"] !== 200) {
           toast.error(`Error: ${JSON.stringify(data["message"])}`);
         } else {
-          toast.success("Details Updated Successfully");
+          toast.success("Preferences Saved Successfully");
         }
       })
       .catch((e) => {
         console.log(e);
         toast.error("Error while updating details");
       });
-  }
+  };
   return (
     <Main title="Profile">
       <div className="grid grid-cols-1 gap-3 w-full lg:w-96">
@@ -146,6 +151,8 @@ export default function Profile() {
               id="tags"
               instanceId={"tags"}
               onChange={handleTags}
+              hideSelectedOptions
+              value={tags}
             />
           </div>
           <button
