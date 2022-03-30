@@ -24,14 +24,14 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
     @Override
     public List<Map<String,Object>> getTwitterTagCount(Set<Tag> tags) {
         HashMap<String,Integer> tagCount = new HashMap<>();
-
+        List<String> tagNameList = new ArrayList<>();
         String bearerToken = "AAAAAAAAAAAAAAAAAAAAAGLAZwEAAAAAK%2FvG7bvpg2dQfVtmWGxTzFEv45U%3DgzwT78zN44O1cUWFgH0s8ZwoldvFr2e29OTDDjOukr9FP0idsB";
         List<Map<String,Object>> finalResponse = new ArrayList<>();
         for(Tag tag : tags){
 
             Map<String,Object> data = new HashMap<>();
             String tagName = tag.getTagName();
-
+            tagNameList.add(tagName);
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
             Request request = new Request.Builder()
@@ -66,10 +66,12 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
 
         int n = finalResponse.size();
         for (int i = 0; i < n; i++) {
-            for (int j = 1; j < n - i; j++) {
+            for (int j = 1; j < (n - i); j++) {
                 if ((int) finalResponse.get(j-1).get("tweetCount") < (int) finalResponse.get(j).get("tweetCount")) {
                     Map<String, Object> temp = finalResponse.get(j-1);
+                    finalResponse.remove(j-1);
                     finalResponse.add(j-1, finalResponse.get(j));
+                    finalResponse.remove(j);
                     finalResponse.add(j, temp);
                 }
             }
