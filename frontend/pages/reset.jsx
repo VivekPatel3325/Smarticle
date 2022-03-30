@@ -30,7 +30,10 @@ const Reset = () => {
         if (data["statusCode"] !== 200) {
           toast.error(`Error: ${JSON.stringify(data["message"])}`);
         } else {
-          router.push("/login");
+          toast.success("Password changed Successfully");
+          window.setTimeout(function () {
+            router.push("/login");
+          }, 3000);
         }
       })
       .catch((e) => {
