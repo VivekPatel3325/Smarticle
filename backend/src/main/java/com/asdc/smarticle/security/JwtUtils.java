@@ -8,10 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseCookie.ResponseCookieBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
+import com.asdc.smarticle.comutil.AppConstant;
+
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -45,11 +49,15 @@ public class JwtUtils {
 	    }
 	  }
 
-	  public ResponseCookie generateJwtTokenCookie(String userName) {
-	    String jwt = generateJwtTokenFromUsername(userName);
-	    ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/smarticleapi").maxAge(24 * 60 * 60).httpOnly(true).build();
-	    return cookie;
-	  }
+		public ResponseCookie generateJwtTokenCookie(String userName) {
+			String jwt = generateJwtTokenFromUsername(userName);
+			ResponseCookieBuilder responseCookieBuilder = ResponseCookie.from(jwtCookie, jwt);
+
+			responseCookieBuilder = responseCookieBuilder.path("/smarticleapi").maxAge(AppConstant.MAX_AGE_CONSTANT);
+
+			ResponseCookie cookie = responseCookieBuilder.httpOnly(true).build();
+			return cookie;
+		}
 
 	  public ResponseCookie getCleanJwtTokenCookie() {
 	    ResponseCookie cookie = ResponseCookie.from(jwtCookie, null).path("/smarticleapi").build();
@@ -76,12 +84,34 @@ public class JwtUtils {
 	    return false;
 	  }
 	  
-	  public String generateJwtTokenFromUsername(String username) {   
-	    return Jwts.builder()
-	        .setSubject(username)
-	        .setIssuedAt(new Date())
-	        .setExpiration(new Date((new Date()).getTime() + jwtExpiry))
-	        .signWith(SignatureAlgorithm.HS512, jwtSecret)
-	        .compact();
-	  }
+		public String generateJwtTokenFromUsername(String username) {
+			JwtBuilder jwtBuilder = Jwts.builder();
+			jwtBuilder.setSubject(username);
+			jwtBuilder.setIssuedAt(new Date());
+			jwtBuilder.setExpiration(new Date((new Date()).getTime() + jwtExpiry));
+			jwtBuilder.signWith(SignatureAlgorithm.HS512, jwtSecret);
+
+			return jwtBuilder.compact();
+		}
+	  
+
+		/**
+		 * @author Vivekkumar Patel 
+		 * This method checks that jwtToken is empty or not.
+		 * @param jwtToken string.
+		 * @return true if jwtToken is empty else false.
+		 */
+	  public boolean isTokenEmpty(String jwtToken) {
+			return jwtToken!=null && !jwtToken.isEmpty();
+		}
+
+		/**
+		 * @author Vivekkumar Patel 
+		 * This method checks that jwtToken is undefined or not.
+		 * @param jwtToken string.
+		 * @return true if jwtToken is undefined else false.
+		 */
+	  public boolean isTokenUndefined(String jwtToken) {
+			return !jwtToken.equals("null") && !jwtToken.equals("undefined");
+		}
 }
