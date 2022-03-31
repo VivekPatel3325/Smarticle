@@ -33,8 +33,8 @@ public class ArticleController extends BaseController {
 	JwtUtils jwtUtils;
 
 	@GetMapping(ApplicationUrlPath.RETRIEVE_ARTICLE)
-	public List<Article> retrieveArticle(@RequestParam String visibility) throws ArticleException {
-		List<Article> articles_list = articleService.getArticle(visibility);
+	public Page<Article> retrieveArticle(@RequestParam String visibility, @RequestBody FilterPojo filterPojo) throws ArticleException {
+		Page<Article> articles_list = articleService.getArticle(visibility,filterPojo);
 		System.out.println(articles_list);
 		return articles_list;
 	}

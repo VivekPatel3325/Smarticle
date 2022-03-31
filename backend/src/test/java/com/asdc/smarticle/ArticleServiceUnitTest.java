@@ -33,19 +33,19 @@ public class ArticleServiceUnitTest {
 
 	@MockBean
 	private Article article;
-
-	@Test
-	void retrievesaveArticles() throws ArticleException {
-
-		List<Article> articleEntity = null;
-
-		Mockito.when(articleRepo.findAll()).thenReturn(articleEntity);
-		
-		String visibility="ALL";
-		
-		Assert.assertEquals(null, articleService.getArticle(visibility));
-
-	}
+//
+//	@Test
+//	void retrievesaveArticles() throws ArticleException {
+//
+//		List<Article> articleEntity = null;
+//
+//		Mockito.when(articleRepo.findAll()).thenReturn(articleEntity);
+//		
+//		String visibility="ALL";
+//		
+//		Assert.assertEquals(null, articleService.getArticle(visibility));
+//
+//	}
 
 	/*
 	 * @Test void saveArticles() {

@@ -261,4 +261,13 @@ public class UserServiceImpl implements UserService {
 		return userDetails;
 
 	}
+	
+
+	@Override
+	public List<User> getUserList(List<Long> userId) {
+
+		List<User> users = userRepository.findByIdIn(userId);
+
+		return users;
+	}
 }

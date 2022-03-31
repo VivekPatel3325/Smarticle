@@ -7,6 +7,7 @@ import com.asdc.smarticle.comutil.AppConstant;
 import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
+import com.asdc.smarticle.user.UserService;
 import com.asdc.smarticle.user.exception.ArticleException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,10 @@ public class ArticleServiceImpl implements ArticleService {
 	
 	@Autowired
 	TagRepository tagRepository;
+	
+	@Autowired
+	UserService userService;
+	
 
 	@Override
 	public Article saveArticle(Article article, String userName) throws ArticleException {
@@ -66,15 +71,27 @@ public class ArticleServiceImpl implements ArticleService {
 		return article.getHeading() == null || article.getHeading().isEmpty();
 	}
 
+	/**
+	 * @author Vivekkumar Patel 
+	 * This method retrieve list of articles filtered by visibility,user,tags and sort by date or number of likes 
+	 * @param visibility Is article visible before login or not.If visibility=1 article is visible before login else not.If visibility=ALL
+	 * then data is retrieved isrespective of visibility.
+	 * @param filterPojo Instance of FilterPojo containing pagination and metadata to apply filter.
+	 * @return List of article after applying sorting and filter with pagination.
+	 */
 	@Override
-	public List<Article> getArticle(String visibility) throws ArticleException {
-		List<Article> articleList = null;
+	public Page<Article> getArticle(String visibility,FilterPojo filterPojo) throws ArticleException {
+		Page<Article> articleList = null;
+		Pageable pagination = PageRequest.of(filterPojo.getPage(), filterPojo.getTotalPage(),Sort.by(filterPojo.getSortBy()));
+		
 		try {
 
 			if (visibility.equalsIgnoreCase(ApplicationUrlPath.ALL_ARTICLE)) {
-				articleList = articleRepository.findAll();
+				articleList=getDataWithOutVisibility(filterPojo,pagination);
+				
+				
 			} else {
-				articleList = articleRepository.findByVisibility(visibility.equals("1") ? true : false);
+				articleList=getDataWithVisibility(filterPojo,visibility,pagination);
 			}
 
 		} catch (Exception e) {
@@ -82,6 +99,105 @@ public class ArticleServiceImpl implements ArticleService {
 		}
 		return articleList;
 	}
+
+	/**
+	 * @author Vivekkumar Patel 
+	 * This method retrieve list of articles filtered by visibility,user,tags and sort by date or number of likes 
+	 * @param visibility Is article visible before login or not.If visibility=1 article is visible before login else not.
+	 * @param filterPojo Instance of FilterPojo containing pagination and metadata to apply filter.
+	 * @param pagination Instance of Page containing pagination details details 
+	 * @return List of article after applying sorting and filter with pagination.
+	 */
+	private Page<Article> getDataWithVisibility(FilterPojo filterPojo, String visibility, Pageable pagination) {
+		// TODO Auto-generated method stub
+		Page<Article> articleList = null;
+
+		boolean isVisibility = visibility.equals("1") ? true : false;
+
+		// articleList = articleRepository.findByVisibility(visibility.equals("1") ?
+		// true : false);
+
+		if (isUserListEmpty(filterPojo) && isTagListEmpty(filterPojo)) {
+			// Get the data if userlist and tag list is empty
+			articleList = articleRepository.findAllByVisibility(isVisibility, pagination);
+		} else if (isTagListEmpty(filterPojo) && !isUserListEmpty(filterPojo)) {
+
+			// Get the data if user list is not empty but tag list is empty
+			List<User> userList = userService.getUserList(filterPojo.getUserIdList());
+			articleList = articleRepository.findAllByUserIdInAndVisibility(userList, isVisibility, pagination);
+
+		} else if (!isTagListEmpty(filterPojo) && isUserListEmpty(filterPojo)) {
+
+			// Get the data if tag list is not empty but user list is empty
+			articleList = articleRepository.findAllByTagIdInAndVisibility(filterPojo.getTagList(), isVisibility,
+					pagination);
+
+		} else {
+
+			// get the data if tag list and user list is not empty
+			List<User> userList = userService.getUserList(filterPojo.getUserIdList());
+			articleList = articleRepository.findAllByUserIdInAndTagIdInAndVisibility(userList, filterPojo.getTagList(),
+					isVisibility, pagination);
+		}
+
+		return articleList;
+	}
+	
+	
+	/**
+	 * @author Vivekkumar Patel 
+	 * This method checks that list of taglist is empty or not in instance of  FilterPojo.
+	 * @param filterPojo Instance of FilterPojo containing pagination and metadata to apply filter.
+	 * @return true if list of taglist  is empty else false.
+	 */
+	private boolean isTagListEmpty(FilterPojo filterPojo) {
+		return filterPojo.getTagList()!=null  && filterPojo.getTagList().size()==0;
+	}
+
+	/**
+	 * @author Vivekkumar Patel 
+	 * This method checks that list of userid is empty or not in instance of  FilterPojo.
+	 * @param filterPojo Instance of FilterPojo containing pagination and metadata to apply filter.
+	 * @return true if list of userid  is empty else false.
+	 */
+	private boolean isUserListEmpty(FilterPojo filterPojo) {
+		return filterPojo.getUserIdList() !=null  && filterPojo.getUserIdList().size()==0;
+	}
+
+	
+	/**
+	 * @author Vivekkumar Patel 
+	 * This method retrieve list of articles filtered by user,tags and sort by date or number of likes 
+	 * @param filterPojo Instance of FilterPojo containing pagination and metadata to apply filter.
+	 * @param pagination Instance of Page containing pagination details details 
+	 * @return List of article after applying sorting and filter with pagination.
+	 */
+	private Page<Article> getDataWithOutVisibility(FilterPojo filterPojo, Pageable pagination) {
+		Page<Article> articleList = null;
+		if (isUserListEmpty(filterPojo) && isTagListEmpty(filterPojo)) {
+			// Get the data if userlist and tag list is empty
+			articleList = articleRepository.findAll(pagination);
+		} else if (isTagListEmpty(filterPojo) && !isUserListEmpty(filterPojo)) {
+
+			// Get the data if user list is not empty but tag list is empty
+			List<User> userList = userService.getUserList(filterPojo.getUserIdList());
+			articleList = articleRepository.findAllByUserIdIn(userList, pagination);
+
+		} else if (!isTagListEmpty(filterPojo) && isUserListEmpty(filterPojo)) {
+
+			// Get the data if tag list is not empty but user list is empty
+			articleList = articleRepository.findAllByTagIdIn(filterPojo.getTagList(), pagination);
+
+		} else {
+
+			// get the data if tag list and user list is not empty
+			List<User> userList = userService.getUserList(filterPojo.getUserIdList());
+			articleList = articleRepository.findAllByUserIdInAndTagIdIn(userList, filterPojo.getTagList(), pagination);
+		}
+
+		return articleList;
+	}
+
 
 	@Override
 	public Article getArticleById(Long id) {
