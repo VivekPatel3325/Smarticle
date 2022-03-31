@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import Main from "layouts/main";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as farHeart } from "@fortawesome/free-regular-svg-icons";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import moment from "moment";
@@ -11,21 +12,21 @@ import useUser from "hooks/useUser";
 import { twitterService } from "service/twitter.service";
 import { tagsService } from "service/tags.service";
 
-library.add(faThumbsUp, faThumbsDown);
+library.add(faHeart, farHeart);
 const PostDetails = () => {
   const router = useRouter();
   const user = useUser();
   const { id } = router.query;
   const onClickLike = () => {
-    if (like === false) {
-      toast("Liked", { position: toast.POSITION.BOTTOM_LEFT, autoClose: 500 });
-    } else {
+    setLiked((prev) => !prev);
+    if (liked === true) {
       toast("Disliked", {
         position: toast.POSITION.BOTTOM_LEFT,
         autoClose: 500,
       });
+    } else if (liked == false) {
+      toast("Liked", { position: toast.POSITION.BOTTOM_LEFT, autoClose: 500 });
     }
-    setLike((prev) => !prev);
     return postService
       .postLike(user?.token, id)
       .then((data) => {
@@ -37,7 +38,7 @@ const PostDetails = () => {
         console.log(e);
       });
   };
-  const [like, setLike] = useState(false);
+  const [liked, setLiked] = useState(false);
   const [tweets, setTweets] = useState([]);
   const [post, setPost] = useState({
     heading: "",
@@ -49,13 +50,16 @@ const PostDetails = () => {
       lastname: "",
       username: "",
     },
+    likes: [],
     tags: [],
   });
   useEffect(() => {
     const fetch = async () => {
       setTweets(await twitterService.getTweetDetails(user?.token, id));
       const post = await postService.getById(user?.token, id);
+      const likes = post.like;
       const tags = post.tagId;
+
       setPost({
         heading: post.heading,
         content: post.content,
@@ -66,6 +70,7 @@ const PostDetails = () => {
           lastname: post.userId?.lastName,
           username: post.userId?.userName,
         },
+        likes,
         tags,
       });
     };
@@ -106,12 +111,20 @@ const PostDetails = () => {
             })}
           </div>
           {user && (
-            <FontAwesomeIcon
-              className="my-3 text-2xl opacity-50 hover:opacity-100 hover:cursor-pointer"
-              icon={like ? faThumbsDown : faThumbsUp}
-              onClick={onClickLike}
-            />
+            <div>
+              {post.likes.map((likeuser) => {
+                if (likeuser.userName === user.username) {
+                  liked = true;
+                }
+              })}
+              <FontAwesomeIcon
+                className="my-3 text-2xl opacity-50 hover:opacity-100 hover:cursor-pointer"
+                onClick={() => onClickLike()}
+                icon={liked ? faHeart : farHeart}
+              />
+            </div>
           )}
+          <i class="fal fa-question-circle"></i>
         </div>
         <div className="">
           {tweets &&

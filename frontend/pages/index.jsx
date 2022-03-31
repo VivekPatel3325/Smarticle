@@ -28,6 +28,7 @@ export default function Home() {
   const user = useUser();
   const [tags, setTags] = useState([]);
   const handleTags = (tags) => setTags(tags);
+  const option = useUserTags();
   useEffect(() => {
     setTags(preferredTags);
   }, [preferredTags]);
@@ -76,7 +77,7 @@ export default function Home() {
                 <h1 className="mb-1 ml-3 lg:ml-1">Categories</h1>
                 <Select
                   className="mb-5"
-                  options={tags}
+                  options={option}
                   isMulti
                   placeholder="Select Tags"
                   id="tags"
