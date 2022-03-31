@@ -1,5 +1,6 @@
 package com.asdc.smarticle.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +21,6 @@ public interface UserRepository extends JpaRepository <User,Long>{
 	Optional<User> findByEmailID(String emailID);
 
 	User findByJwtToken(String value);
-
+	
+	List<User> findByIdIn(List<Long> userId);
 }

@@ -49,4 +49,6 @@ public interface UserService {
 
 	List<Map<String,String>> getUsersPostedArticle();
 	
+	List<User> getUserList(List<Long> userId);
+	
 }
