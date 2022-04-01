@@ -240,11 +240,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Map<String,String>> getUsersPostedArticle() {
-		List<Map<String,String>> userDetails = new ArrayList<>();
-		Map<String,String> details = new HashMap<>();
+	public List<Map<String, Object>> getUsersPostedArticle() {
+		List<Map<String,Object>> userDetails = new ArrayList<>();
+		Map<String, Object> details = new HashMap<>();
 		List<Article> articleList = articleRepository.findAll();
-		if(articleList.size()==0){
+		if(articleList.isEmpty()){
 			return new ArrayList<>();
 		}
 		for(Article article : articleList){
@@ -252,6 +252,7 @@ public class UserServiceImpl implements UserService {
 			details.put("firstName",article.getUserId().getFirstName());
 			details.put("lastName",article.getUserId().getLastName());
 			details.put("userName",article.getUserId().getUserName());
+			details.put("id",article.getUserId().getId());
 			userDetails.add(details);
 		}
 
