@@ -40,24 +40,22 @@ public class ArticleServiceImpl implements ArticleService {
 
 		User user = userRepository.findByUserName(userName);
 		article.setUserId(user);
-		System.out.println(article.getTagId());
 
-		if (isContentEmpty(article)
-				|| isHeadingEmpty(article)) {
+		if (isContentEmpty(article) || isHeadingEmpty(article)) {
 			throw new ArticleException(ApiError.ARTICLE_FIELD_NOT_NULL);
 		}
-
+ 
 		return articleRepository.save(article);
-	}
-	
-	/**
+	} 
+	 
+	/** 
 	 * @author Vivekkumar Patel 
 	 * This method checks that header of the article is empty or not.
 	 * @param article instance containng details such as content,heading,visibility etc.
 	 * @return true if header of the article is empty else false.
 	 */
-	private boolean isHeadingEmpty(Article article) {
-		return article.getContent().isEmpty() || article.getContent() == null;
+	public boolean isHeadingEmpty(Article article) {
+		return article.getContent() == null ||article.getContent().isEmpty() ;
 	}
 
 	/**
@@ -67,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
 	 * @return true if content of the article is empty else false.
 	 */
 
-	private boolean isContentEmpty(Article article) {
+	public boolean isContentEmpty(Article article) {
 		return article.getHeading() == null || article.getHeading().isEmpty();
 	}
 
@@ -164,7 +162,7 @@ public class ArticleServiceImpl implements ArticleService {
 		return filterPojo.getUserIdList() !=null  && filterPojo.getUserIdList().size()==0;
 	}
 
-	
+	 
 	/**
 	 * @author Vivekkumar Patel 
 	 * This method retrieve list of articles filtered by user,tags and sort by date or number of likes 
@@ -294,5 +292,5 @@ public class ArticleServiceImpl implements ArticleService {
 		//article1.getLike().add(user);
 		article1.setLike(article1.getLike());
 		articleRepository.save(article1);
-	}
-}
+	}  
+} 
