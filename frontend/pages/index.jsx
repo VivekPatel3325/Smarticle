@@ -13,6 +13,7 @@ import { postService } from "service/post.service";
 import useUser from "hooks/useUser";
 import CountUp from "react-countup";
 import { twitterService } from "service/twitter.service";
+import useTags from "hooks/useTags";
 
 library.add(faUser);
 library.add(faTwitter);
@@ -27,14 +28,15 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
   const user = useUser();
-  const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const tags = useTags();
   const [isLoading, setIsLoading] = useState(false);
   const [isFirst, setIsFirst] = useState(false);
   const [isLast, setIsLast] = useState(false);
-  const handleTags = (tags) => setTags(tags);
+  const handleTags = (tags) => setSelectedTags(tags);
   useEffect(() => {
-    setTags(preferredTags);
-  }, [preferredTags]);
+    setSelectedTags(preferredTags);
+  }, [preferredTags])
   useEffect(() => {
     async function get() {
       setTagcount(await twitterService.getTweetCount(user?.token));
@@ -45,7 +47,7 @@ export default function Home() {
     async function get() {
       const token = user?.token ?? null;
       setIsLoading(true);
-      const toFilterTags = tags.map(t => {
+      const toFilterTags = selectedTags.map(t => {
         return {
           tagName: t.label,
           id: t.value
@@ -59,11 +61,9 @@ export default function Home() {
       setIsLoading(false);
     }
     get();
-  }, [user?.token, page, tags, preferredTags]);
-  const onClickNext = () => page + 1};
-  const onClickPrev = () => {
-    setPage((page) =>  page - 1)
-  };
+  }, [user?.token, page, tags, selectedTags]);
+  const onClickNext = () => setPage((page) =>  page + 1);
+  const onClickPrev = () => setPage((page) =>  page - 1)
   return (
     <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
@@ -102,10 +102,10 @@ export default function Home() {
                 <Select
                   className="mb-5"
                   options={tags}
+                  value={selectedTags}
                   isMulti
                   placeholder="Select Tags"
                   instanceId={"tags"}
-                  value={tags}
                   onChange={handleTags}
                 />
               </div>
@@ -275,3 +275,4 @@ export default function Home() {
       </div>
     </Main>
   );
+}

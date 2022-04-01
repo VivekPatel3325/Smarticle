@@ -5,19 +5,11 @@ import useUser from "./useUser";
 export default function useUserTags() {
   const user = useUser();
   const [tags, setTags] = useState([]);
-  const token = user?.token;
   useEffect(() => {
-    async function getUserTags() {
-      setTags(await tagsService.getUserTags(token));
+    async function get() {
+      setTags(await tagsService.getUserTags(user?.token));
     }
-    async function getAllTags() {
-      setTags(await tagsService.getAll());
-    }
-    if (user?.token) {
-      getUserTags();
-    } else {
-      getAllTags();
-    }
-  }, [token]);
+    get();
+  }, [user?.token]);
   return tags;
 }

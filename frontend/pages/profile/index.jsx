@@ -49,13 +49,13 @@ export default function Profile() {
     get();
   }, [user?.token, user]);
   useEffect(() => {
-    setTags(preferredTags);
+    setSelectedTags(preferredTags);
   }, [preferredTags]);
-  const [tags, setTags] = useState([]);
-  const handleTags = (tags) => setTags(tags);
-  const options = useTags();
+  const [selectedTags, setSelectedTags] = useState([]);
+  const handleTags = (tags) => setSelectedTags(tags);
+  const tags = useTags();
   const submitTags = () => {
-    const t = tags.map((t) => {
+    const t = selectedTags.map((t) => {
       return {
         id: Number(t.value),
         tagName: t.label,
@@ -145,14 +145,13 @@ export default function Profile() {
           </label>
           <div className="w-48 mr-3">
             <Select
-              options={options}
+              options={tags}
+              value={selectedTags}
               isMulti
               placeholder="Select Tags"
-              id="tags"
               instanceId={"tags"}
               onChange={handleTags}
               hideSelectedOptions
-              value={tags}
             />
           </div>
           <button
