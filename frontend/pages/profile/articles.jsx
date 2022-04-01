@@ -8,19 +8,30 @@ import Link from "next/link";
 export default function Articles() {
   const [posts, setPosts] = useState([]);
   const [error, isError] = useState(false);
+  const [page, setPage] = useState(0);
+  const [isFirst, setIsFirst] = useState(false);
+  const [isLast, setIsLast] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const user = useUser();
   const token = user?.token;
   useEffect(() => {
     async function get() {
       try {
-        setPosts(await postService.getByAuthor(token));
+        setIsLoading(true);
+        const fetched = await postService.getByAuthor(token, page)
+        setPosts(fetched["content"]);
+        setIsFirst(fetched["first"]);
+        setIsLast(fetched["last"]);
+        setIsLoading(false);
       } catch (err) {
         isError(true);
         console.log(err);
       }
     }
     if (token) get();
-  }, [token]);
+  }, [user?.token, page]);
+  const onClickNext = () => setPage((page) =>  page + 1);
+  const onClickPrev = () => setPage((page) =>  page - 1);
   return (
     <Main title="Articles">
       <div className="grid grid-cols-1 lg:grid-cols-6 gap-12 mt-10">
@@ -71,8 +82,71 @@ export default function Articles() {
                   </div>
                 );
               })}
-            {posts.length === 0 && <div>No articles posted yet</div>}
+            {posts && posts.length === 0 && <div>No articles posted yet</div>}
             {error && <div>There was an error</div>}
+            {isLoading && <div> Loading...</div>}
+          </div>
+          <div className="flex flex-row justify-between">
+            <div
+              onClick={!isFirst ? onClickPrev : () => {}}
+              className={`
+                ml-3
+                lg:ml-0
+                border-black
+                border-2
+                rounded-md
+                font-normal
+                mt-4
+                p-2
+                ${isFirst ?
+                  `
+                    cursor-not-allowed
+                    bg-gray-300
+                  `
+                  : `
+                    cursor-pointer
+                    transition
+                    duration-500
+                    ease transform
+                    hover:-translate-y-1
+                  hover:bg-black
+                  hover:text-white
+                    `
+                }
+              `}
+            >
+              prev
+            </div>
+            <div
+              onClick={!isLast ? onClickNext : () => {}}
+              className={`
+                ml-3
+                lg:ml-0
+                border-black
+                border-2
+                rounded-md
+                font-normal
+                mt-4
+                p-2
+                ${isLast ?
+                  `
+                    cursor-not-allowed
+                    bg-gray-300
+                  `
+                  : `
+                    cursor-pointer
+                    transition
+                    duration-500
+                    ease transform
+                    hover:-translate-y-1
+                  hover:bg-black
+                  hover:text-white
+                    `
+                }
+              `}
+            >
+              next
+            </div>
           </div>
         </div>
       </div>
