@@ -251,8 +251,8 @@ public class UserController extends BaseController {
 	}
 
 	@GetMapping(ApplicationUrlPath.GET_USER_DETAILS_POSTED_ARTICLE)
-	public List<Map<String, String>> getUserDetailsPostedArticle(@RequestHeader HttpHeaders http) {
-		List<Map<String, String>> userDetailsOfPostedArticle = new ArrayList<>();
+	public List<Map<String, Object>> getUserDetailsPostedArticle(@RequestHeader HttpHeaders http) {
+		List<Map<String, Object>> userDetailsOfPostedArticle = new ArrayList<>();
 		try {
 			userDetailsOfPostedArticle = userService.getUsersPostedArticle();
 		} catch (Exception exception) {
