@@ -18,7 +18,8 @@ export const userService = {
   reset,
   saveTags,
   updateDetails,
-  getDetails
+  getDetails,
+  getAuthors
 };
 
 async function login(username, password) {
@@ -172,5 +173,33 @@ async function updateDetails (user, token) {
     })
   ).json();
   if (data["statusCode"] !== 200) throw new Error("Error in updating details");
+  return data;
+}
+
+async function getAuthors() {
+  let data;
+  try {
+    data = await (
+      await fetch(`${serverUrl}/user/getUserDetailsPostedArticle`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    ).json();
+    console.log(data);
+  } catch (err) {
+    throw new Error(err);
+  }
+  if (data.length === 0 || !Array.isArray(data)) return [];
+  data = data
+    .map((author) => {
+      return {
+        label: author.firstName + " " + author.lastName,
+        value: author.userName
+      }
+    })
+    .filter((author) => author.label !== null);
+  console.log("user", data);
   return data;
 }
