@@ -121,5 +121,5 @@ export const postService = {
   getAll,
   getById,
   getByAuthor,
-  postLike
+  postLike,
 };
