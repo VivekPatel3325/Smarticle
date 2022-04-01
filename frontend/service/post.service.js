@@ -6,14 +6,16 @@ import { serverUrl } from "helpers/api";
  * @param {string} token jwt token of currently logged in user
  * @param {array} tags array of objects of `id` and `tagName` of the tags to filter with
  * @param {array} authors array of integers representing ids of authors to filter with
+ * @param {number} page page number to fetch
+ * @param {string} sortBy sort by creationDate or
  * @returns array of posts
  */
-const getAll = async (token, tags, authors, page) => {
+const getAll = async (token, tags, authors, page, sortBy) => {
   let res;
   const params = {
     "page": page,
     "totalPage": 3,
-    "sortBy": "creationDate",
+    "sortBy": sortBy,
     "tagList": tags,
     "userIdList": authors
   }

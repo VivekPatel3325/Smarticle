@@ -33,6 +33,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFirst, setIsFirst] = useState(false);
   const [isLast, setIsLast] = useState(false);
+  const [selectedAuthors, setSelectedAuthors] = useState([]);
+  const [sortBy, setSortBy] = useState("creationDate");
   const handleTags = (tags) => setSelectedTags(tags);
   useEffect(() => {
     setSelectedTags(preferredTags);
@@ -53,22 +55,44 @@ export default function Home() {
           id: t.value
         }
       })
-      const fetchPosts = await postService.getAll(token, toFilterTags, [], page)
+      const fetchPosts = await postService.getAll(token, toFilterTags, selectedAuthors, page, sortBy)
       setPosts(fetchPosts["content"]);
-      console.log(fetchPosts["first"])
       setIsFirst(fetchPosts["first"]);
       setIsLast(fetchPosts["last"]);
       setIsLoading(false);
     }
     get();
-  }, [user?.token, page, tags, selectedTags]);
+  }, [
+    user?.token,
+    page,
+    tags,
+    selectedTags,
+    selectedAuthors,
+    sortBy
+  ]);
   const onClickNext = () => setPage((page) =>  page + 1);
-  const onClickPrev = () => setPage((page) =>  page - 1)
+  const onClickPrev = () => setPage((page) =>  page - 1);
+  const handleAuthors = (obj) => {
+    console.log(obj) // @todo
+  };
+  const handleSortBy = (obj) => {
+    const k = obj.value;
+    switch (k) {
+      case 'Date':
+        setSortBy("creationDate");
+        break;
+      case 'Likes':
+        setSortBy("creationDate");
+        break;
+      default:
+        setSortBy("creationDate");
+    }
+  };
   return (
     <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
         <div className="lg:col-span-4 col-span-1">
-          {user && (
+          {tagcount && (
             <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
               <h3 className="text-xl mb-5 font-semibold border-b pb-4">
                 <FontAwesomeIcon
@@ -117,6 +141,7 @@ export default function Home() {
                   isMulti
                   placeholder="Select Authors"
                   instanceId={"authors"}
+                  onChange={handleAuthors}
                 />
               </div>
               <div>
@@ -125,16 +150,17 @@ export default function Home() {
                   options={options}
                   placeholder="Sort By"
                   instanceId={"tags"}
+                  onChange={handleSortBy}
                 />
               </div>
-              <div className="text-center">
+              {/* <div className="text-center">
                 <button
                   className="text-base border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white mt-10 w-20 h-10"
                   type="submit"
                 >
                   Search
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
