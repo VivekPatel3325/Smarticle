@@ -13,6 +13,7 @@ import { postService } from "service/post.service";
 import useUser from "hooks/useUser";
 import CountUp from "react-countup";
 import { twitterService } from "service/twitter.service";
+import useTags from "hooks/useTags";
 
 library.add(faUser);
 library.add(faTwitter);
@@ -25,26 +26,73 @@ export default function Home() {
   const authors = useAllAuthors();
   const preferredTags = useUserTags();
   const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(0);
   const user = useUser();
-  const [tags, setTags] = useState([]);
-  const handleTags = (tags) => setTags(tags);
-  const option = useUserTags();
+  const [selectedTags, setSelectedTags] = useState([]);
+  const tags = useTags();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFirst, setIsFirst] = useState(false);
+  const [isLast, setIsLast] = useState(false);
+  const [selectedAuthors, setSelectedAuthors] = useState([]);
+  const [sortBy, setSortBy] = useState("creationDate");
+  const handleTags = (tags) => setSelectedTags(tags);
   useEffect(() => {
-    setTags(preferredTags);
-  }, [preferredTags]);
+    setSelectedTags(preferredTags);
+  }, [preferredTags])
   useEffect(() => {
     async function get() {
       setTagcount(await twitterService.getTweetCount(user?.token));
-      const token = user?.token ?? null;
-      setPosts(await postService.getAll(token));
     }
     get();
-  }, [user?.token, user]);
+  }, [user?.token])
+  useEffect(() => {
+    async function get() {
+      const token = user?.token ?? null;
+      setIsLoading(true);
+      const toFilterTags = selectedTags.map(t => {
+        return {
+          tagName: t.label,
+          id: t.value
+        }
+      })
+      const fetchPosts = await postService.getAll(token, toFilterTags, selectedAuthors, page, sortBy)
+      setPosts(fetchPosts["content"]);
+      setIsFirst(fetchPosts["first"]);
+      setIsLast(fetchPosts["last"]);
+      setIsLoading(false);
+    }
+    get();
+  }, [
+    user?.token,
+    page,
+    tags,
+    selectedTags,
+    selectedAuthors,
+    sortBy
+  ]);
+  const onClickNext = () => setPage((page) =>  page + 1);
+  const onClickPrev = () => setPage((page) =>  page - 1);
+  const handleAuthors = (obj) => {
+    console.log(obj) // @todo
+  };
+  const handleSortBy = (obj) => {
+    const k = obj.value;
+    switch (k) {
+      case 'Date':
+        setSortBy("creationDate");
+        break;
+      case 'Likes':
+        setSortBy("like");
+        break;
+      default:
+        setSortBy("creationDate");
+    }
+  };
   return (
     <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
         <div className="lg:col-span-4 col-span-1">
-          {user && (
+          {tagcount && (
             <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
               <h3 className="text-xl mb-5 font-semibold border-b pb-4">
                 <FontAwesomeIcon
@@ -77,12 +125,11 @@ export default function Home() {
                 <h1 className="mb-1 ml-3 lg:ml-1">Categories</h1>
                 <Select
                   className="mb-5"
-                  options={option}
+                  options={tags}
+                  value={selectedTags}
                   isMulti
                   placeholder="Select Tags"
-                  id="tags"
                   instanceId={"tags"}
-                  value={tags}
                   onChange={handleTags}
                 />
               </div>
@@ -93,8 +140,8 @@ export default function Home() {
                   options={authors}
                   isMulti
                   placeholder="Select Authors"
-                  id="authors"
                   instanceId={"authors"}
+                  onChange={handleAuthors}
                 />
               </div>
               <div>
@@ -102,23 +149,27 @@ export default function Home() {
                 <Select
                   options={options}
                   placeholder="Sort By"
-                  id="tags"
                   instanceId={"tags"}
+                  onChange={handleSortBy}
                 />
               </div>
-              <div className="text-center">
+              {/* <div className="text-center">
                 <button
                   className="text-base border-black border-2 rounded-md font-semibold hover:bg-black hover:text-white mt-10 w-20 h-10"
                   type="submit"
                 >
                   Search
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
         <div className="lg:col-span-8 col-span-1">
-          {posts.map((post) => (
+          {
+            !isLoading
+            && posts
+            && posts.length > 0
+            && posts.map((post) => (
             <div
               className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8"
               key={post.id}
@@ -168,7 +219,84 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          ))}
+            ))
+          }
+          {
+            !isLoading && posts && posts.length === 0 && (
+              <div>
+                No more posts to display
+              </div>
+            )
+          }
+          {
+            isLoading && (
+              <div>
+                Loading...
+              </div>
+            )
+          }
+          <div className="flex flex-row justify-between">
+            <div
+              onClick={!isFirst ? onClickPrev : () => {}}
+              className={`
+                ml-3
+                lg:ml-0
+                border-black
+                border-2
+                rounded-md
+                font-normal
+                mt-4
+                p-2
+                ${isFirst ?
+                  `
+                    cursor-not-allowed
+                    bg-gray-300
+                  `
+                  : `
+                    cursor-pointer
+                    transition
+                    duration-500
+                    ease transform
+                    hover:-translate-y-1
+                  hover:bg-black
+                  hover:text-white
+                    `
+                }
+              `}
+            >
+              prev
+            </div>
+            <div
+              onClick={!isLast ? onClickNext : () => {}}
+              className={`
+                ml-3
+                lg:ml-0
+                border-black
+                border-2
+                rounded-md
+                font-normal
+                mt-4
+                p-2
+                ${isLast ?
+                  `
+                    cursor-not-allowed
+                    bg-gray-300
+                  `
+                  : `
+                    cursor-pointer
+                    transition
+                    duration-500
+                    ease transform
+                    hover:-translate-y-1
+                  hover:bg-black
+                  hover:text-white
+                    `
+                }
+              `}
+            >
+              next
+            </div>
+          </div>
         </div>
       </div>
     </Main>
