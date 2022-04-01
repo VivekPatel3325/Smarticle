@@ -74,11 +74,12 @@ const getById = async (token, id) => {
   return res[0];
 };
 
-const getByAuthor = async (token) => {
+const getByAuthor = async (token, page) => {
+  const totalElementsInPage = 2;
   let res;
   try {
     res = await (
-      await fetch(`${serverUrl}/article/getArticleByUser?page=0&totalPage=4`, {
+      await fetch(`${serverUrl}/article/getArticleByUser?page=${page}&totalPage=${totalElementsInPage}`, {
         method: "GET",
         headers: {
           "jwt-token": `${token}`,
@@ -89,7 +90,11 @@ const getByAuthor = async (token) => {
     throw new Error("Error in fetching");
   }
   // returns an array of posts (along with other metadata)
-  return res["content"];
+  return {
+    last: res["last"],
+    content: res["content"],
+    first: res["first"]
+  };
 };
 
 const postLike = async (token, id) => {
