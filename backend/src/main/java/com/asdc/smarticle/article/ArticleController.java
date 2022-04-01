@@ -4,6 +4,9 @@ import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.httpresponse.ResponseVO;
 import com.asdc.smarticle.security.JwtUtils;
 import com.asdc.smarticle.user.exception.ArticleException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +36,11 @@ public class ArticleController extends BaseController {
 	JwtUtils jwtUtils;
 
 	@GetMapping(ApplicationUrlPath.RETRIEVE_ARTICLE)
-	public Page<Article> retrieveArticle(@RequestParam String visibility, @RequestBody FilterPojo filterPojo) throws ArticleException {
+	public Page<Article> retrieveArticle(@RequestParam String visibility,@RequestParam String filterParam) throws ArticleException, JsonMappingException, JsonProcessingException {
+		
+		ObjectMapper objectMapper=new ObjectMapper();
+		FilterPojo filterPojo=objectMapper.readValue(filterParam, FilterPojo.class);
+		
 		Page<Article> articles_list = articleService.getArticle(visibility,filterPojo);
 		System.out.println(articles_list);
 		return articles_list;
