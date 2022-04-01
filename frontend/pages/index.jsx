@@ -25,8 +25,12 @@ export default function Home() {
   const authors = useAllAuthors();
   const preferredTags = useUserTags();
   const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(0);
   const user = useUser();
   const [tags, setTags] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFirst, setIsFirst] = useState(false);
+  const [isLast, setIsLast] = useState(false);
   const handleTags = (tags) => setTags(tags);
   useEffect(() => {
     setTags(preferredTags);
@@ -34,11 +38,32 @@ export default function Home() {
   useEffect(() => {
     async function get() {
       setTagcount(await twitterService.getTweetCount(user?.token));
-      const token = user?.token ?? null;
-      setPosts(await postService.getAll(token));
     }
     get();
-  }, [user?.token, user]);
+  }, [user?.token])
+  useEffect(() => {
+    async function get() {
+      const token = user?.token ?? null;
+      setIsLoading(true);
+      const toFilterTags = tags.map(t => {
+        return {
+          tagName: t.label,
+          id: t.value
+        }
+      })
+      const fetchPosts = await postService.getAll(token, toFilterTags, [], page)
+      setPosts(fetchPosts["content"]);
+      console.log(fetchPosts["first"])
+      setIsFirst(fetchPosts["first"]);
+      setIsLast(fetchPosts["last"]);
+      setIsLoading(false);
+    }
+    get();
+  }, [user?.token, page, tags, preferredTags]);
+  const onClickNext = () => page + 1};
+  const onClickPrev = () => {
+    setPage((page) =>  page - 1)
+  };
   return (
     <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
@@ -79,7 +104,6 @@ export default function Home() {
                   options={tags}
                   isMulti
                   placeholder="Select Tags"
-                  id="tags"
                   instanceId={"tags"}
                   value={tags}
                   onChange={handleTags}
@@ -92,7 +116,6 @@ export default function Home() {
                   options={authors}
                   isMulti
                   placeholder="Select Authors"
-                  id="authors"
                   instanceId={"authors"}
                 />
               </div>
@@ -101,7 +124,6 @@ export default function Home() {
                 <Select
                   options={options}
                   placeholder="Sort By"
-                  id="tags"
                   instanceId={"tags"}
                 />
               </div>
@@ -117,7 +139,11 @@ export default function Home() {
           </div>
         </div>
         <div className="lg:col-span-8 col-span-1">
-          {posts.map((post) => (
+          {
+            !isLoading
+            && posts
+            && posts.length > 0
+            && posts.map((post) => (
             <div
               className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8"
               key={post.id}
@@ -167,9 +193,85 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          ))}
+            ))
+          }
+          {
+            !isLoading && posts && posts.length === 0 && (
+              <div>
+                No more posts to display
+              </div>
+            )
+          }
+          {
+            isLoading && (
+              <div>
+                Loading...
+              </div>
+            )
+          }
+          <div className="flex flex-row justify-between">
+            <div
+              onClick={!isFirst ? onClickPrev : () => {}}
+              className={`
+                ml-3
+                lg:ml-0
+                border-black
+                border-2
+                rounded-md
+                font-normal
+                mt-4
+                p-2
+                ${isFirst ?
+                  `
+                    cursor-not-allowed
+                    bg-gray-300
+                  `
+                  : `
+                    cursor-pointer
+                    transition
+                    duration-500
+                    ease transform
+                    hover:-translate-y-1
+                  hover:bg-black
+                  hover:text-white
+                    `
+                }
+              `}
+            >
+              prev
+            </div>
+            <div
+              onClick={!isLast ? onClickNext : () => {}}
+              className={`
+                ml-3
+                lg:ml-0
+                border-black
+                border-2
+                rounded-md
+                font-normal
+                mt-4
+                p-2
+                ${isLast ?
+                  `
+                    cursor-not-allowed
+                    bg-gray-300
+                  `
+                  : `
+                    cursor-pointer
+                    transition
+                    duration-500
+                    ease transform
+                    hover:-translate-y-1
+                  hover:bg-black
+                  hover:text-white
+                    `
+                }
+              `}
+            >
+              next
+            </div>
+          </div>
         </div>
       </div>
     </Main>
   );
-}
