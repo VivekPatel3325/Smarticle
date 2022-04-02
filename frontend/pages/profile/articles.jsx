@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { postService } from "service/post.service";
 import moment from "moment";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Articles() {
   const [posts, setPosts] = useState([]);
@@ -72,7 +73,7 @@ export default function Articles() {
                       ></article>
                     </div>
                     <div className="mb-24">
-                      <p className="ml-3 lg:ml-1 mb-7 italic">Likes: 1013</p>
+                      <p className="ml-3 lg:ml-1 mb-7 italic"><FontAwesomeIcon className="ml-1" icon="thumbs-up" /> &nbsp; {post.like.length}</p>
                       <Link href={"/post/" + post.id}>
                         <span className="ml-3 lg:ml-0 cursor-pointer transition duration-500 ease transform hover:-translate-y-1 border-black border-2 rounded-md font-normal hover:bg-black hover:text-white mt-4 p-2">
                           Continue Reading
