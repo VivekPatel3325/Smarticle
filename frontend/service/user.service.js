@@ -32,7 +32,7 @@ async function login(username, password) {
       body: JSON.stringify({ userName: username, pswd: password }),
     })
   ).json();
-  if (res["statusCode"] !== 200) throw new Error("Error in logging in");
+  if (res["statusCode"] !== 200) return res;
   const token = res["data"]["jwt-token"];
   userSubject.next({
     username,
