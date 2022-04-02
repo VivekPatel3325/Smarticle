@@ -1,4 +1,3 @@
-        
 variables:
   # maven option to clean the generated target folder.
   MAVEN_CLEAN_OPT: "clean"
@@ -9,100 +8,99 @@ variables:
   # target folder name where all build related artifacts are stored/downloaded.
   TARGET_FOLDER_NAME: "target"
 
-  
 stages:
   # compiles this application.
-    - compile
+  - compile
 
   # tests this application.
-    - test
+  - test
 
   # builds this application.
-    - build
-    
+  - build
+
   # Quality Analysis
-    - code-quality
-  
+  - code-quality
+
   # deploy this application on heroku.
-    - deploy
+  - deploy
 
 frontend-compile:
-    stage: compile
-    tags:
-        - dalfcs_docker_autoscale
-    image: node:16.14.0	
-    script:
-        - echo "compiling frontend application"
-        - cd frontend
-        - npm install
-        - echo "completed compiling frontend application"
-    rules:
-        - changes:
-            - frontend/**/*    
-        
+  stage: compile
+  tags:
+    - ugrad
+  image: node:16.14.0
+  script:
+    - echo "compiling frontend application"
+    - cd frontend
+    - npm install
+    - echo "completed compiling frontend application"
+  rules:
+    - changes:
+        - frontend/**/*
+
 backend-compile:
-    stage: compile
-    tags:
-        - ugrad
-    image: maven:3-jdk-11	
-    script:
-        - echo "compiling backend application"
-        - cd backend
-        - mvn clean compile
-        - echo "completed compiling backend application"
-    rules:
-        - changes:
-            - backend/**/*
+  stage: compile
+  tags:
+    - ugrad
+  image: maven:3-jdk-11
+  script:
+    - echo "compiling backend application"
+    - cd backend
+    - mvn clean compile
+    - echo "completed compiling backend application"
+  rules:
+    - changes:
+        - backend/**/*
 
 backend-test:
-    stage: test
-    tags:
-        - ugrad
-    image: maven:3-jdk-11	
-    script:
-        - echo "testing backend application"
-        - cd backend
-        - mvn test	
-        - echo "backend application has been tested"
-    rules:
-        - changes:
-            - backend/**/*
+  stage: test
+  tags:
+    - ugrad
+  image: maven:3-jdk-11
+  script:
+    - echo "testing backend application"
+    - cd backend
+    - mvn test
+    - echo "backend application has been tested"
+  rules:
+    - changes:
+        - backend/**/*
 
 frontend-build:
-    stage: build
-    tags:
-        - dalfcs_docker_autoscale
-    image: node:16.14.0	
-    script:
-        - echo "building frontend application"
-        - cd frontend
-        - npm install
-        - npm run build
-        - echo "frontend application has been built"
-    rules:
-        - changes:
-            - frontend/**/*        
-    artifacts:
-        paths:
-        - public 		
-        
+  stage: build
+  tags:
+    - ugrad
+  image: node:16.14.0
+  script:
+    - echo "building frontend application"
+    - cd frontend
+    - npm install
+    - npm run build
+    - echo "frontend application has been built"
+  rules:
+    - changes:
+        - frontend/**/*
+  artifacts:
+    paths:
+      - public
+
 backend-build:
-    stage: build
-    tags:
-        - ugrad
-    image: maven:3-jdk-11	
-    script:
-        - echo "building backend application"
-        - cd backend
-        - mvn package
-        - echo "backend application has been built"
-    rules:
-        - changes:
-            - backend/**/*        
-    artifacts:
-        when: on_success
-        paths:
-        - $TARGET_FOLDER_NAME/*.war
+  stage: build
+  tags:
+    - ugrad
+  image: maven:3-jdk-11
+  script:
+    - echo "building backend application"
+    - cd backend
+    - mvn package
+    - echo "backend application has been built"
+  rules:
+    - changes:
+        - backend/**/*
+  artifacts:
+    when: on_success
+    paths:
+      - $TARGET_FOLDER_NAME/*.war
 
 code-quality:
   stage: code-quality
@@ -123,46 +121,46 @@ code-quality:
     - eval "$UPLOAD_QUALITY_REPORT"
     - echo "$UPLOAD_QUALITY_REPORT"
   only:
-      refs:
-        - main        
-      changes:
-            - backend/**/*
+    refs:
+      - main
+    changes:
+      - backend/**/*
 
 frontend-deploy:
-    stage: deploy
-    image: ruby:latest
-    tags:
-        - dalfcs_docker_autoscale 
-    script:
-        - echo "deploying frontend application"
-        - cd frontend
-        - rm -f package-lock.json
-        - apt-get update -qy
-        - apt-get install -y ruby-dev
-        - gem install dpl
-        - dpl --provider=heroku --app=$HEROKU_FE_APP_NAME --api-key=$HEROKU_FE_APP_KEY
-        - echo "frontend application has been built"
-    only:
-      refs:
-        - main        
-      changes:
-            - frontend/**/*        
+  stage: deploy
+  image: ruby:latest
+  tags:
+    - dalfcs_docker_autoscale
+  script:
+    - echo "deploying frontend application"
+    - cd frontend
+    - rm -f package-lock.json
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_FE_APP_NAME --api-key=$HEROKU_FE_APP_KEY
+    - echo "frontend application has been built"
+  only:
+    refs:
+      - main
+    changes:
+      - frontend/**/*
 
 backend-deploy:
-    stage: deploy
-    image: ruby:latest
-    tags:
-        - dalfcs_docker_autoscale 
-    script:
-        - echo "deploying backend application"
-        - cd backend
-        - apt-get update -qy
-        - apt-get install -y ruby-dev
-        - gem install dpl
-        - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
-        - echo "backend application has been built"
-    only:
-      refs:
-        - main        
-      changes:
-            - backend/**/*
+  stage: deploy
+  image: ruby:latest
+  tags:
+    - dalfcs_docker_autoscale
+  script:
+    - echo "deploying backend application"
+    - cd backend
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_KEY
+    - echo "backend application has been built"
+  only:
+    refs:
+      - main
+    changes:
+      - backend/**/*
