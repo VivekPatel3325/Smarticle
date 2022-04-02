@@ -38,50 +38,49 @@ export default function Home() {
   const handleTags = (tags) => setSelectedTags(tags);
   useEffect(() => {
     setSelectedTags(preferredTags);
-  }, [preferredTags])
+  }, [preferredTags]);
   useEffect(() => {
     async function get() {
       setTagcount(await twitterService.getTweetCount(user?.token));
     }
     get();
-  }, [user?.token])
+  }, [user?.token]);
   useEffect(() => {
     async function get() {
       const token = user?.token ?? null;
       setIsLoading(true);
-      const toFilterTags = selectedTags.map(t => {
+      const toFilterTags = selectedTags.map((t) => {
         return {
           tagName: t.label,
-          id: t.value
-        }
-      })
-      const fetchPosts = await postService.getAll(token, toFilterTags, selectedAuthors, page, sortBy)
+          id: t.value,
+        };
+      });
+      const fetchPosts = await postService.getAll(
+        token,
+        toFilterTags,
+        selectedAuthors,
+        page,
+        sortBy
+      );
       setPosts(fetchPosts["content"]);
       setIsFirst(fetchPosts["first"]);
       setIsLast(fetchPosts["last"]);
       setIsLoading(false);
     }
     get();
-  }, [
-    user?.token,
-    page,
-    tags,
-    selectedTags,
-    selectedAuthors,
-    sortBy
-  ]);
-  const onClickNext = () => setPage((page) =>  page + 1);
-  const onClickPrev = () => setPage((page) =>  page - 1);
+  }, [user?.token, page, tags, selectedTags, selectedAuthors, sortBy]);
+  const onClickNext = () => setPage((page) => page + 1);
+  const onClickPrev = () => setPage((page) => page - 1);
   const handleAuthors = (obj) => {
-    console.log(obj) // @todo
+    console.log(obj); // @todo
   };
   const handleSortBy = (obj) => {
     const k = obj.value;
     switch (k) {
-      case 'Date':
+      case "Date":
         setSortBy("creationDate");
         break;
-      case 'Likes':
+      case "Likes":
         setSortBy("like");
         break;
       default:
@@ -92,28 +91,32 @@ export default function Home() {
     <Main title="Smarticle">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-10">
         <div className="lg:col-span-4 col-span-1">
-          {tagcount && (
-            <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
-              <h3 className="text-xl mb-5 font-semibold border-b pb-4">
-                <FontAwesomeIcon
-                  icon="fa-brands fa-twitter"
-                  className="ml-3 lg:ml-1 text-blue-400"
-                />{" "}
-                &nbsp; &nbsp;Tweet Counts
-              </h3>
-              <div>
-                {tagcount.map((tweet) => {
-                  return (
-                    <h1 className="font-semibold ml-3 lg:ml-1">
-                      {tweet.tagName} &nbsp; &nbsp;{" "}
-                      <CountUp
-                        className="font-extrabold"
-                        end={tweet.tweetCount}
-                      />
-                    </h1>
-                  );
-                })}
-              </div>
+          {user && (
+            <div>
+              {tagcount && (
+                <div className="bg-gray-50 shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8">
+                  <h3 className="text-xl mb-5 font-semibold border-b pb-4">
+                    <FontAwesomeIcon
+                      icon="fa-brands fa-twitter"
+                      className="ml-3 lg:ml-1 text-blue-400"
+                    />{" "}
+                    &nbsp; &nbsp;Tweet Counts
+                  </h3>
+                  <div>
+                    {tagcount.map((tweet) => {
+                      return (
+                        <h1 className="font-semibold ml-3 lg:ml-1">
+                          {tweet.tagName} &nbsp; &nbsp;{" "}
+                          <CountUp
+                            className="font-extrabold"
+                            end={tweet.tweetCount}
+                          />
+                        </h1>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
           <div className="lg:sticky relative top-8">
@@ -165,76 +168,65 @@ export default function Home() {
           </div>
         </div>
         <div className="lg:col-span-8 col-span-1">
-          {
-            !isLoading
-            && posts
-            && posts.length > 0
-            && posts.map((post) => (
-            <div
-              className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8"
-              key={post.id}
-            >
-              <div>
-                <h1 className="transition duration-700 text-center mb-5 cursor-pointer hover:text-gray-500 text-xl font-semibold">
-                  <Link href={"/post/" + post.id}>{post.heading}</Link>
-                </h1>
-                <FontAwesomeIcon className="ml-3 lg:ml-1" icon="user" />
-                <p className="inline align-middle text-gray-700 ml-3 font-medium text-lg">
-                  {post.userId?.firstName}&nbsp;{post.userId?.lastName}
-                </p>
-                <div className="font-medium text-gray-700 mb-5 ml-2 lg:ml-0">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 inline mr-2 text-pink-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span className="align-middle">
-                    {moment(post.creationDate).format("MMM DD, YYYY")}
-                  </span>
-                </div>
-                <div className="mb-16 ml-3 lg:ml-0">
-                  <article
-                    className="line-clamp-6"
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                  ></article>
-                </div>
+          {!isLoading &&
+            posts &&
+            posts.length > 0 &&
+            posts.map((post) => (
+              <div
+                className="bg-white shadow-lg rounded-lg p-0 lg:p-8 pb-12 mb-8"
+                key={post.id}
+              >
                 <div>
-                  <p className="ml-3 lg:ml-1 mb-7">
-                  <FontAwesomeIcon className="ml-1" icon="thumbs-up" /> &nbsp; {post.like.length}
+                  <h1 className="transition duration-700 text-center mb-5 cursor-pointer hover:text-gray-500 text-xl font-semibold">
+                    <Link href={"/post/" + post.id}>{post.heading}</Link>
+                  </h1>
+                  <FontAwesomeIcon className="ml-3 lg:ml-1" icon="user" />
+                  <p className="inline align-middle text-gray-700 ml-3 font-medium text-lg">
+                    {post.userId?.firstName}&nbsp;{post.userId?.lastName}
                   </p>
-                  <Link href={"/post/" + post.id}>
-                    <span className="ml-3 lg:ml-0 cursor-pointer transition duration-500 ease transform hover:-translate-y-1 border-black border-2 rounded-md font-normal hover:bg-black hover:text-white mt-4 p-2">
-                      Continue Reading
+                  <div className="font-medium text-gray-700 mb-5 ml-2 lg:ml-0">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 inline mr-2 text-pink-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <span className="align-middle">
+                      {moment(post.creationDate).format("MMM DD, YYYY")}
                     </span>
-                  </Link>
+                  </div>
+                  <div className="mb-16 ml-3 lg:ml-0">
+                    <article
+                      className="line-clamp-6"
+                      dangerouslySetInnerHTML={{ __html: post.content }}
+                    ></article>
+                  </div>
+                  <div>
+                    <p className="ml-3 lg:ml-1 mb-7">
+                      <FontAwesomeIcon className="ml-1" icon="thumbs-up" />{" "}
+                      &nbsp; {post.like.length}
+                    </p>
+                    <Link href={"/post/" + post.id}>
+                      <span className="ml-3 lg:ml-0 cursor-pointer transition duration-500 ease transform hover:-translate-y-1 border-black border-2 rounded-md font-normal hover:bg-black hover:text-white mt-4 p-2">
+                        Continue Reading
+                      </span>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-            ))
-          }
-          {
-            !isLoading && posts && posts.length === 0 && (
-              <div>
-                No more posts to display
-              </div>
-            )
-          }
-          {
-            isLoading && (
-              <div>
-                Loading...
-              </div>
-            )
-          }
+            ))}
+          {!isLoading && posts && posts.length === 0 && (
+            <div>No more posts to display</div>
+          )}
+          {isLoading && <div>Loading...</div>}
           <div className="flex flex-row justify-between">
             <div
               onClick={!isFirst ? onClickPrev : () => {}}
@@ -247,12 +239,13 @@ export default function Home() {
                 font-normal
                 mt-4
                 p-2
-                ${isFirst ?
-                  `
+                ${
+                  isFirst
+                    ? `
                     cursor-not-allowed
                     bg-gray-300
                   `
-                  : `
+                    : `
                     cursor-pointer
                     transition
                     duration-500
@@ -277,12 +270,13 @@ export default function Home() {
                 font-normal
                 mt-4
                 p-2
-                ${isLast ?
-                  `
+                ${
+                  isLast
+                    ? `
                     cursor-not-allowed
                     bg-gray-300
                   `
-                  : `
+                    : `
                     cursor-pointer
                     transition
                     duration-500
