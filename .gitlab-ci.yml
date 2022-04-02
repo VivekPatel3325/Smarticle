@@ -28,9 +28,10 @@ frontend-compile:
   stage: compile
   tags:
     - ugrad
-  image: node:16.14.0
+  image: node:16.14.2
   script:
     - echo "compiling frontend application"
+    - node -version
     - cd frontend
     - npm install
     - echo "completed compiling frontend application"
