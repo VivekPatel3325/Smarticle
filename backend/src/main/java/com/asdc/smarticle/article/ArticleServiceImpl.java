@@ -80,7 +80,7 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public Page<Article> getArticle(String visibility,FilterPojo filterPojo) throws ArticleException {
 		Page<Article> articleList = null;
-		Pageable pagination = PageRequest.of(filterPojo.getPage(), filterPojo.getTotalPage(),Sort.by(filterPojo.getSortBy()));
+		Pageable pagination = PageRequest.of(filterPojo.getPage(), filterPojo.getTotalPage(),Sort.by(filterPojo.getSortBy()).descending());
 		
 		try {
 
