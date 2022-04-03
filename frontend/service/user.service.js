@@ -32,7 +32,10 @@ async function login(username, password) {
       body: JSON.stringify({ userName: username, pswd: password }),
     })
   ).json();
-  if (res["statusCode"] !== 200) return res;
+  if (res["statusCode"] !== 200) {
+    console.log(res);
+    throw new Error ("There was an error");
+  }
   const token = res["data"]["jwt-token"];
   userSubject.next({
     username,
@@ -187,7 +190,7 @@ async function getAuthors() {
         },
       })
     ).json();
-    console.log(data);
+    console.log('FROM getuserdetailspsotedarticles',data);
   } catch (err) {
     throw new Error(err);
   }
@@ -196,7 +199,7 @@ async function getAuthors() {
     .map((author) => {
       return {
         label: author.firstName + " " + author.lastName,
-        value: author.userName
+        value: author.id
       }
     })
     .filter((author) => author.label !== null);
