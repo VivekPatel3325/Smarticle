@@ -19,9 +19,12 @@ import com.asdc.smarticle.user.User;
  */
 @Service
 public class TokenServiceImpl implements TokenService {
-
+ 
 	@Autowired
 	TokenRepository tokenRepository;
+	
+	@Autowired
+	TokenFactory tokenFactory;
 
 	@Value("${token.expirtytime}")
 	private String tokenValidity;
@@ -30,7 +33,7 @@ public class TokenServiceImpl implements TokenService {
 	public Token createToken(User user) {
 
 		StringKeyGenerator tokenString = KeyGenerators.string();
-		Token token = new Token();
+		Token token = tokenFactory.getTokenInstance();
 		token.setUser(user);
 		token.setExpiryDate(LocalDateTime.now().plusSeconds(Long.parseLong(tokenValidity)));
 		token.setToken(tokenString.generateKey());
@@ -44,7 +47,7 @@ public class TokenServiceImpl implements TokenService {
 
 		return token.getExpiryDate().isBefore(LocalDateTime.now());
 	}
-
+ 
 	@Override
 	public void deleteToken(Token token) { 
 
