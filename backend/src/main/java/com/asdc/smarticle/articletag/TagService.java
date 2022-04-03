@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.asdc.smarticle.article.Article;
+import com.asdc.smarticle.user.User;
 
 /**
  * @author Vivekkumar Patel
@@ -17,4 +18,6 @@ public interface TagService {
 	List<Tag> createArticleTag(String tagName);
 	
 	List<Tag> retrieveAllTags();
+	
+	boolean isUserTagsExist(User user);
 }
