@@ -19,7 +19,7 @@ export default function Articles() {
     async function get() {
       try {
         setIsLoading(true);
-        const fetched = await postService.getByAuthor(token, page)
+        const fetched = await postService.getByAuthor(token, page);
         setPosts(fetched["content"]);
         setIsFirst(fetched["first"]);
         setIsLast(fetched["last"]);
@@ -31,8 +31,8 @@ export default function Articles() {
     }
     if (token) get();
   }, [user?.token, page]);
-  const onClickNext = () => setPage((page) =>  page + 1);
-  const onClickPrev = () => setPage((page) =>  page - 1);
+  const onClickNext = () => setPage((page) => page + 1);
+  const onClickPrev = () => setPage((page) => page - 1);
   return (
     <Main title="Articles">
       <div className="grid grid-cols-1 lg:grid-cols-6 gap-12 mt-10">
@@ -73,7 +73,10 @@ export default function Articles() {
                       ></article>
                     </div>
                     <div className="mb-24">
-                      <p className="ml-3 lg:ml-1 mb-7 italic"><FontAwesomeIcon className="ml-1" icon="thumbs-up" /> &nbsp; {post.like.length}</p>
+                      <p className="ml-3 lg:ml-1 mb-7">
+                        <FontAwesomeIcon className="ml-1" icon="thumbs-up" />{" "}
+                        &nbsp; {post.like.length}
+                      </p>
                       <Link href={"/post/" + post.id}>
                         <span className="ml-3 lg:ml-0 cursor-pointer transition duration-500 ease transform hover:-translate-y-1 border-black border-2 rounded-md font-normal hover:bg-black hover:text-white mt-4 p-2">
                           Continue Reading
@@ -99,12 +102,13 @@ export default function Articles() {
                 font-normal
                 mt-4
                 p-2
-                ${isFirst ?
-                  `
+                ${
+                  isFirst
+                    ? `
                     cursor-not-allowed
                     bg-gray-300
                   `
-                  : `
+                    : `
                     cursor-pointer
                     transition
                     duration-500
@@ -129,12 +133,13 @@ export default function Articles() {
                 font-normal
                 mt-4
                 p-2
-                ${isLast ?
-                  `
+                ${
+                  isLast
+                    ? `
                     cursor-not-allowed
                     bg-gray-300
                   `
-                  : `
+                    : `
                     cursor-pointer
                     transition
                     duration-500

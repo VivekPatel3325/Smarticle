@@ -19,7 +19,7 @@ export const userService = {
   saveTags,
   updateDetails,
   getDetails,
-  getAuthors
+  getAuthors,
 };
 
 async function login(username, password) {
@@ -133,7 +133,7 @@ async function logout(user) {
   return data;
 }
 
-async function getDetails (token) {
+async function getDetails(token) {
   let res;
   res = await (
     await fetch(`${serverUrl}/user/getUserProfile`, {
@@ -144,7 +144,7 @@ async function getDetails (token) {
     })
   ).json();
   return res;
-};
+}
 
 async function saveTags(tags, token) {
   const res = await (
@@ -152,7 +152,7 @@ async function saveTags(tags, token) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "jwt-token": `${token}`
+        "jwt-token": `${token}`,
       },
       body: JSON.stringify(tags),
     })
@@ -160,7 +160,7 @@ async function saveTags(tags, token) {
   return res;
 }
 
-async function updateDetails (user, token) {
+async function updateDetails(user, token) {
   let data;
   data = await (
     await fetch(`${serverUrl}/user/updateUserProfile`, {
@@ -196,8 +196,8 @@ async function getAuthors() {
     .map((author) => {
       return {
         label: author.firstName + " " + author.lastName,
-        value: author.userName
-      }
+        value: author.userName,
+      };
     })
     .filter((author) => author.label !== null);
   console.log("user", data);
