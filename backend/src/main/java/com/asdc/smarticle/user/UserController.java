@@ -110,22 +110,28 @@ public class UserController extends BaseController {
 	@PostMapping(ApplicationUrlPath.USER_LOGIN)
 	public ResponseVO<Object> authenticateUser(@RequestBody User userRequest) {
 		try {
-			Authentication authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(userRequest.getUserName(), userRequest.getPswd()));
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			ResponseCookie jwtCookie = jwtUtils.generateJwtTokenCookie(userDetails.getUsername());
-			userService.addJwtToken(userDetails.getUsername(), jwtCookie.getValue());
-			System.out.println(
-					"jwtUtils - " + jwtCookie.getValue() + " - " + jwtCookie.getMaxAge() + " - " + jwtCookie.getName());
-			User user = userService.getUserByUserName(userDetails.getUsername());
-			HashMap<String, String> data = new HashMap<String, String>();
-			data.put("userName", user.getUserName());
-			data.put("firstName", user.getFirstName());
-			data.put("lastName", user.getLastName());
-			data.put("jwt-token", jwtCookie.getValue());
-			data.put("msg", "User Logged in sucessfully");
-			return prepareSuccessResponse(data);
+			String isVerified = userService.isUserVerified(userRequest.getUserName());
+			if (isVerified.equalsIgnoreCase("verified")) {
+				Authentication authentication = authenticationManager.authenticate(
+						new UsernamePasswordAuthenticationToken(userRequest.getUserName(), userRequest.getPswd()));
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+				UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+				ResponseCookie jwtCookie = jwtUtils.generateJwtTokenCookie(userDetails.getUsername());
+				userService.addJwtToken(userDetails.getUsername(), jwtCookie.getValue());
+				System.out.println("jwtUtils - " + jwtCookie.getValue() + " - " + jwtCookie.getMaxAge() + " - "
+						+ jwtCookie.getName());
+				User user = userService.getUserByUserName(userDetails.getUsername());
+				HashMap<String, String> data = new HashMap<String, String>();
+				data.put("userName", user.getUserName());
+				data.put("firstName", user.getFirstName());
+				data.put("lastName", user.getLastName());
+				data.put("jwt-token", jwtCookie.getValue());
+				data.put("msg", "User Logged in sucessfully");
+				return prepareSuccessResponse(data);
+			}else {
+				return error(HttpStatus.UNPROCESSABLE_ENTITY.value(), isVerified, false);
+			}
+			
 		} catch (Exception e) {
 			return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false);
 		}
