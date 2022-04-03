@@ -50,5 +50,7 @@ public interface UserService {
 	List<Map<String, Object>> getUsersPostedArticle();
 	
 	List<User> getUserList(List<Long> userId);
+
+	String isUserVerified(String userName);
 	
 }
