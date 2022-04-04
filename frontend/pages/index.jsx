@@ -71,9 +71,7 @@ export default function Home() {
   }, [user?.token, page, tags, selectedTags, selectedAuthors, sortBy]);
   const onClickNext = () => setPage((page) => page + 1);
   const onClickPrev = () => setPage((page) => page - 1);
-  const handleAuthors = (obj) => {
-    console.log(obj); // @todo
-  };
+  const handleAuthors = (obj) => setSelectedAuthors(obj.map(a => a.value));
   const handleSortBy = (obj) => {
     const k = obj.value;
     switch (k) {

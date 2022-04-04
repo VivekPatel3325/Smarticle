@@ -9,6 +9,5 @@ export default function useAllAuthors() {
     }
     get();
   }, []);
-  console.log(authors);
   return authors;
 }

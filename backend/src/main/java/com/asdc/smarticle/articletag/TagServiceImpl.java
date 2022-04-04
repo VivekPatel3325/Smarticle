@@ -26,35 +26,41 @@ public class TagServiceImpl implements TagService {
 
 	@Autowired
 	TagRepository tagRepository;
-
+	
+	@Autowired
+	private TagFactory tagFactory;
+ 
 	@Override
 	public List<Tag> getTags(String userName) {
-		System.out.println("userName" + userName);
 		User user = null;
 		if (!userName.isEmpty()) {
 			user = userRepository.findByUserName(userName);
 		}
+		
+		
 		if (userName.isEmpty() || isUserTagsExist(user)) {
-			return articletagRepository.findAll();
+			return articletagRepository.findAll(); 
 		} else {
 			Set<Tag> setOfTags = user.getTags();
 			return new ArrayList<>(setOfTags);
 		}
-	}
+	} 
 	/**
 	 * @author Vivekkumar Patel 
 	 * This method checks that does user has set tags for thier preference or not.
 	 * @param user instnace of the use class .
 	 * @return true if tags are set as a user's preference else false.
 	 */
-	private boolean isUserTagsExist(User user) {
+	public boolean isUserTagsExist(User user) {
 		return user != null && user.getTags().isEmpty();
-	}
+	} 
 
 	@Override
-	public List<Tag> createArticleTag(String tagName) {
+	public List<Tag> createArticleTag(String tagName) { 
 
-		Tag tag = new Tag();
+		//Tag tag = new Tag();
+		
+		Tag tag=tagFactory.getTagInstance();
 
 		tag.setTagName(tagName);
 		tagRepository.save(tag);
@@ -62,7 +68,7 @@ public class TagServiceImpl implements TagService {
 		List<Tag> listOfTags = tagRepository.findAll();
 
 		return listOfTags;
-	}
+	} 
 
 	/**
 	 * @author Vivekkumar Patel
