@@ -63,6 +63,7 @@ public class EmailServiceImpl implements EmailService {
 	 * @param token jwt token string.
 	 * @return http url string.
 	 */
+	@Override
 	public String httpVeificationURL(Token token) {
 
 		UriComponentsBuilder verificationURl = UriComponentsBuilder.fromHttpUrl(clientURl).path("/verify");
@@ -78,6 +79,7 @@ public class EmailServiceImpl implements EmailService {
 	 * @param token jwt token string.
 	 * @return http url string. 
 	 */
+	@Override
 	public String httpResetPasswordnURL(ResponseCookie token) {
 		UriComponentsBuilder verificationURl = UriComponentsBuilder.fromHttpUrl(clientURl).path("/reset");
 

@@ -5,6 +5,7 @@ import com.asdc.smarticle.articletag.TagFactory;
 import com.asdc.smarticle.articletag.TagRepository;
 import com.asdc.smarticle.articletag.TagService;
 import com.asdc.smarticle.mailing.ContextFactory;
+import com.asdc.smarticle.mailing.EmailService;
 import com.asdc.smarticle.mailing.EmailServiceImpl;
 import com.asdc.smarticle.mailing.MimeMessageFactory;
 import com.asdc.smarticle.token.Token;
@@ -52,11 +53,10 @@ import javax.mail.internet.MimeMessage;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@EnableAutoConfiguration
 public class EmailServiceUnitTest {
 
 	@Autowired
-	private EmailServiceImpl emailService;
+	private EmailService emailService;
 
 	@MockBean
 	JavaMailSender javaMailSender;
@@ -157,4 +157,4 @@ public class EmailServiceUnitTest {
 		Assert.assertEquals(uriComponentsBuilder.toUriString(), emailService.httpResetPasswordnURL(responseCookie));
 	}
 
-}
+} 
