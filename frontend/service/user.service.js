@@ -19,7 +19,8 @@ export const userService = {
   saveTags,
   updateDetails,
   getDetails,
-  getAuthors
+  getAuthors,
+  getVerified
 };
 
 async function login(username, password) {
@@ -33,8 +34,9 @@ async function login(username, password) {
     })
   ).json();
   if (res["statusCode"] !== 200) {
-    console.log(res);
-    throw new Error ("There was an error");
+    return res;
+    // console.log(res);
+    // throw new Error ("There was an error");
   }
   const token = res["data"]["jwt-token"];
   userSubject.next({
@@ -204,5 +206,24 @@ async function getAuthors() {
     })
     .filter((author) => author.label !== null);
   console.log("user", data);
+  return data;
+}
+
+async function getVerified(vtoken) {
+  let data;
+  console.log(vtoken);
+  try {
+    data = await (
+      await fetch(`${serverUrl}/user/activateAccount?token=${vtoken}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+      })
+    ).json();
+  } catch (err) {
+    // throw new Error(err);
+  }
+  console.log(data);
   return data;
 }
