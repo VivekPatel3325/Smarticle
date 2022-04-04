@@ -21,22 +21,22 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashSet;
 import java.util.Set;
 
-//@RunWith(SpringRunner.class)	
+//@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
+//@ContextConfiguration(classes = { SpringTestConfiguration.class })
 @SpringBootTest
 //@ActiveProfiles(profiles = "test")
 //@ExtendWith(SpringExtension.class)
-@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+//@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 public class ArticleServiceUnitTest {
-	
-	
-
- 	 
+	 	 
  
 
 	@MockBean
@@ -169,5 +169,8 @@ public class ArticleServiceUnitTest {
 		articleService.setLike(article, "alen");
 		
 	}
+	
+	
 	 
 }
+ 

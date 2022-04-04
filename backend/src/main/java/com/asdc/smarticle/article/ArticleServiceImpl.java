@@ -98,7 +98,7 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleList;
 	}
 
-	/**
+	/** 
 	 * @author Vivekkumar Patel 
 	 * This method retrieve list of articles filtered by visibility,user,tags and sort by date or number of likes 
 	 * @param visibility Is article visible before login or not.If visibility=1 article is visible before login else not.
@@ -266,7 +266,7 @@ public class ArticleServiceImpl implements ArticleService {
 		}
 
 		return responseTweetData;
-	}
+	} 
 
 	//Reference: https://www.tabnine.com/code/java/methods/twitter4j.conf.ConfigurationBuilder/setOAuthConsumerKey
 	public static Twitter authentication() {

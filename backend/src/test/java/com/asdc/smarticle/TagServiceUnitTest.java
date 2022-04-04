@@ -30,10 +30,8 @@ import java.util.List;
 import java.util.Set;
 
 //@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-//@ActiveProfiles(profiles = "test")
-//@ExtendWith(SpringExtension.class)
-@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 public class TagServiceUnitTest {
 
 	 

@@ -178,20 +178,18 @@ public class UserServiceImpl implements UserService {
 		User user = userRepository.findByUserName(username);
 		return user;
 	}
-
+ 
 	@Override
 	public User saveUserPrefTags(String userName, Set<Tag> tagIdList) {
 		List<Long> ids = new ArrayList<>();
 		for (Tag tag : tagIdList) {
-			ids.add(tag.getId());
+			ids.add(tag.getId()); 
 		}
 		List<Tag> tagList = tagRepository.findByIdIn(ids);
 		
 		User user = userRepository.findByUserName(userName);
-		System.out.println("userName" + user.getEmailID());
 		user.setTags(tagList.stream().collect(Collectors.toSet()));
 		user = userRepository.save(user);
-		System.out.println("Updated user" + user);
 
 		return user;
 	}
@@ -259,7 +257,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		userDetails = userDetails.stream()
-				.distinct()
+	 			.distinct() 
 				.collect(Collectors.toList());
 		return userDetails;
 

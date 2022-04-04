@@ -40,10 +40,8 @@ import java.util.Set;
 import javax.crypto.KeyGenerator;
 
 //@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-//@ActiveProfiles(profiles = "test")
-//@ExtendWith(SpringExtension.class)
-@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 public class TokenServiceUnitTest {
 	
 
