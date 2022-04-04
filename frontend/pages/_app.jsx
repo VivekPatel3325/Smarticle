@@ -21,7 +21,8 @@ function MyApp({ Component, pageProps }) {
     if (
       !userService.userValue &&
       !publicPaths.includes(path) &&
-      !path.startsWith("/post")
+      !path.startsWith("/post") &&
+      !path.startsWith("/verify")
     ) {
       setAuthorized(false);
       router.push({

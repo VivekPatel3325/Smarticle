@@ -23,10 +23,11 @@ const Login = () => {
       .login(username, password)
       .then((data) => {
         if (data["statusCode"] !== 200) {
-          throw new Error (JSON.stringify(data["message"]));
+          toast.error(JSON.stringify(data["message"]));
+        } else {
+          const returnUrl = router.query.returnUrl || "/";
+          router.push(returnUrl);
         }
-        const returnUrl = router.query.returnUrl || "/";
-        router.push(returnUrl);
       })
       .catch((e) => {
         console.log(e);

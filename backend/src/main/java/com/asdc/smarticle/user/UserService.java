@@ -47,8 +47,10 @@ public interface UserService {
 	
 	User saveUserPrefTags(String userName, Set<Tag> tagIdList);
 
-	List<Map<String,String>> getUsersPostedArticle();
+	List<Map<String, Object>> getUsersPostedArticle();
 	
 	List<User> getUserList(List<Long> userId);
+
+	String isUserVerified(String userName);
 	
 }

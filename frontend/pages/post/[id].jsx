@@ -2,30 +2,31 @@ import React, { useState, useEffect } from "react";
 import Main from "layouts/main";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as farHeart } from "@fortawesome/free-regular-svg-icons";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import moment from "moment";
 import { postService } from "service/post.service";
 import useUser from "hooks/useUser";
 import { twitterService } from "service/twitter.service";
-import { tagsService } from "service/tags.service";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
-library.add(faThumbsUp, faThumbsDown);
+library.add(faHeart, farHeart, faTwitter);
 const PostDetails = () => {
   const router = useRouter();
   const user = useUser();
   const { id } = router.query;
   const onClickLike = () => {
-    if (like === false) {
-      toast("Liked", { position: toast.POSITION.BOTTOM_LEFT, autoClose: 500 });
-    } else {
+    setLiked((prev) => !prev);
+    if (liked === true) {
       toast("Disliked", {
         position: toast.POSITION.BOTTOM_LEFT,
         autoClose: 500,
       });
+    } else if (liked == false) {
+      toast("Liked", { position: toast.POSITION.BOTTOM_LEFT, autoClose: 500 });
     }
-    setLike((prev) => !prev);
     return postService
       .postLike(user?.token, id)
       .then((data) => {
@@ -37,7 +38,7 @@ const PostDetails = () => {
         console.log(e);
       });
   };
-  const [like, setLike] = useState(false);
+  const [liked, setLiked] = useState(false);
   const [tweets, setTweets] = useState([]);
   const [post, setPost] = useState({
     heading: "",
@@ -49,13 +50,17 @@ const PostDetails = () => {
       lastname: "",
       username: "",
     },
+    likes: [],
     tags: [],
   });
   useEffect(() => {
     const fetch = async () => {
       setTweets(await twitterService.getTweetDetails(user?.token, id));
       const post = await postService.getById(user?.token, id);
+      const likes = post.like;
       const tags = post.tagId;
+      const hasLiked = likes.find((like) => like.userName === user.username)
+      if (hasLiked) setLiked(true);
       setPost({
         heading: post.heading,
         content: post.content,
@@ -66,13 +71,14 @@ const PostDetails = () => {
           lastname: post.userId?.lastName,
           username: post.userId?.userName,
         },
+        likes,
         tags,
       });
     };
     if (id) {
       fetch();
     }
-  }, [id]);
+  }, [id, user?.username, user?.token]);
   return (
     <Main>
       <div className="grid lg:grid-cols-2 lg:gap-48">
@@ -97,27 +103,30 @@ const PostDetails = () => {
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
           <div className="mt-4 mb-5">
-            {post.tags.map((tag) => {
+            {post.tags.map((tag, k) => {
               return (
-                <span className="px-1.5 bg-white border-black border-2 rounded-lg mr-2">
+                <span className="px-1.5 bg-white border-black border-2 rounded-lg mr-2" key={k}>
                   {tag.tagName}
                 </span>
               );
             })}
           </div>
           {user && (
-            <FontAwesomeIcon
-              className="my-3 text-2xl opacity-50 hover:opacity-100 hover:cursor-pointer"
-              icon={like ? faThumbsDown : faThumbsUp}
-              onClick={onClickLike}
-            />
+            <div>
+
+              <FontAwesomeIcon
+                className="my-3 text-2xl opacity-50 hover:opacity-100 hover:cursor-pointer"
+                onClick={() => onClickLike()}
+                icon={liked ? faHeart : farHeart}
+              />
+            </div>
           )}
         </div>
         <div className="">
           {tweets &&
-            tweets.map((tweet) => {
+            tweets.map((tweet, k) => {
               return (
-                <div className="bg-gray-100 flex flex-col justify-center mb-5 lg:w-96 sm:w-52">
+                <div className="bg-gray-100 flex flex-col justify-center mb-5 lg:w-96 sm:w-52" key={k}>
                   <div className="relative py-1">
                     <div className="rounded border border-gray-300 px-6 py-1 my-1">
                       <div className="flex items-center">

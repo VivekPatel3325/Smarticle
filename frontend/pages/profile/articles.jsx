@@ -4,23 +4,35 @@ import { useState, useEffect } from "react";
 import { postService } from "service/post.service";
 import moment from "moment";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Articles() {
   const [posts, setPosts] = useState([]);
   const [error, isError] = useState(false);
+  const [page, setPage] = useState(0);
+  const [isFirst, setIsFirst] = useState(false);
+  const [isLast, setIsLast] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const user = useUser();
   const token = user?.token;
   useEffect(() => {
     async function get() {
       try {
-        setPosts(await postService.getByAuthor(token));
+        setIsLoading(true);
+        const fetched = await postService.getByAuthor(token, page);
+        setPosts(fetched["content"]);
+        setIsFirst(fetched["first"]);
+        setIsLast(fetched["last"]);
+        setIsLoading(false);
       } catch (err) {
         isError(true);
         console.log(err);
       }
     }
     if (token) get();
-  }, [token]);
+  }, [user?.token, page]);
+  const onClickNext = () => setPage((page) => page + 1);
+  const onClickPrev = () => setPage((page) => page - 1);
   return (
     <Main title="Articles">
       <div className="grid grid-cols-1 lg:grid-cols-6 gap-12 mt-10">
@@ -61,7 +73,10 @@ export default function Articles() {
                       ></article>
                     </div>
                     <div className="mb-24">
-                      <p className="ml-3 lg:ml-1 mb-7 italic">Likes: 1013</p>
+                      <p className="ml-3 lg:ml-1 mb-7">
+                        <FontAwesomeIcon className="ml-1" icon="thumbs-up" />{" "}
+                        &nbsp; {post.like.length}
+                      </p>
                       <Link href={"/post/" + post.id}>
                         <span className="ml-3 lg:ml-0 cursor-pointer transition duration-500 ease transform hover:-translate-y-1 border-black border-2 rounded-md font-normal hover:bg-black hover:text-white mt-4 p-2">
                           Continue Reading
@@ -71,8 +86,73 @@ export default function Articles() {
                   </div>
                 );
               })}
-            {posts.length === 0 && <div>No articles posted yet</div>}
+            {posts && posts.length === 0 && <div>No articles posted yet</div>}
             {error && <div>There was an error</div>}
+            {isLoading && <div> Loading...</div>}
+          </div>
+          <div className="flex flex-row justify-between">
+            <div
+              onClick={!isFirst ? onClickPrev : () => {}}
+              className={`
+                ml-3
+                lg:ml-0
+                border-black
+                border-2
+                rounded-md
+                font-normal
+                mt-4
+                p-2
+                ${
+                  isFirst
+                    ? `
+                    cursor-not-allowed
+                    bg-gray-300
+                  `
+                    : `
+                    cursor-pointer
+                    transition
+                    duration-500
+                    ease transform
+                    hover:-translate-y-1
+                  hover:bg-black
+                  hover:text-white
+                    `
+                }
+              `}
+            >
+              prev
+            </div>
+            <div
+              onClick={!isLast ? onClickNext : () => {}}
+              className={`
+                ml-3
+                lg:ml-0
+                border-black
+                border-2
+                rounded-md
+                font-normal
+                mt-4
+                p-2
+                ${
+                  isLast
+                    ? `
+                    cursor-not-allowed
+                    bg-gray-300
+                  `
+                    : `
+                    cursor-pointer
+                    transition
+                    duration-500
+                    ease transform
+                    hover:-translate-y-1
+                  hover:bg-black
+                  hover:text-white
+                    `
+                }
+              `}
+            >
+              next
+            </div>
           </div>
         </div>
       </div>

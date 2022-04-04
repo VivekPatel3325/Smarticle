@@ -79,6 +79,21 @@ public class UserServiceImpl implements UserService {
 
 		return userNameTaken;
 	}
+	
+	@Override
+	public String isUserVerified(String userName) {
+		String status = "";
+		User user = userRepository.findByUserName(userName);
+		if(user!=null && user.isVerified())
+			status =  "verified";
+		else if(user==null) {
+			status = "User does not exist";
+		}else {
+			status = "Account not yet verified. Please verify it and try again.";
+		}
+		return status;
+			
+	}
 
 	@Override
 	public User registerUser(User user) throws UserExistException {
@@ -186,7 +201,7 @@ public class UserServiceImpl implements UserService {
 			ids.add(tag.getId()); 
 		}
 		List<Tag> tagList = tagRepository.findByIdIn(ids);
-		
+
 		User user = userRepository.findByUserName(userName);
 		user.setTags(tagList.stream().collect(Collectors.toSet()));
 		user = userRepository.save(user);
@@ -198,7 +213,7 @@ public class UserServiceImpl implements UserService {
 	 * @author Vivekkumar Patel Get user details such as firstname,lastname,username
 	 *         etc
 	 * @param 'username' whose details to be retrieved and object mapper to map
-	 *                 reuqestVO to dto.
+	 *                   reuqestVO to dto.
 	 * @return UserProfileRespVo containing userdetails
 	 */
 	@Override
@@ -241,28 +256,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Map<String,String>> getUsersPostedArticle() {
-		List<Map<String,String>> userDetails = new ArrayList<>();
-		Map<String,String> details = new HashMap<>();
+	public List<Map<String, Object>> getUsersPostedArticle() {
+		List<Map<String, Object>> userDetails = new ArrayList<>();
+		Map<String, Object> details = new HashMap<>();
 		List<Article> articleList = articleRepository.findAll();
-		if(articleList.size()==0){
+		if (articleList.isEmpty()) {
 			return new ArrayList<>();
 		}
-		for(Article article : articleList){
+		for (Article article : articleList) {
 			details = new HashMap<>();
-			details.put("firstName",article.getUserId().getFirstName());
-			details.put("lastName",article.getUserId().getLastName());
-			details.put("userName",article.getUserId().getUserName());
+			details.put("firstName", article.getUserId().getFirstName());
+			details.put("lastName", article.getUserId().getLastName());
+			details.put("userName", article.getUserId().getUserName());
+			details.put("id", article.getUserId().getId());
 			userDetails.add(details);
 		}
 
-		userDetails = userDetails.stream()
-	 			.distinct() 
-				.collect(Collectors.toList());
+		userDetails = userDetails.stream().distinct().collect(Collectors.toList());
 		return userDetails;
 
 	}
-	
 
 	@Override
 	public List<User> getUserList(List<Long> userId) {

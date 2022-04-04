@@ -27,10 +27,13 @@ stages:
 frontend-compile:
   stage: compile
   tags:
-    - ugrad
-  image: node:16.14.0
+    - dalfcs_docker_autoscale
+  image: node:16.14.2
+  before_script:
+    - node -v
   script:
     - echo "compiling frontend application"
+    - node -v
     - cd frontend
     - npm install
     - echo "completed compiling frontend application"
@@ -69,8 +72,8 @@ backend-test:
 frontend-build:
   stage: build
   tags:
-    - ugrad
-  image: node:16.14.0
+    - dalfcs_docker_autoscale
+  image: node:16.14.2
   script:
     - echo "building frontend application"
     - cd frontend

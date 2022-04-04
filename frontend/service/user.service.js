@@ -18,7 +18,9 @@ export const userService = {
   reset,
   saveTags,
   updateDetails,
-  getDetails
+  getDetails,
+  getAuthors,
+  getVerified
 };
 
 async function login(username, password) {
@@ -31,7 +33,11 @@ async function login(username, password) {
       body: JSON.stringify({ userName: username, pswd: password }),
     })
   ).json();
-  if (res["statusCode"] !== 200) throw new Error("Error in logging in");
+  if (res["statusCode"] !== 200) {
+    return res;
+    // console.log(res);
+    // throw new Error ("There was an error");
+  }
   const token = res["data"]["jwt-token"];
   userSubject.next({
     username,
@@ -172,5 +178,52 @@ async function updateDetails (user, token) {
     })
   ).json();
   if (data["statusCode"] !== 200) throw new Error("Error in updating details");
+  return data;
+}
+
+async function getAuthors() {
+  let data;
+  try {
+    data = await (
+      await fetch(`${serverUrl}/user/getUserDetailsPostedArticle`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    ).json();
+    console.log('FROM getuserdetailspsotedarticles',data);
+  } catch (err) {
+    throw new Error(err);
+  }
+  if (data.length === 0 || !Array.isArray(data)) return [];
+  data = data
+    .map((author) => {
+      return {
+        label: author.firstName + " " + author.lastName,
+        value: author.id
+      }
+    })
+    .filter((author) => author.label !== null);
+  console.log("user", data);
+  return data;
+}
+
+async function getVerified(vtoken) {
+  let data;
+  console.log(vtoken);
+  try {
+    data = await (
+      await fetch(`${serverUrl}/user/activateAccount?token=${vtoken}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+      })
+    ).json();
+  } catch (err) {
+    // throw new Error(err);
+  }
+  console.log(data);
   return data;
 }
