@@ -56,7 +56,7 @@ public class ArticleServiceImpl implements ArticleService {
 	 */
 	public boolean isHeadingEmpty(Article article) {
 		return article.getContent() == null ||article.getContent().isEmpty() ;
-	}
+	} 
 
 	/**
 	 * @author Vivekkumar Patel 
@@ -82,6 +82,8 @@ public class ArticleServiceImpl implements ArticleService {
 		Page<Article> articleList = null;
 		Pageable pagination = PageRequest.of(filterPojo.getPage(), filterPojo.getTotalPage(),Sort.by(filterPojo.getSortBy()).descending());
 		
+		
+		 
 		try {
 
 			if (visibility.equalsIgnoreCase(ApplicationUrlPath.ALL_ARTICLE)) {
@@ -95,10 +97,13 @@ public class ArticleServiceImpl implements ArticleService {
 		} catch (Exception e) {
 			throw new ArticleException(ApiError.ARTICLE_NOT_PRESENT);
 		}
+		
+		
+		
 		return articleList;
 	}
 
-	/**
+	/** 
 	 * @author Vivekkumar Patel 
 	 * This method retrieve list of articles filtered by visibility,user,tags and sort by date or number of likes 
 	 * @param visibility Is article visible before login or not.If visibility=1 article is visible before login else not.
@@ -148,7 +153,7 @@ public class ArticleServiceImpl implements ArticleService {
 	 * @param filterPojo Instance of FilterPojo containing pagination and metadata to apply filter.
 	 * @return true if list of taglist  is empty else false.
 	 */
-	private boolean isTagListEmpty(FilterPojo filterPojo) {
+	public boolean isTagListEmpty(FilterPojo filterPojo) {
 		return filterPojo.getTagList()!=null  && filterPojo.getTagList().size()==0;
 	}
 
@@ -158,11 +163,11 @@ public class ArticleServiceImpl implements ArticleService {
 	 * @param filterPojo Instance of FilterPojo containing pagination and metadata to apply filter.
 	 * @return true if list of userid  is empty else false.
 	 */
-	private boolean isUserListEmpty(FilterPojo filterPojo) {
+	public  boolean isUserListEmpty(FilterPojo filterPojo) {
 		return filterPojo.getUserIdList() !=null  && filterPojo.getUserIdList().size()==0;
 	}
-
-	 
+ 
+	  
 	/**
 	 * @author Vivekkumar Patel 
 	 * This method retrieve list of articles filtered by user,tags and sort by date or number of likes 
@@ -266,7 +271,7 @@ public class ArticleServiceImpl implements ArticleService {
 		}
 
 		return responseTweetData;
-	}
+	} 
 
 	//Reference: https://www.tabnine.com/code/java/methods/twitter4j.conf.ConfigurationBuilder/setOAuthConsumerKey
 	public static Twitter authentication() {
@@ -290,6 +295,7 @@ public class ArticleServiceImpl implements ArticleService {
 			article1.getLike().add(user);
 		}
 		//article1.getLike().add(user);
+		article1.setLikeCount(article1.getLike().size());
 		article1.setLike(article1.getLike());
 		articleRepository.save(article1);
 	}  

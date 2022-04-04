@@ -33,7 +33,7 @@ public class Token {
 
 	@Column
 	private String token;
-
+ 
 	@Column
 	private LocalDateTime expiryDate = LocalDateTime.now().plusSeconds(60);
 

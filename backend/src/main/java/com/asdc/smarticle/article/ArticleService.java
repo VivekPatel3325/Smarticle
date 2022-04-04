@@ -20,4 +20,8 @@ public interface ArticleService {
 	List<Map<String,Object>> getTwitterCountOfArticleTags(Long id);
 
 	void setLike(Article article, String userName);
+	
+	boolean isUserListEmpty(FilterPojo filterPojo) ;
+	
+	boolean isTagListEmpty(FilterPojo filterPojo);
 	}

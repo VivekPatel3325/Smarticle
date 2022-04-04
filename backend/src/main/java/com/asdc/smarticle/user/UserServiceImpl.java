@@ -20,6 +20,7 @@ import com.asdc.smarticle.token.TokenService;
 import com.asdc.smarticle.user.exception.UserExistException;
 import com.asdc.smarticle.user.userVo.UserProfileRequestVo;
 import com.asdc.smarticle.user.userVo.UserProfileRespVo;
+import com.asdc.smarticle.user.userVo.UserProfileRespVoFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -49,6 +50,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	ArticleRepository articleRepository;
+	
+	@Autowired
+	PooledPBEStringFactory pooledPBEStringFactory;
+
+	@Autowired
+	UserProfileRespVoFactory userProfileRespVoFactory;
 
 	@Override
 	public boolean isEmailIdRegistered(String email) {
@@ -76,20 +83,20 @@ public class UserServiceImpl implements UserService {
 
 		return userNameTaken;
 	}
-	
+
 	@Override
 	public String isUserVerified(String userName) {
 		String status = "";
 		User user = userRepository.findByUserName(userName);
-		if(user!=null && user.isVerified())
-			status =  "verified";
-		else if(user==null) {
+		if (user != null && user.isVerified())
+			status = "verified";
+		else if (user == null) {
 			status = "User does not exist";
-		}else {
+		} else {
 			status = "Account not yet verified. Please verify it and try again.";
 		}
 		return status;
-			
+
 	}
 
 	@Override
@@ -114,13 +121,13 @@ public class UserServiceImpl implements UserService {
 	public String encodePswd(String pswd) {
 
 		SimpleStringPBEConfig config = cipherCf.getCipherConfig();
-		PooledPBEStringEncryptor cipher = new PooledPBEStringEncryptor();
+		PooledPBEStringEncryptor cipher = pooledPBEStringFactory.getPBEStrinInstance();
 		cipher.setConfig(config);
 
 		return cipher.encrypt(pswd);
 
-	}
-
+	} 
+ 
 	@Override
 	public boolean verifyUser(String token) {
 
@@ -179,31 +186,29 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User updateUserPassword(String userName, String password) {
 		User user = userRepository.findByUserName(userName);
-		System.out.println("User pass - " + user.getUserName() + user.getPswd());
+		//System.out.println("User pass - " + user.getUserName() + user.getPswd());
 		user.setPswd(encodePswd(password));
 		userRepository.save(user);
 		return user;
-	}
+	} 
 
 	@Override
 	public User getUserByUserName(String username) {
 		User user = userRepository.findByUserName(username);
 		return user;
 	}
-
+ 
 	@Override
 	public User saveUserPrefTags(String userName, Set<Tag> tagIdList) {
 		List<Long> ids = new ArrayList<>();
 		for (Tag tag : tagIdList) {
-			ids.add(tag.getId());
+			ids.add(tag.getId()); 
 		}
 		List<Tag> tagList = tagRepository.findByIdIn(ids);
 
 		User user = userRepository.findByUserName(userName);
-		System.out.println("userName" + user.getEmailID());
 		user.setTags(tagList.stream().collect(Collectors.toSet()));
 		user = userRepository.save(user);
-		System.out.println("Updated user" + user);
 
 		return user;
 	}
@@ -218,11 +223,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserProfileRespVo getUserDetails(String userName, ObjectMapper mapper) {
 
-		UserProfileRespVo userProfileRespVo = null;
+		UserProfileRespVo userProfileRespVo = userProfileRespVoFactory.getUserProfileRespVoInstance();
 		User user = userRepository.findByUserName(userName);
 
 		if (user != null) {
-			userProfileRespVo = new UserProfileRespVo();
+			//userProfileRespVo = new UserProfileRespVo();
 			userProfileRespVo.setEmailID(user.getEmailID());
 			userProfileRespVo.setFirstName(user.getFirstName());
 			userProfileRespVo.setLastName(user.getLastName());
@@ -273,7 +278,7 @@ public class UserServiceImpl implements UserService {
 
 		userDetails = userDetails.stream().distinct().collect(Collectors.toList());
 		return userDetails;
-
+ 
 	}
 
 	@Override

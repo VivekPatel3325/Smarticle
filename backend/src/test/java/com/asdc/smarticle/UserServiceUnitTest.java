@@ -45,12 +45,15 @@ import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import com.asdc.smarticle.user.UserService;
 import com.asdc.smarticle.user.UserServiceImpl;
+import com.asdc.smarticle.user.userVo.UserProfileRequestVo;
+import com.asdc.smarticle.user.userVo.UserProfileRespVo;
+import com.asdc.smarticle.user.userVo.UserProfileRespVoFactory;
 
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.jasypt.iv.RandomIvGenerator;
 
-//@RunWith(SpringRunner.class)
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class UserServiceUnitTest {
@@ -92,11 +95,20 @@ class UserServiceUnitTest {
 	@MockBean
 	PooledPBEStringEncryptor pooledPBEStringEncryptor;
 	
-	@Autowired
-	CipherConfig cipherConfig;
-	
 	@MockBean
 	private Token token;
+	
+	@MockBean
+	private UserProfileRespVo userProfileRespVo;
+	
+	@MockBean
+	private UserProfileRequestVo userProfileRequestVo;
+	
+	@MockBean
+	private UserProfileRespVoFactory userProfileRespVoFactory;
+	
+	@Mock
+	private List<User> users;
 
 	@Test
 	void testIsEmailIdRegistered() {
@@ -118,7 +130,7 @@ class UserServiceUnitTest {
 	void testIsUsernameRegistered() {
 
 		String userName = "vkpatel4312";
-
+ 
 		User userEntity = user;
 
 		Mockito.when(userRepo.findByUserName(userName)).thenReturn(userEntity);
@@ -188,19 +200,7 @@ class UserServiceUnitTest {
 
 	
 	    
-	@Test
-	void testCipherConfig() {
-
-		Mockito.when(cipherConfigFactory.getCipherConfigInstance()).thenReturn(simpleStringPBEConfig);
-		simpleStringPBEConfig.setPassword("smarticlesmarticle");
-		simpleStringPBEConfig.setAlgorithm("PBEWithHMACSHA512AndAES_256");
-		simpleStringPBEConfig.setKeyObtentionIterations("1000");
-		simpleStringPBEConfig.setPoolSize("4");
-		simpleStringPBEConfig.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-		simpleStringPBEConfig.setIvGenerator(new RandomIvGenerator());
-		Assert.assertEquals(simpleStringPBEConfig, cipherConfig.getCipherConfig());
-
-	}
+	
 	
 	@Test
 	void testEncodePaswd() {
@@ -220,22 +220,24 @@ class UserServiceUnitTest {
 	void TestPostedArticle() {
 		
 		List<Article> articleList = new ArrayList();
-		List<Map<String, String>> userDetails = new ArrayList<>();
+		List<Map<String, Object>> userDetails = new ArrayList<>();
 		Mockito.when(articleRepository.findAll()).thenReturn(articleList);
 		Assert.assertEquals(userDetails, userService.getUsersPostedArticle());
 		
-		User user = new User();
+		User user = new User(); 
 		user.setFirstName("vivek");
 		user.setLastName("patel");
 		user.setUserName("vkpatel4312");
+		user.setId((long)1);
 		Article article = new Article();
 		article.setUserId(user);
 		articleList.add(article);
 		Mockito.when(articleRepository.findAll()).thenReturn(articleList);
-		Map<String, String> details = new HashMap<>();
+		Map<String, Object> details = new HashMap<>();
 		details.put("firstName", article.getUserId().getFirstName());
 		details.put("lastName", article.getUserId().getLastName());
 		details.put("userName", article.getUserId().getUserName());
+		details.put("id", article.getUserId().getId());
 		userDetails.add(details);
 
 		Assert.assertEquals(userDetails, userService.getUsersPostedArticle());
@@ -268,5 +270,123 @@ class UserServiceUnitTest {
 		
 	}
 	
+	@Test
+	void testAddJwtToken() {
+		Mockito.when(userRepo.findByUserName("sarthak")).thenReturn(user);
+		user.setJwtToken("token");
+		Mockito.when(userRepo.save(user)).thenReturn(user);
+		userService.addJwtToken("sarthak", "token");
+
+		Mockito.when(userRepo.findByUserName("sarthak")).thenReturn(null);
+		userService.addJwtToken("sarthak", "token");
+	}
+
+	@Test
+	void testRemoveJwtToken() {
+		Mockito.when(userRepo.findByJwtToken("token")).thenReturn(user);
+		user.setJwtToken("");
+		Mockito.when(userRepo.save(user)).thenReturn(user);
+		userService.removeJwtToken("token");
+
+		Mockito.when(userRepo.findByJwtToken("token")).thenReturn(null);
+		userService.removeJwtToken("token");
+	}
+
+	@Test
+	void testGetUserByEmailID() {
+		String emailIDString = "sarthak@gmail.com";
+
+		Optional<User> userEntity = Optional.of(user);
+
+		Mockito.when(userRepo.findByEmailID(emailIDString)).thenReturn(userEntity);
+
+		Assert.assertEquals(user,userService.getUserByEmailID(emailIDString));
+
+		Mockito.when(userRepo.findByEmailID(emailIDString)).thenReturn(Optional.empty());
+
+		Assert.assertNull(userService.getUserByEmailID(emailIDString));
+	}
+
+	@Test
+	void testUpdateUserPassword() {
+		//Mockito.doReturn(user).when(userRepo.findByUserName("sarthak"));
+		Mockito.when(cipherConfigFactory.getCipherConfigInstance()).thenReturn(simpleStringPBEConfig);
+		Mockito.when(pooledPBEStringFactory.getPBEStrinInstance()).thenReturn(pooledPBEStringEncryptor);
+		pooledPBEStringEncryptor.setConfig(simpleStringPBEConfig);
+		Mockito.when(pooledPBEStringEncryptor.encrypt("123456")).thenReturn("abcdefg");
+		Mockito.when(userRepo.findByUserName("sarthak")).thenReturn(user);
+		user.setPswd("abcdefg");
+		Mockito.when(userRepo.save(user)).thenReturn(user);
+		Assert.assertEquals(user,userService.updateUserPassword("sarthak","123456"));
+	}
+
+	@Test
+	void testGetUserByUserName() {
+		Mockito.when(userRepo.findByUserName("sarthakkkkk")).thenReturn(user);
+		Assert.assertEquals(userService.getUserByUserName("sarthakkkkk"), user);
+	}
+	
+	@Test
+	void testGetUserDetailsWhenUser() {
+		Mockito.when(userProfileRespVoFactory.getUserProfileRespVoInstance()).thenReturn(userProfileRespVo);
+		Mockito.when(userRepo.findByUserName("sar")).thenReturn(user);
+		Mockito.when(user.getEmailID()).thenReturn("sarthak@wobot.ai");
+		Mockito.when(user.getFirstName()).thenReturn("Sarthak");
+		Mockito.when(user.getLastName()).thenReturn("Patel");
+		Mockito.when(user.getUserName()).thenReturn("sarthakp");
+		userProfileRespVo.setEmailID(user.getEmailID());
+		userProfileRespVo.setFirstName(user.getFirstName());
+		userProfileRespVo.setLastName(user.getLastName());
+		userProfileRespVo.setUserName(user.getUserName());
+		Mockito.verify(userProfileRespVo,Mockito.times(1)).setEmailID(user.getEmailID());
+		Mockito.verify(userProfileRespVo,Mockito.times(1)).setFirstName(user.getFirstName());
+		Mockito.verify(userProfileRespVo,Mockito.times(1)).setLastName(user.getLastName());
+		Mockito.verify(userProfileRespVo,Mockito.times(1)).setUserName(user.getUserName());
+		Assert.assertEquals(userProfileRespVo, userService.getUserDetails("sar", null));
+	}
+	
+	@Test
+	void testGetUserDetailsWhenUserNull() {
+		Mockito.when(userProfileRespVoFactory.getUserProfileRespVoInstance()).thenReturn(userProfileRespVo);
+		
+		Mockito.when(userRepo.findByUserName("sar")).thenReturn(null);
+		Assert.assertEquals(userProfileRespVo, userService.getUserDetails("sar", null));
+
+	}
+	
+	@Test
+	void testUpdateUserProfile() {
+		Mockito.when(userRepo.findByUserName(userProfileRequestVo.getUserName())).thenReturn(user);
+		Mockito.when(userRepo.save(user)).thenReturn(user);
+		Assert.assertEquals(user, userService.updateUserProfile(userProfileRequestVo));
+		
+		Mockito.when(userRepo.findByUserName(userProfileRequestVo.getUserName())).thenReturn(null);
+		Assert.assertEquals(null, userService.updateUserProfile(userProfileRequestVo));
+	}
+	
+	@Test
+	void testGetUserList() {
+		List<Long> userId = new ArrayList<Long>();
+		 userId.add(1L);
+		Mockito.when(userRepo.findByIdIn(userId)).thenReturn(users);
+		Assert.assertEquals(users, userService.getUserList(userId));
+	}
+	
+	@Test
+	void testIsUserVerified() {
+		String userName = "sarthak";
+		Mockito.when(userRepo.findByUserName(userName)).thenReturn(user);
+		Mockito.when(user.isVerified()).thenReturn(true);
+		Assert.assertEquals("verified", userService.isUserVerified(userName));
+		
+		Mockito.when(userRepo.findByUserName(userName)).thenReturn(null);
+		Mockito.when(user.isVerified()).thenReturn(true);
+		Assert.assertEquals("User does not exist", userService.isUserVerified(userName));
+		
+		Mockito.when(userRepo.findByUserName(userName)).thenReturn(user);
+		Mockito.when(user.isVerified()).thenReturn(false);
+		Assert.assertEquals("Account not yet verified. Please verify it and try again.", userService.isUserVerified(userName));
+		
+	}
 	
 }

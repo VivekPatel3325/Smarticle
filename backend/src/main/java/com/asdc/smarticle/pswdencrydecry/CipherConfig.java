@@ -3,6 +3,7 @@ package com.asdc.smarticle.pswdencrydecry;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.jasypt.iv.RandomIvGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,9 @@ public class CipherConfig implements PasswordEncoder{
 
 	@Value("${enc.key}") 
 	private String key;
+	
+	@Autowired
+	CipherConfigFactory cipherConfigFactory;
 
 	/**
 	 * Set configuration to encrypt and decrypt password.
@@ -27,15 +31,15 @@ public class CipherConfig implements PasswordEncoder{
 	 */
 	public SimpleStringPBEConfig getCipherConfig() {
 
-		SimpleStringPBEConfig cipherConfig = new SimpleStringPBEConfig();
+		SimpleStringPBEConfig cipherConfig = cipherConfigFactory.getCipherConfigInstance();
 		cipherConfig.setPassword(key);
 		cipherConfig.setAlgorithm("PBEWithHMACSHA512AndAES_256");
 		cipherConfig.setKeyObtentionIterations("1000");
 		cipherConfig.setPoolSize("4");
 		cipherConfig.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-		cipherConfig.setIvGenerator(new RandomIvGenerator());
+ 		cipherConfig.setIvGenerator(new RandomIvGenerator());
 
-		return cipherConfig;
+	 	return cipherConfig;
 	}
 
 	@Override

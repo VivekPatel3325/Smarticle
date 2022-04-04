@@ -28,7 +28,7 @@ public class Article {
     @Column
     @CreationTimestamp
     private Date creationDate;
-
+ 
     @Column
     @CreationTimestamp
     private Date updationDate;
@@ -46,6 +46,9 @@ public class Article {
 	@JoinTable(name = "article_like", joinColumns = @JoinColumn(name = "articles_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private Set<User> like = new HashSet<User>();
 
+	@Column(columnDefinition = "integer default 0")
+  	private int likeCount;
+	
 	public Long getId() {
 		return id;
 	}
@@ -117,5 +120,15 @@ public class Article {
 	public void setTagId(Set<Tag> tagId) {
 		this.tagId = tagId;
 	}
+
+	public int getLikeCount() {
+		return likeCount;
+	}
+
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
+	}
+
+	
 	
 }

@@ -51,7 +51,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	@Bean
 	public CipherConfig passwordEncoder() {
 		return new CipherConfig();
-	}
+	} 
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
