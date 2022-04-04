@@ -20,6 +20,7 @@ import com.asdc.smarticle.token.TokenService;
 import com.asdc.smarticle.user.exception.UserExistException;
 import com.asdc.smarticle.user.userVo.UserProfileRequestVo;
 import com.asdc.smarticle.user.userVo.UserProfileRespVo;
+import com.asdc.smarticle.user.userVo.UserProfileRespVoFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -53,6 +54,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	PooledPBEStringFactory pooledPBEStringFactory;
 
+	@Autowired
+	UserProfileRespVoFactory userProfileRespVoFactory;
+
 	@Override
 	public boolean isEmailIdRegistered(String email) {
 
@@ -79,20 +83,20 @@ public class UserServiceImpl implements UserService {
 
 		return userNameTaken;
 	}
-	
+
 	@Override
 	public String isUserVerified(String userName) {
 		String status = "";
 		User user = userRepository.findByUserName(userName);
-		if(user!=null && user.isVerified())
-			status =  "verified";
-		else if(user==null) {
+		if (user != null && user.isVerified())
+			status = "verified";
+		else if (user == null) {
 			status = "User does not exist";
-		}else {
+		} else {
 			status = "Account not yet verified. Please verify it and try again.";
 		}
 		return status;
-			
+
 	}
 
 	@Override
@@ -182,7 +186,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User updateUserPassword(String userName, String password) {
 		User user = userRepository.findByUserName(userName);
-		System.out.println("User pass - " + user.getUserName() + user.getPswd());
+		//System.out.println("User pass - " + user.getUserName() + user.getPswd());
 		user.setPswd(encodePswd(password));
 		userRepository.save(user);
 		return user;
@@ -219,11 +223,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserProfileRespVo getUserDetails(String userName, ObjectMapper mapper) {
 
-		UserProfileRespVo userProfileRespVo = null;
+		UserProfileRespVo userProfileRespVo = userProfileRespVoFactory.getUserProfileRespVoInstance();
 		User user = userRepository.findByUserName(userName);
 
 		if (user != null) {
-			userProfileRespVo = new UserProfileRespVo();
+			//userProfileRespVo = new UserProfileRespVo();
 			userProfileRespVo.setEmailID(user.getEmailID());
 			userProfileRespVo.setFirstName(user.getFirstName());
 			userProfileRespVo.setLastName(user.getLastName());

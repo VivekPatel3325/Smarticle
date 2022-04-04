@@ -45,6 +45,9 @@ import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import com.asdc.smarticle.user.UserService;
 import com.asdc.smarticle.user.UserServiceImpl;
+import com.asdc.smarticle.user.userVo.UserProfileRequestVo;
+import com.asdc.smarticle.user.userVo.UserProfileRespVo;
+import com.asdc.smarticle.user.userVo.UserProfileRespVoFactory;
 
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
@@ -97,6 +100,18 @@ class UserServiceUnitTest {
 	
 	@MockBean
 	private Token token;
+	
+	@MockBean
+	private UserProfileRespVo userProfileRespVo;
+	
+	@MockBean
+	private UserProfileRequestVo userProfileRequestVo;
+	
+	@MockBean
+	private UserProfileRespVoFactory userProfileRespVoFactory;
+	
+	@Mock
+	private List<User> users;
 
 	@Test
 	void testIsEmailIdRegistered() {
@@ -268,5 +283,122 @@ class UserServiceUnitTest {
 		
 	}
 	
+	@Test
+	void testAddJwtToken() {
+		Mockito.when(userRepo.findByUserName("sarthak")).thenReturn(user);
+		user.setJwtToken("token");
+		Mockito.when(userRepo.save(user)).thenReturn(user);
+		userService.addJwtToken("sarthak", "token");
+
+		Mockito.when(userRepo.findByUserName("sarthak")).thenReturn(null);
+		userService.addJwtToken("sarthak", "token");
+	}
+
+	@Test
+	void testRemoveJwtToken() {
+		Mockito.when(userRepo.findByJwtToken("token")).thenReturn(user);
+		user.setJwtToken("");
+		Mockito.when(userRepo.save(user)).thenReturn(user);
+		userService.removeJwtToken("token");
+
+		Mockito.when(userRepo.findByJwtToken("token")).thenReturn(null);
+		userService.removeJwtToken("token");
+	}
+
+	@Test
+	void testGetUserByEmailID() {
+		String emailIDString = "sarthak@gmail.com";
+
+		Optional<User> userEntity = Optional.of(user);
+
+		Mockito.when(userRepo.findByEmailID(emailIDString)).thenReturn(userEntity);
+
+		Assert.assertEquals(user,userService.getUserByEmailID(emailIDString));
+
+		Mockito.when(userRepo.findByEmailID(emailIDString)).thenReturn(Optional.empty());
+
+		Assert.assertNull(userService.getUserByEmailID(emailIDString));
+	}
+
+	@Test
+	void testUpdateUserPassword() {
+		//Mockito.doReturn(user).when(userRepo.findByUserName("sarthak"));
+		Mockito.when(userRepo.findByUserName("sarthak")).thenReturn(user);
+		Mockito.doReturn("password").when(Mockito.spy(userService)).encodePswd("password");
+		//Mockito.when(userService.encodePswd("password")).thenReturn("password");
+		user.setPswd("password");
+		Mockito.when(userRepo.save(user)).thenReturn(user);
+//		Assert.assertEquals(userService.updateUserPassword("sarthak",
+//		 "password"),user);
+	}
+
+	@Test
+	void testGetUserByUserName() {
+		Mockito.when(userRepo.findByUserName("sarthakkkkk")).thenReturn(user);
+		Assert.assertEquals(userService.getUserByUserName("sarthakkkkk"), user);
+	}
+	
+	@Test
+	void testGetUserDetailsWhenUser() {
+		Mockito.when(userProfileRespVoFactory.getUserProfileRespVoInstance()).thenReturn(userProfileRespVo);
+		Mockito.when(userRepo.findByUserName("sar")).thenReturn(user);
+		Mockito.when(user.getEmailID()).thenReturn("sarthak@wobot.ai");
+		Mockito.when(user.getFirstName()).thenReturn("Sarthak");
+		Mockito.when(user.getLastName()).thenReturn("Patel");
+		Mockito.when(user.getUserName()).thenReturn("sarthakp");
+		userProfileRespVo.setEmailID(user.getEmailID());
+		userProfileRespVo.setFirstName(user.getFirstName());
+		userProfileRespVo.setLastName(user.getLastName());
+		userProfileRespVo.setUserName(user.getUserName());
+		Mockito.verify(userProfileRespVo,Mockito.times(1)).setEmailID(user.getEmailID());
+		Mockito.verify(userProfileRespVo,Mockito.times(1)).setFirstName(user.getFirstName());
+		Mockito.verify(userProfileRespVo,Mockito.times(1)).setLastName(user.getLastName());
+		Mockito.verify(userProfileRespVo,Mockito.times(1)).setUserName(user.getUserName());
+		Assert.assertEquals(userProfileRespVo, userService.getUserDetails("sar", null));
+	}
+	
+	@Test
+	void testGetUserDetailsWhenUserNull() {
+		Mockito.when(userProfileRespVoFactory.getUserProfileRespVoInstance()).thenReturn(userProfileRespVo);
+		
+		Mockito.when(userRepo.findByUserName("sar")).thenReturn(null);
+		Assert.assertEquals(userProfileRespVo, userService.getUserDetails("sar", null));
+
+	}
+	
+	@Test
+	void testUpdateUserProfile() {
+		Mockito.when(userRepo.findByUserName(userProfileRequestVo.getUserName())).thenReturn(user);
+		Mockito.when(userRepo.save(user)).thenReturn(user);
+		Assert.assertEquals(user, userService.updateUserProfile(userProfileRequestVo));
+		
+		Mockito.when(userRepo.findByUserName(userProfileRequestVo.getUserName())).thenReturn(null);
+		Assert.assertEquals(null, userService.updateUserProfile(userProfileRequestVo));
+	}
+	
+	@Test
+	void testGetUserList() {
+		List<Long> userId = new ArrayList<Long>();
+		userId.add(1L);
+		Mockito.when(userRepo.findByIdIn(userId)).thenReturn(users);
+		Assert.assertEquals(users, userService.getUserList(userId));
+	}
+	
+	@Test
+	void testIsUserVerified() {
+		String userName = "sarthak";
+		Mockito.when(userRepo.findByUserName(userName)).thenReturn(user);
+		Mockito.when(user.isVerified()).thenReturn(true);
+		Assert.assertEquals("verified", userService.isUserVerified(userName));
+		
+		Mockito.when(userRepo.findByUserName(userName)).thenReturn(null);
+		Mockito.when(user.isVerified()).thenReturn(true);
+		Assert.assertEquals("User does not exist", userService.isUserVerified(userName));
+		
+		Mockito.when(userRepo.findByUserName(userName)).thenReturn(user);
+		Mockito.when(user.isVerified()).thenReturn(false);
+		Assert.assertEquals("Account not yet verified. Please verify it and try again.", userService.isUserVerified(userName));
+		
+	}
 	
 }

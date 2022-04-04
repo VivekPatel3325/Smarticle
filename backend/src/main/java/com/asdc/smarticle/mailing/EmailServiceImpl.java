@@ -13,7 +13,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import com.asdc.smarticle.comutil.ApplicationUrlPath;
 import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.user.User;
 
@@ -60,7 +59,7 @@ public class EmailServiceImpl implements EmailService {
 	 */
 	public String httpVeificationURL(Token token) {
 
-		UriComponentsBuilder verificationURl = UriComponentsBuilder.fromHttpUrl(clientURl).path("/verify");
+		UriComponentsBuilder verificationURl = UriComponentsBuilder.fromHttpUrl("http://localhost").path("/verify");
 
 		verificationURl = verificationURl.queryParam("token", token.getToken());
 
