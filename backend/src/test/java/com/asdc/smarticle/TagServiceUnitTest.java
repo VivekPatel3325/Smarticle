@@ -8,12 +8,20 @@ import com.asdc.smarticle.articletag.TagService;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -21,12 +29,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 @SpringBootTest
+//@ActiveProfiles(profiles = "test")
+//@ExtendWith(SpringExtension.class)
+@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 public class TagServiceUnitTest {
-	@Test
-	void contextLoads() {
-	}
+
+	 
 
 
 	@MockBean
@@ -101,7 +111,7 @@ public class TagServiceUnitTest {
 		List<Tag> tags = new ArrayList<>();
 		Mockito.when(tagRepo.findAll()).thenReturn(tags);
 		Assert.assertEquals(tags, tagService.retrieveAllTags());
-	}
+  }
 	
 	@Test
 	void createArticleTag() {
@@ -113,4 +123,5 @@ public class TagServiceUnitTest {
 		Mockito.when(tagRepo.findAll()).thenReturn(tags);
 		Assert.assertEquals(tags, tagService.createArticleTag("BLOCKCHAIN"));
 	}
-}
+}  
+ 

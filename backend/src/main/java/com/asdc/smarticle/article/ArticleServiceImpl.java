@@ -56,7 +56,7 @@ public class ArticleServiceImpl implements ArticleService {
 	 */
 	public boolean isHeadingEmpty(Article article) {
 		return article.getContent() == null ||article.getContent().isEmpty() ;
-	}
+	} 
 
 	/**
 	 * @author Vivekkumar Patel 

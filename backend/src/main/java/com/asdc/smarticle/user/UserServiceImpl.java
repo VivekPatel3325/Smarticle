@@ -49,6 +49,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	ArticleRepository articleRepository;
+	
+	@Autowired
+	PooledPBEStringFactory pooledPBEStringFactory;
 
 	@Override
 	public boolean isEmailIdRegistered(String email) {
@@ -99,13 +102,13 @@ public class UserServiceImpl implements UserService {
 	public String encodePswd(String pswd) {
 
 		SimpleStringPBEConfig config = cipherCf.getCipherConfig();
-		PooledPBEStringEncryptor cipher = new PooledPBEStringEncryptor();
+		PooledPBEStringEncryptor cipher = pooledPBEStringFactory.getPBEStrinInstance();
 		cipher.setConfig(config);
 
 		return cipher.encrypt(pswd);
 
-	}
-
+	} 
+ 
 	@Override
 	public boolean verifyUser(String token) {
 

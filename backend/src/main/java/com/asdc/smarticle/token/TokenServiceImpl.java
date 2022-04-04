@@ -45,13 +45,13 @@ public class TokenServiceImpl implements TokenService {
 	@Override
 	public boolean isTokenExpired(Token token) {
 
-		return token.getExpiryDate().isBefore(LocalDateTime.now());
-	}
- 
+		 return token.getExpiryDate().isBefore(LocalDateTime.now());
+	} 
+  
 	@Override
-	public void deleteToken(Token token) { 
+  	public void deleteToken(Token token) { 
 
-		tokenRepository.delete(token);
+		tokenRepository.delete(token); 
 	}
-
+  
 }
