@@ -79,7 +79,7 @@ export default function Home() {
         setSortBy("creationDate");
         break;
       case "Likes":
-        setSortBy("like");
+        setSortBy("likeCount");
         break;
       default:
         setSortBy("creationDate");

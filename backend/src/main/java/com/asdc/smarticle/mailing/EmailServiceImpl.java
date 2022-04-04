@@ -31,19 +31,25 @@ public class EmailServiceImpl implements EmailService {
 
 	@Autowired
 	TemplateEngine templateEngine;
+	
+	@Autowired
+	MimeMessageFactory mimeMessageFactory;
+	
+	@Autowired
+	ContextFactory contextFactory;
 
 	@Value("${client.url}")
 	private String clientURl;
-
+ 
 	@Override
 	public void sendConfirmationEmail(User user, Token token) throws MessagingException {
-		Context context = new Context();
+		Context context = contextFactory.getContextInstance();
 
 		context.setVariable("verificationLink", httpVeificationURL(token));
 
 		String template = templateEngine.process("welcome", context);
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-		MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+		MimeMessageHelper mimeMessageHelper = mimeMessageFactory.getMimeMessageInstance(mimeMessage);
 		mimeMessageHelper.setFrom("patelvivek221996@gmail.com");
 		mimeMessageHelper.setTo(user.getEmailID());
 		mimeMessageHelper.setText(template, true);
@@ -59,25 +65,25 @@ public class EmailServiceImpl implements EmailService {
 	 */
 	public String httpVeificationURL(Token token) {
 
-		UriComponentsBuilder verificationURl = UriComponentsBuilder.fromHttpUrl("http://localhost").path("/verify");
+		UriComponentsBuilder verificationURl = UriComponentsBuilder.fromHttpUrl(clientURl).path("/verify");
 
 		verificationURl = verificationURl.queryParam("token", token.getToken());
 
 		return verificationURl.toUriString();
 	}
 	
-	/**
+	/** 
 	 * @author Vivekkumar Patel
 	 * Build http url for reset password containing given token 
 	 * @param token jwt token string.
-	 * @return http url string.
+	 * @return http url string. 
 	 */
 	public String httpResetPasswordnURL(ResponseCookie token) {
 		UriComponentsBuilder verificationURl = UriComponentsBuilder.fromHttpUrl(clientURl).path("/reset");
 
 		verificationURl = verificationURl.queryParam("token", token.getValue());
 		return verificationURl.toUriString();
-	}
+	} 
 
 	@Override
 	public void sendForgotPasswordEmail(User user, ResponseCookie token) throws MessagingException {
@@ -90,6 +96,6 @@ public class EmailServiceImpl implements EmailService {
 		mimeMessageHelper.setText(template, true);
 		mimeMessageHelper.setSubject("Reset Password");
 		javaMailSender.send(mimeMessage);
-	}
-
+	} 
+ 
 }

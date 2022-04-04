@@ -53,7 +53,7 @@ import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.jasypt.iv.RandomIvGenerator;
 
-//@RunWith(SpringRunner.class)
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class UserServiceUnitTest {
@@ -95,9 +95,6 @@ class UserServiceUnitTest {
 	@MockBean
 	PooledPBEStringEncryptor pooledPBEStringEncryptor;
 	
-	@Autowired
-	CipherConfig cipherConfig;
-	
 	@MockBean
 	private Token token;
 	
@@ -133,7 +130,7 @@ class UserServiceUnitTest {
 	void testIsUsernameRegistered() {
 
 		String userName = "vkpatel4312";
-
+ 
 		User userEntity = user;
 
 		Mockito.when(userRepo.findByUserName(userName)).thenReturn(userEntity);
@@ -203,19 +200,7 @@ class UserServiceUnitTest {
 
 	
 	    
-	@Test
-	void testCipherConfig() {
-
-		Mockito.when(cipherConfigFactory.getCipherConfigInstance()).thenReturn(simpleStringPBEConfig);
-		simpleStringPBEConfig.setPassword("smarticlesmarticle");
-		simpleStringPBEConfig.setAlgorithm("PBEWithHMACSHA512AndAES_256");
-		simpleStringPBEConfig.setKeyObtentionIterations("1000");
-		simpleStringPBEConfig.setPoolSize("4");
-		simpleStringPBEConfig.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-		simpleStringPBEConfig.setIvGenerator(new RandomIvGenerator());
-		Assert.assertEquals(simpleStringPBEConfig, cipherConfig.getCipherConfig());
-
-	}
+	
 	
 	@Test
 	void testEncodePaswd() {
@@ -235,7 +220,7 @@ class UserServiceUnitTest {
 	void TestPostedArticle() {
 		
 		List<Article> articleList = new ArrayList();
-		List<Map<String, String>> userDetails = new ArrayList<>();
+		List<Map<String, Object>> userDetails = new ArrayList<>();
 		Mockito.when(articleRepository.findAll()).thenReturn(articleList);
 		Assert.assertEquals(userDetails, userService.getUsersPostedArticle());
 		
@@ -243,17 +228,19 @@ class UserServiceUnitTest {
 		user.setFirstName("vivek");
 		user.setLastName("patel");
 		user.setUserName("vkpatel4312");
+		user.setId((long)1);
 		Article article = new Article();
 		article.setUserId(user);
 		articleList.add(article);
 		Mockito.when(articleRepository.findAll()).thenReturn(articleList);
-		Map<String, String> details = new HashMap<>();
+		Map<String, Object> details = new HashMap<>();
 		details.put("firstName", article.getUserId().getFirstName());
 		details.put("lastName", article.getUserId().getLastName());
 		details.put("userName", article.getUserId().getUserName());
+		details.put("id", article.getUserId().getId());
 		userDetails.add(details);
 
-		//Assert.assertEquals(userDetails, userService.getUsersPostedArticle());
+		Assert.assertEquals(userDetails, userService.getUsersPostedArticle());
 
 	}  
 	
@@ -323,13 +310,14 @@ class UserServiceUnitTest {
 	@Test
 	void testUpdateUserPassword() {
 		//Mockito.doReturn(user).when(userRepo.findByUserName("sarthak"));
+		Mockito.when(cipherConfigFactory.getCipherConfigInstance()).thenReturn(simpleStringPBEConfig);
+		Mockito.when(pooledPBEStringFactory.getPBEStrinInstance()).thenReturn(pooledPBEStringEncryptor);
+		pooledPBEStringEncryptor.setConfig(simpleStringPBEConfig);
+		Mockito.when(pooledPBEStringEncryptor.encrypt("123456")).thenReturn("abcdefg");
 		Mockito.when(userRepo.findByUserName("sarthak")).thenReturn(user);
-		Mockito.doReturn("password").when(Mockito.spy(userService)).encodePswd("password");
-		//Mockito.when(userService.encodePswd("password")).thenReturn("password");
-		user.setPswd("password");
+		user.setPswd("abcdefg");
 		Mockito.when(userRepo.save(user)).thenReturn(user);
-//		Assert.assertEquals(userService.updateUserPassword("sarthak",
-//		 "password"),user);
+		Assert.assertEquals(user,userService.updateUserPassword("sarthak","123456"));
 	}
 
 	@Test
@@ -379,7 +367,7 @@ class UserServiceUnitTest {
 	@Test
 	void testGetUserList() {
 		List<Long> userId = new ArrayList<Long>();
-		userId.add(1L);
+		 userId.add(1L);
 		Mockito.when(userRepo.findByIdIn(userId)).thenReturn(users);
 		Assert.assertEquals(users, userService.getUserList(userId));
 	}

@@ -190,7 +190,7 @@ public class UserServiceImpl implements UserService {
 		user.setPswd(encodePswd(password));
 		userRepository.save(user);
 		return user;
-	}
+	} 
 
 	@Override
 	public User getUserByUserName(String username) {
@@ -278,7 +278,7 @@ public class UserServiceImpl implements UserService {
 
 		userDetails = userDetails.stream().distinct().collect(Collectors.toList());
 		return userDetails;
-
+ 
 	}
 
 	@Override
