@@ -148,7 +148,7 @@ public class ArticleServiceImpl implements ArticleService {
 	 * @param filterPojo Instance of FilterPojo containing pagination and metadata to apply filter.
 	 * @return true if list of taglist  is empty else false.
 	 */
-	private boolean isTagListEmpty(FilterPojo filterPojo) {
+	public boolean isTagListEmpty(FilterPojo filterPojo) {
 		return filterPojo.getTagList()!=null  && filterPojo.getTagList().size()==0;
 	}
 
@@ -158,11 +158,11 @@ public class ArticleServiceImpl implements ArticleService {
 	 * @param filterPojo Instance of FilterPojo containing pagination and metadata to apply filter.
 	 * @return true if list of userid  is empty else false.
 	 */
-	private boolean isUserListEmpty(FilterPojo filterPojo) {
+	public  boolean isUserListEmpty(FilterPojo filterPojo) {
 		return filterPojo.getUserIdList() !=null  && filterPojo.getUserIdList().size()==0;
 	}
-
-	 
+ 
+	  
 	/**
 	 * @author Vivekkumar Patel 
 	 * This method retrieve list of articles filtered by user,tags and sort by date or number of likes 

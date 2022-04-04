@@ -68,7 +68,7 @@ public class TagServiceUnitTest {
 		Mockito.when(user.getTags()).thenReturn(tags);
 		Assert.assertTrue(tagService.isUserTagsExist(user));
 		
-		tag.setTagName("BLOCK");
+ 		tag.setTagName("BLOCK");
 		tags.add(tag);
 		Mockito.when(user.getTags()).thenReturn(tags);
 		Assert.assertFalse(tagService.isUserTagsExist(user));

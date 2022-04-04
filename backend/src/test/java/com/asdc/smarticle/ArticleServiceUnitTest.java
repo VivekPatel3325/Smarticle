@@ -4,6 +4,8 @@ import com.asdc.smarticle.article.Article;
 import com.asdc.smarticle.article.ArticleRepository;
 import com.asdc.smarticle.article.ArticleService;
 import com.asdc.smarticle.article.ArticleServiceImpl;
+import com.asdc.smarticle.article.FilterPojo;
+import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import com.asdc.smarticle.user.exception.ArticleException;
@@ -25,7 +27,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 //@RunWith(SpringRunner.class)
@@ -57,6 +61,9 @@ public class ArticleServiceUnitTest {
 	
 	@MockBean
 	private User user;
+	
+	@MockBean
+	private FilterPojo filterPojo;
 	 
 	
 	@Test 
@@ -170,7 +177,37 @@ public class ArticleServiceUnitTest {
 		
 	}
 	
+	@Test
+	void TestIsTagListEmpty() {
+		
+		Tag tag=new Tag();
+		tag.setId((long)1);
+		tag.setTagName("BLOCKCHAIN");
+		Set<Tag> tagSet=new HashSet<>();
+		
+		Mockito.when(filterPojo.getTagList()).thenReturn(null);
+		Assert.assertTrue(articleService.isUserListEmpty(filterPojo));
+		Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+		Assert.assertTrue(articleService.isUserListEmpty(filterPojo));
+		tagSet.add(tag);
+		Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+		Assert.assertFalse(articleService.isTagListEmpty(filterPojo));
+		
+	}   
 	
-	 
+	@Test
+	void TestIsUserListEmpty() {
+
+		List<Long> userIdList = new ArrayList<>();
+
+		Mockito.when(filterPojo.getUserIdList()).thenReturn(null);
+		Assert.assertFalse(articleService.isUserListEmpty(filterPojo));
+		Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+		Assert.assertTrue(articleService.isUserListEmpty(filterPojo));
+		userIdList.add((long) 1);
+		Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+		Assert.assertFalse(articleService.isUserListEmpty(filterPojo));
+	}
 }
  
+
