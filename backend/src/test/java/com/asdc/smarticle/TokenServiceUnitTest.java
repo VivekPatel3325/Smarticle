@@ -20,6 +20,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,7 +40,6 @@ import java.util.Set;
 
 import javax.crypto.KeyGenerator;
 
-//@RunWith(SpringRunner.class)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class TokenServiceUnitTest {
@@ -87,7 +87,7 @@ public class TokenServiceUnitTest {
 	 
  	 
 	@Test 
-	void testCreateToken() {
+	void testCreateToken() { 
 
 		
 		Mockito.when(tokenFactory.getTokenInstance()).thenReturn(token);

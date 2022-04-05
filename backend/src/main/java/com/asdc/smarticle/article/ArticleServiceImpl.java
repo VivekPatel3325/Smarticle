@@ -82,6 +82,8 @@ public class ArticleServiceImpl implements ArticleService {
 		Page<Article> articleList = null;
 		Pageable pagination = PageRequest.of(filterPojo.getPage(), filterPojo.getTotalPage(),Sort.by(filterPojo.getSortBy()).descending());
 		
+		
+		 
 		try {
 
 			if (visibility.equalsIgnoreCase(ApplicationUrlPath.ALL_ARTICLE)) {
@@ -95,6 +97,9 @@ public class ArticleServiceImpl implements ArticleService {
 		} catch (Exception e) {
 			throw new ArticleException(ApiError.ARTICLE_NOT_PRESENT);
 		}
+		
+		
+		
 		return articleList;
 	}
 
@@ -290,6 +295,7 @@ public class ArticleServiceImpl implements ArticleService {
 			article1.getLike().add(user);
 		}
 		//article1.getLike().add(user);
+		article1.setLikeCount(article1.getLike().size());
 		article1.setLike(article1.getLike());
 		articleRepository.save(article1);
 	}  

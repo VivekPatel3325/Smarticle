@@ -19,4 +19,8 @@ public interface EmailService {
 	void sendConfirmationEmail(User user, Token token) throws MessagingException;
 
 	void sendForgotPasswordEmail(User user, ResponseCookie jwtCookie) throws MessagingException;
+	
+	String httpVeificationURL(Token token);
+	
+	String httpResetPasswordnURL(ResponseCookie token); 
 }

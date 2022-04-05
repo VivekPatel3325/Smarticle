@@ -32,13 +32,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//@RunWith(SpringRunner.class)
+
 @ExtendWith(SpringExtension.class)
-//@ContextConfiguration(classes = { SpringTestConfiguration.class })
 @SpringBootTest
-//@ActiveProfiles(profiles = "test")
-//@ExtendWith(SpringExtension.class)
-//@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 public class ArticleServiceUnitTest {
 	 	 
  
@@ -178,7 +174,7 @@ public class ArticleServiceUnitTest {
 	}
 	
 	@Test
-	void TestIsTagListEmpty() {
+	void TestIsTagListEmpty() { 
 		
 		Tag tag=new Tag();
 		tag.setId((long)1);
@@ -210,4 +206,4 @@ public class ArticleServiceUnitTest {
 	}
 }
  
-
+ 
