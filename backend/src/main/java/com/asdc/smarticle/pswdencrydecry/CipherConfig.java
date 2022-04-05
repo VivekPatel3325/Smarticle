@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.asdc.smarticle.user.PooledPBEStringFactory;
+
 /**
  * Contain static method to return instance of the SimpleStringPBEConfig.
  * 
@@ -23,6 +25,9 @@ public class CipherConfig implements PasswordEncoder{
 	
 	@Autowired
 	CipherConfigFactory cipherConfigFactory;
+	
+	@Autowired
+	PooledPBEStringFactory pooledPBEStringFactory;
 
 	/**
 	 * Set configuration to encrypt and decrypt password.
@@ -46,7 +51,7 @@ public class CipherConfig implements PasswordEncoder{
 	public String encode(CharSequence rawPassword) {
 		// TODO Auto-generated method stub
 		SimpleStringPBEConfig config = getCipherConfig();
-		PooledPBEStringEncryptor cipher = new PooledPBEStringEncryptor();
+		PooledPBEStringEncryptor cipher = pooledPBEStringFactory.getPBEStrinInstance();;
 		cipher.setConfig(config);
 		return cipher.encrypt((String) rawPassword);
 	}
@@ -54,7 +59,7 @@ public class CipherConfig implements PasswordEncoder{
 	public CharSequence decodePswd(String pswd) {
 
 		SimpleStringPBEConfig config = getCipherConfig();
-		PooledPBEStringEncryptor cipher = new PooledPBEStringEncryptor();
+		PooledPBEStringEncryptor cipher = pooledPBEStringFactory.getPBEStrinInstance();;
 		cipher.setConfig(config);
 		return cipher.decrypt(pswd);
 

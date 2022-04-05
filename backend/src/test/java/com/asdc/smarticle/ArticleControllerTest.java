@@ -34,127 +34,115 @@ import java.util.Map;
 //@WebMvcTest(ArticleController.class)
 public class ArticleControllerTest {
 
-	
-	 @Autowired
-	 MockMvc mockMvc;
-	 
-	 @MockBean
-	 ArticleService articleService;
-	 
-	 @Mock
-	 ObjectMapper objectMapper;
-	 
-	 @MockBean
-	 FilterPojo filterPojo;
-	 
-	 @MockBean
-	 HttpHeaders http;
-	 
-	 @MockBean
-	 Article article;
+	@Autowired
+	MockMvc mockMvc;
 
-	 @MockBean
-	 JwtUtils jwtUtils;
-	 
-		@Test
-		void testRetrieveArticle() throws Exception {
+	@MockBean
+	ArticleService articleService;
 
-			Page<Article> pro = Mockito.mock(Page.class);
+	@Mock
+	ObjectMapper objectMapper;
 
-			Mockito.when(objectMapper.readValue("", FilterPojo.class)).thenReturn(filterPojo);
-			Mockito.when(articleService.getArticle("1", null)).thenReturn(pro);
-			MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
-					.get("/smarticleapi/article/retrieveArticle").contentType(MediaType.APPLICATION_JSON);
+	@MockBean
+	FilterPojo filterPojo;
 
-			mockMvc.perform(mockRequest).andExpect(status().isBadRequest()).andReturn();
-		}	   
-	 	 
-		@Test
-		void testSaveArticle() throws Exception {
+	@MockBean
+	HttpHeaders http;
 
-			Page<Article> pro = Mockito.mock(Page.class);
- 
-			Mockito.when(http.getFirst("jwt-token")).thenReturn("vkpatel4312");
-			Mockito.when(jwtUtils.getUserNameFromJwt("vkpatel4312")).thenReturn("vivek");
-			Mockito.when(articleService.getArticle("1", null)).thenReturn(pro);
-			
-			Article article=new Article(); 
+	@MockBean
+	Article article;
 
-			MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
-					.post("/smarticleapi/article/postarticle").contentType(MediaType.APPLICATION_JSON).header("jwt-token", "vkpatel4312").
-					content(new ObjectMapper().writeValueAsString(article));
+	@MockBean
+	JwtUtils jwtUtils;
 
-			mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
-		}	   
-	      
-		
-		@Test
-		void testgetArticleById() throws Exception {
+	@Test
+	void testRetrieveArticle() throws Exception {
 
-			MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
-					.get("/smarticleapi/article/getArticleById").contentType(MediaType.APPLICATION_JSON)
-					.header("jwt-token", "vkpatel4312").queryParam("id", "1");
+		Page<Article> pro = Mockito.mock(Page.class);
+		FilterPojo filter = new FilterPojo();
+		Mockito.when(objectMapper.readValue("", FilterPojo.class)).thenReturn(filterPojo);
+		Mockito.when(articleService.getArticle("1", null)).thenReturn(pro);
+		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.get("/smarticleapi/article/retrieveArticle")
+				.contentType(MediaType.APPLICATION_JSON).param("visibility", "ALL").param("filterParam", new ObjectMapper().writeValueAsString(filter));
 
-			Mockito.when(articleService.getArticleById((long) 1)).thenReturn(article);
-			mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
-		}
-		
-		 
-		@Test
-		void testGetArticleByUser() throws Exception {
-			
-			Article article=new Article();
-			List<Article> articleList=new ArrayList<>();
-			articleList.add(article);
-			
-			Page<Article> articleListPage = new PageImpl<Article>(articleList);
-			
-			
-			
-			Mockito.when(http.getFirst("jwt-token")).thenReturn("vkpatel4312");
-			Mockito.when(jwtUtils.getUserNameFromJwt("vkpatel4312")).thenReturn("vivek");
-			Mockito.when(articleService.getArticleByUser("vivek", 0, 4)).thenReturn(articleListPage);
+		mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
+	}
 
-			MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
-					.get("/smarticleapi/article/getArticleByUser").contentType(MediaType.APPLICATION_JSON)
-					.header("jwt-token", "vkpatel4312").param("page", "0").param("totalPage", "4");
+	@Test
+	void testSaveArticle() throws Exception {
 
-			mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
-		} 
-		
-		@Test
-		void testGetTweetDatarById() throws Exception {
-			
-			List<Map<String,Object>> tweetData=new ArrayList<>();
-			
-			
+		Page<Article> pro = Mockito.mock(Page.class);
 
-			Mockito.when(articleService.getTwitterCountOfArticleTags((long)1)).thenReturn(tweetData);
+		Mockito.when(http.getFirst("jwt-token")).thenReturn("vkpatel4312");
+		Mockito.when(jwtUtils.getUserNameFromJwt("vkpatel4312")).thenReturn("vivek");
+		Mockito.when(articleService.getArticle("1", null)).thenReturn(pro);
 
-			MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
-					.get("/smarticleapi/article/getTweetDataOfArticle").contentType(MediaType.APPLICATION_JSON)
-					.header("jwt-token", "vkpatel4312").param("id", "1");
+		Article article = new Article();
 
-			mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
-		} 
-		
-		 
-		@Test
-		void testSetLike() throws Exception {
+		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/smarticleapi/article/postarticle")
+				.contentType(MediaType.APPLICATION_JSON).header("jwt-token", "vkpatel4312")
+				.content(new ObjectMapper().writeValueAsString(article));
 
-			List<Map<String, Object>> tweetData = new ArrayList<>();
-			Article article = new Article();
-			Mockito.when(http.getFirst("jwt-token")).thenReturn("vkpatel4312");
-			Mockito.when(jwtUtils.getUserNameFromJwt("vkpatel4312")).thenReturn("vivek");
+		mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
+	}
 
-			MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/smarticleapi/article/setLike")
-					.contentType(MediaType.APPLICATION_JSON).header("jwt-token", "vkpatel4312")
-					.content(new ObjectMapper().writeValueAsString(article));
+	@Test
+	void testgetArticleById() throws Exception {
 
-			mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
-		} 
-		
-		
-		
-}     
- 
+		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.get("/smarticleapi/article/getArticleById")
+				.contentType(MediaType.APPLICATION_JSON).header("jwt-token", "vkpatel4312").queryParam("id", "1");
+
+		Mockito.when(articleService.getArticleById((long) 1)).thenReturn(article);
+		mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
+	}
+
+	@Test
+	void testGetArticleByUser() throws Exception {
+
+		Article article = new Article();
+		List<Article> articleList = new ArrayList<>();
+		articleList.add(article);
+
+		Page<Article> articleListPage = new PageImpl<Article>(articleList);
+
+		Mockito.when(http.getFirst("jwt-token")).thenReturn("vkpatel4312");
+		Mockito.when(jwtUtils.getUserNameFromJwt("vkpatel4312")).thenReturn("vivek");
+		Mockito.when(articleService.getArticleByUser("vivek", 0, 4)).thenReturn(articleListPage);
+
+		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.get("/smarticleapi/article/getArticleByUser")
+				.contentType(MediaType.APPLICATION_JSON).header("jwt-token", "vkpatel4312").param("page", "0")
+				.param("totalPage", "4");
+
+		mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
+	}
+
+	@Test
+	void testGetTweetDatarById() throws Exception {
+
+		List<Map<String, Object>> tweetData = new ArrayList<>();
+
+		Mockito.when(articleService.getTwitterCountOfArticleTags((long) 1)).thenReturn(tweetData);
+
+		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+				.get("/smarticleapi/article/getTweetDataOfArticle").contentType(MediaType.APPLICATION_JSON)
+				.header("jwt-token", "vkpatel4312").param("id", "1");
+
+		mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
+	}
+
+	@Test
+	void testSetLike() throws Exception {
+
+		List<Map<String, Object>> tweetData = new ArrayList<>();
+		Article article = new Article();
+		Mockito.when(http.getFirst("jwt-token")).thenReturn("vkpatel4312");
+		Mockito.when(jwtUtils.getUserNameFromJwt("vkpatel4312")).thenReturn("vivek");
+
+		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/smarticleapi/article/setLike")
+				.contentType(MediaType.APPLICATION_JSON).header("jwt-token", "vkpatel4312")
+				.content(new ObjectMapper().writeValueAsString(article));
+
+		mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
+	}
+
+}
