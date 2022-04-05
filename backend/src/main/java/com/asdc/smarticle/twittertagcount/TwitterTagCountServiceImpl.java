@@ -3,6 +3,8 @@ package com.asdc.smarticle.twittertagcount;
 import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.comutil.AppConstant;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import okhttp3.OkHttpClient;
@@ -24,28 +26,55 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
 
     @Override
     public List<Map<String,Object>> getTwitterTagCount(Set<Tag> tags) {
-        new HashMap<>();
+
+        FileInputStream in = null;
+        String url = "";
+        String getMethod = "";
+        String authorizationKey= " ";
+        String authorizationValue ="";
+        String cookieKey = " ";
+        String cookieValue = "";
+
+        try {
+            in = new FileInputStream("src/main/resources/application.properties");
+            Properties props = new Properties();
+            props.load(in);
+            in.close();
+            url = props.get("url").toString();
+            getMethod = props.get("getMethod").toString();
+            authorizationKey = props.get("authorization.key").toString();
+            authorizationValue = props.get("authorization.value").toString();
+            cookieKey = props.get("cookie.key").toString();
+            cookieValue = props.get("cookie.value").toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(tags == null || tags.isEmpty()){
+            return new ArrayList<>();
+        }
+        HashMap<String,Integer> tagCount = new HashMap<>();
         List<String> tagNameList = new ArrayList<>();
         List<Map<String,Object>> finalResponse = new ArrayList<>();
         for(Tag tag : tags){
-
             Map<String,Object> data = new HashMap<>();
             String tagName = tag.getTagName();
+            if(tagName==null){
+                continue;
+            }
             tagNameList.add(tagName);
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
             Request request = new Request.Builder()
-                    .url("https://api.twitter.com/2/tweets/counts/recent?query="+tagName)
-                    .method("GET", null)
-                    .addHeader(AppConstant.TWITTER_AUTHORIZATION_STRING, AppConstant.TWITTER_BEARER_TOKEN)
-                    .addHeader("Cookie", "guest_id=v1%3A164689235684418023; guest_id_ads=v1%3A164689235684418023; guest_id_marketing=v1%3A164689235684418023; personalization_id=\"v1_qjJQs1OXPN9lfhJz3yQCQA==\"")
+                    .url(url+tagName)
+                    .method(getMethod, null)
+                    .addHeader(authorizationKey, authorizationValue)
+                    .addHeader(cookieKey, cookieValue)
                     .build();
             try {
                 Response response = client.newCall(request).execute();
-
-                JSONObject jsonObject = new JSONObject(response.peekBody(AppConstant.MAX_VALUE).string());
+                JSONObject jsonObject = new JSONObject(response.peekBody(153600).string());
                 System.out.println(jsonObject.toString());
-
                 org.json.JSONArray jsonArray = jsonObject.getJSONArray("data");
 
                 for(int i=0;i<jsonArray.length();i++){
@@ -62,7 +91,7 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-       }
+        }
 
         int n = finalResponse.size();
         for (int i = 0; i < n-1; i++) {
@@ -74,7 +103,6 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
                 }
             }
         }
-
         return finalResponse;
     }
 }

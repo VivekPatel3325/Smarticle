@@ -54,6 +54,5 @@ public class TwitterTagCountController extends BaseController {
             e.printStackTrace();
         }
         return responseData;
-        //return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
     }
 }

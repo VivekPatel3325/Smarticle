@@ -17,6 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.*;
 
 @Service
@@ -222,7 +225,13 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public List<Map<String,Object>> getTwitterCountOfArticleTags(Long id){
+		if(id==null){
+			return new ArrayList<Map<String,Object>>();
+		}
 		Article article = getArticleById(id);
+		if(article == null){
+			return new ArrayList<Map<String,Object>>();
+		}
 		Set<Tag> tags = article.getTagId();
 		if(tags.size()==0){
 			return new ArrayList<Map<String,Object>>();
@@ -241,13 +250,14 @@ public class ArticleServiceImpl implements ArticleService {
 		Twitter twitter = authentication();
 
 		Query search = new Query(searchQuery);
-		search.count(AppConstant.MAX_TWEET);
+		search.setCount(5);
+		//search.count(5);
+		int count=0;
 		QueryResult tweetData;
 		try {
 			tweetData = twitter.search(search);
 
 			for (Status tweet : tweetData.getTweets()) {
-				//List<Object> tweetDataList = new ArrayList<>();
 				Map<String,Object> tweetDataMap = new HashMap();
 				String tweetLink = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
 				String removeURL = tweet.getText().replaceAll("((https?|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
@@ -256,7 +266,6 @@ public class ArticleServiceImpl implements ArticleService {
 				Date creationDate = tweet.getUser().getCreatedAt();
 				int retweetCount = tweet.getRetweetCount();
 				String userImage = tweet.getUser().getProfileImageURL();
-				//System.out.println(" "+tweetLink+" "+authorName+" "+creationDate+" "+retweetCount+" "+userImage);
 				tweetDataMap.put("userImageURL",userImage);
 				tweetDataMap.put("authorName",authorName);
 				tweetDataMap.put("tweetLink",tweetLink);
@@ -264,24 +273,66 @@ public class ArticleServiceImpl implements ArticleService {
 				tweetDataMap.put("creationDate",creationDate);
 				tweetDataMap.put("retweetCount",retweetCount);
 				responseTweetData.add(tweetDataMap);
+				count++;
+			}
+			if(count!=5){
+				QueryResult extraTweetData = twitter.search(search);
+				for(Status tweet : extraTweetData.getTweets()){
+					if(count==5){
+						break;
+					}
+					Map<String,Object> tweetDataMap1 = new HashMap();
+					String tweetLink = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
+					String removeURL = tweet.getText().replaceAll("((https?|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
+					String transformedTweetText = removeURL.replaceAll("[^\\w\\s]", "");
+					String authorName = tweet.getUser().getName();
+					Date creationDate = tweet.getUser().getCreatedAt();
+					int retweetCount = tweet.getRetweetCount();
+					String userImage = tweet.getUser().getProfileImageURL();
+					tweetDataMap1.put("userImageURL",userImage);
+					tweetDataMap1.put("authorName",authorName);
+					tweetDataMap1.put("tweetLink",tweetLink);
+					tweetDataMap1.put("tweetText",transformedTweetText);
+					tweetDataMap1.put("creationDate",creationDate);
+					tweetDataMap1.put("retweetCount",retweetCount);
+					responseTweetData.add(tweetDataMap1);
+					count++;
+				}
 			}
 
 		} catch (TwitterException e) {
 			e.printStackTrace();
 		}
-
 		return responseTweetData;
-	} 
+	}
 
 	//Reference: https://www.tabnine.com/code/java/methods/twitter4j.conf.ConfigurationBuilder/setOAuthConsumerKey
 	public static Twitter authentication() {
 		ConfigurationBuilder confBuild = new ConfigurationBuilder();
+		FileInputStream in = null;
+		String OAuthConsumerKey="";
+		String OAuthConsumerSecret = "";
+		String OAuthAccessToken = "";
+		String OAuthAccessTokenSecret = "";
+		try {
+			in = new FileInputStream("src/main/resources/application.properties");
+			Properties props = new Properties();
+			props.load(in);
+			in.close();
+			OAuthConsumerKey = props.get("OAuthConsumerKey").toString();
+			OAuthConsumerSecret = props.get("OAuthConsumerSecret").toString();
+			OAuthAccessToken = props.get("OAuthAccessToken").toString();
+			OAuthAccessTokenSecret = props.get("OAuthAccessTokenSecret").toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		confBuild.setDebugEnabled(true);
 		confBuild.setJSONStoreEnabled(true);
-		confBuild.setOAuthConsumerKey("P9xd2SeGKmM75MPcu1e9h5Lhw");
-		confBuild.setOAuthConsumerSecret("xEvpgofniw1O8wwtsmz0hxmhVCZz8xv8ifmPxQhfdE77lHSHBt");
-		confBuild.setOAuthAccessToken("1499412296568877060-xrfuEHFBue9CDmRFz1zMeqrKvVPiWz");
-		confBuild.setOAuthAccessTokenSecret("UPv1OsBFCIuaGOuL8Eo6qfaU3TuRNjIPToJ6kK3k8p2gu");
+		confBuild.setOAuthConsumerKey(OAuthConsumerKey);
+		confBuild.setOAuthConsumerSecret(OAuthConsumerSecret);
+		confBuild.setOAuthAccessToken(OAuthAccessToken);
+		confBuild.setOAuthAccessTokenSecret(OAuthAccessTokenSecret);
 		return new TwitterFactory(confBuild.build()).getInstance();
 	}
 
@@ -294,7 +345,6 @@ public class ArticleServiceImpl implements ArticleService {
 		}else {
 			article1.getLike().add(user);
 		}
-		//article1.getLike().add(user);
 		article1.setLikeCount(article1.getLike().size());
 		article1.setLike(article1.getLike());
 		articleRepository.save(article1);
