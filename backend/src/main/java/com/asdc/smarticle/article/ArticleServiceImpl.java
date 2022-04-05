@@ -252,6 +252,7 @@ public class ArticleServiceImpl implements ArticleService {
 		Query search = new Query(searchQuery);
 		search.setCount(5);
 		//search.count(5);
+		int count=0;
 		QueryResult tweetData;
 		try {
 			tweetData = twitter.search(search);
@@ -272,6 +273,31 @@ public class ArticleServiceImpl implements ArticleService {
 				tweetDataMap.put("creationDate",creationDate);
 				tweetDataMap.put("retweetCount",retweetCount);
 				responseTweetData.add(tweetDataMap);
+				count++;
+			}
+			if(count!=5){
+				QueryResult extraTweetData = twitter.search(search);
+				for(Status tweet : extraTweetData.getTweets()){
+					if(count==5){
+						break;
+					}
+					Map<String,Object> tweetDataMap1 = new HashMap();
+					String tweetLink = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
+					String removeURL = tweet.getText().replaceAll("((https?|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
+					String transformedTweetText = removeURL.replaceAll("[^\\w\\s]", "");
+					String authorName = tweet.getUser().getName();
+					Date creationDate = tweet.getUser().getCreatedAt();
+					int retweetCount = tweet.getRetweetCount();
+					String userImage = tweet.getUser().getProfileImageURL();
+					tweetDataMap1.put("userImageURL",userImage);
+					tweetDataMap1.put("authorName",authorName);
+					tweetDataMap1.put("tweetLink",tweetLink);
+					tweetDataMap1.put("tweetText",transformedTweetText);
+					tweetDataMap1.put("creationDate",creationDate);
+					tweetDataMap1.put("retweetCount",retweetCount);
+					responseTweetData.add(tweetDataMap1);
+					count++;
+				}
 			}
 
 		} catch (TwitterException e) {
