@@ -29,9 +29,12 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
+	
+	@Autowired
+	UsernamePasswordAuthenticationTokenFactory authenticationTokenFactory;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
 			String jwt = parseJwt(request);
@@ -40,8 +43,10 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 				System.out.println("doFilterInternal");
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
+//				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+//						userDetails, null, userDetails.getAuthorities());
+				
+				UsernamePasswordAuthenticationToken authentication = authenticationTokenFactory.getUsernamePasswordAuthenticationTokenFactory(userDetails);
 
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -54,7 +59,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	private String parseJwt(HttpServletRequest request) {
+	public String parseJwt(HttpServletRequest request) {
 		String jwt = jwtUtils.getJwtTokenFromCookies(request);
 		return jwt;
 	}

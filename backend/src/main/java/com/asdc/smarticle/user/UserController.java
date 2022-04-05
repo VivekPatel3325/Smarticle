@@ -101,12 +101,12 @@ public class UserController extends BaseController {
 	 */
 	@PostMapping(ApplicationUrlPath.USER_ACCOUNT_ACTIVATION_REQ_PATH)
 	public ResponseVO<String> activateUserAccount(@RequestParam String token) {
-
+ 
 		userService.verifyUser(token);
 
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
-
+ 
 	@PostMapping(ApplicationUrlPath.USER_LOGIN)
 	public ResponseVO<Object> authenticateUser(@RequestBody User userRequest) {
 		try {
@@ -118,8 +118,6 @@ public class UserController extends BaseController {
 				UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 				ResponseCookie jwtCookie = jwtUtils.generateJwtTokenCookie(userDetails.getUsername());
 				userService.addJwtToken(userDetails.getUsername(), jwtCookie.getValue());
-				System.out.println("jwtUtils - " + jwtCookie.getValue() + " - " + jwtCookie.getMaxAge() + " - "
-						+ jwtCookie.getName());
 				User user = userService.getUserByUserName(userDetails.getUsername());
 				HashMap<String, String> data = new HashMap<String, String>();
 				data.put("userName", user.getUserName());
@@ -127,7 +125,7 @@ public class UserController extends BaseController {
 				data.put("lastName", user.getLastName());
 				data.put("jwt-token", jwtCookie.getValue());
 				data.put("msg", "User Logged in sucessfully");
-				return prepareSuccessResponse(data);
+				return prepareSuccessResponse(data); 
 			}else {
 				return error(HttpStatus.UNPROCESSABLE_ENTITY.value(), isVerified, false);
 			}
@@ -135,7 +133,7 @@ public class UserController extends BaseController {
 		} catch (Exception e) {
 			return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false);
 		}
-	}
+	}  
 
 	@PostMapping(ApplicationUrlPath.USER_LOGOUT)
 	public ResponseVO<String> logoutUser() {
@@ -181,13 +179,13 @@ public class UserController extends BaseController {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false);
 		}
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
 
 	@PostMapping(ApplicationUrlPath.SAVE_USER_TAG_PREFERENCE)
-	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody Set<Tag> tagList) {
+	public ResponseVO<String> saveUserTag(@RequestHeader HttpHeaders http, @RequestBody Set<Tag> tagList) {
 		try {
 			System.out.println(tagList);
 			String jwtToken = http.getFirst("jwt-token");
@@ -199,7 +197,7 @@ public class UserController extends BaseController {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false);
 		}
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
@@ -225,7 +223,7 @@ public class UserController extends BaseController {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false);
 		}
 		return prepareSuccessResponse(userProfileRespVo);
 	}
@@ -251,16 +249,13 @@ public class UserController extends BaseController {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false);
 		}
 		return prepareSuccessResponse(user);
 	}
 
 	@GetMapping(ApplicationUrlPath.GET_USER_DETAILS_POSTED_ARTICLE)
 	public List<Map<String, Object>> getUserDetailsPostedArticle(@RequestHeader HttpHeaders http) {
-		if(http == null){
-			return new ArrayList<>();
-		}
 		List<Map<String, Object>> userDetailsOfPostedArticle = new ArrayList<>();
 		try {
 			userDetailsOfPostedArticle = userService.getUsersPostedArticle();

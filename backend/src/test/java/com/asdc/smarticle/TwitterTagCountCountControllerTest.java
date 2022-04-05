@@ -1,21 +1,25 @@
 package com.asdc.smarticle;
 
 import com.asdc.smarticle.articletag.Tag;
-import com.asdc.smarticle.twittertagcount.TwitterTagCountController;
-import com.asdc.smarticle.twittertagcount.TwitterTagCountService;
+import com.asdc.smarticle.security.JwtUtils;
 import com.asdc.smarticle.twittertagcount.TwitterTagCountServiceImpl;
 import com.asdc.smarticle.user.User;
-import com.asdc.smarticle.user.UserService;
 import com.asdc.smarticle.user.UserServiceImpl;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.*;
 
@@ -24,62 +28,50 @@ import java.util.*;
  * @version 1.0
  * @since 2022-03-18
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
+@AutoConfigureMockMvc
 public class TwitterTagCountCountControllerTest {
+	
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Test
-    public void contextLoads() {
-    }
-
-    TwitterTagCountController twitterTagCountController;
-
-    @Mock
+    @MockBean
     UserServiceImpl userService;
 
-    @Mock
+    @MockBean
     TwitterTagCountServiceImpl twitterTagCountService;
-
+    
+	@MockBean
+	HttpHeaders http;
+	
+	@MockBean
+	JwtUtils jwtUtils;
+	
+	@MockBean
+	User user;
+	
+	@MockBean
+	Set<Tag> userTags;
+    
     @Test
-    public void testNullFetchUserTags(){
-
-        //Arrange
-        twitterTagCountController = new TwitterTagCountController();
-        HttpHeaders http = null;
-        List<Map<String,Object>> responseData = new ArrayList<>();
-        int expected = 0;
-        int actual;
-
-        //Act
-        responseData = twitterTagCountController.fetchUserTags(http);
-        actual= responseData.size();
-
-        //Assert
-        Assert.assertEquals(expected,actual);
+    void testFetchUserTags() throws Exception {
+    	List<Map<String,Object>> responseData = new ArrayList<>();
+    	Mockito.when(http.getFirst("jwt-token")).thenReturn("sarthakjwt");
+ 		Mockito.when(jwtUtils.getUserNameFromJwt("sarthakjwt")).thenReturn("sarthak");
+ 		Mockito.when(userService.getUserByUserName("sarthak")).thenReturn(user);
+ 		Mockito.when(user.getTags()).thenReturn(userTags);
+ 		Mockito.when(twitterTagCountService.getTwitterTagCount(userTags)).thenReturn(responseData);
+ 		
+ 		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.get("/smarticleapi/twittertagcount/getUserTags")
+				.contentType(MediaType.APPLICATION_JSON)
+				.header("jwt-token", "sarthakjwt");
+		mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
+		
+		
+		MockHttpServletRequestBuilder mockRequestCatch = MockMvcRequestBuilders.get("/smarticleapi/twittertagcount/getUserTags")
+				.contentType(MediaType.APPLICATION_JSON);
+		mockMvc.perform(mockRequestCatch).andExpect(status().isOk()).andReturn();
     }
-
-    @Test
-    public void testPositiveFetchUserTags(){
-
-        //Arrange
-        String userName = "Rushi";
-        User user = new User();
-        Set<Tag> tags = new HashSet<>();
-        Tag tag = new Tag();
-        List<Map<String,Object>> responseData = new ArrayList<>();
-        Map<String,Object> data = new HashMap<>();
-
-        //Act
-        tag.setTagName("Cloud Computing");
-        tags.add(tag);
-        user.setTags(tags);
-        data.put("tagName","Cloud Computing");
-        data.put("tweetCount",100);
-        responseData.add(0,data);
-        Mockito.when(userService.getUserByUserName(userName)).thenReturn(user);
-        Mockito.when(twitterTagCountService.getTwitterTagCount(tags)).thenReturn(responseData);
-
-        //Assert
-        Assert.assertNotNull(responseData);
-    }
+    
 }

@@ -32,9 +32,11 @@ public class ArticleController extends BaseController {
 	@Autowired
 	ArticleService articleService;
 
-	@Autowired
+	@Autowired 
 	JwtUtils jwtUtils;
-
+	
+	
+	
 	@GetMapping(ApplicationUrlPath.RETRIEVE_ARTICLE)
 	public Page<Article> retrieveArticle(@RequestParam String visibility,@RequestParam String filterParam) throws ArticleException, JsonMappingException, JsonProcessingException {
 		
@@ -42,21 +44,20 @@ public class ArticleController extends BaseController {
 		FilterPojo filterPojo=objectMapper.readValue(filterParam, FilterPojo.class);
 		
 		Page<Article> articles_list = articleService.getArticle(visibility,filterPojo);
-		System.out.println(articles_list);
-		return articles_list;
-	}
-
+		return articles_list;  
+	} 
+ 
 	@PostMapping(ApplicationUrlPath.USER_POST_REQ_PATH)
 	public ResponseVO<String> saveArticle(@RequestHeader HttpHeaders http, @RequestBody Article postArticle)
 			throws ArticleException {
 
 		String jwtToken = http.getFirst("jwt-token");
 
-		String userName = jwtUtils.getUserNameFromJwt(jwtToken);
+		String userName = jwtUtils.getUserNameFromJwt(jwtToken); 
 		articleService.saveArticle(postArticle, userName);
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
-
+  
 	/**
 	 * @author Sarthak Patel Get user details such as firstname,lastname,username
 	 *         etc
@@ -85,19 +86,19 @@ public class ArticleController extends BaseController {
 			@RequestParam(defaultValue = "4") int totalPage) {
 		String jwtToken = http.getFirst("jwt-token");
 		String userName = "";
-		if (jwtToken != null && !jwtToken.isEmpty()) {
+		if (jwtToken != null && !jwtToken.isEmpty()) { 
 			userName = jwtUtils.getUserNameFromJwt(jwtToken);
 		}
 		Page<Article> articleList = articleService.getArticleByUser(userName, page, totalPage);
 		return articleList;
-	}
-
+	} 
+ 
 	@GetMapping(ApplicationUrlPath.GET_TWEET_DATA_BY_ARTICLE_ID)
 	public List<Map<String,Object>> getTweetsOfArticle(@RequestHeader HttpHeaders http, @RequestParam Long id) {
 		List<Map<String,Object>> tweetData = articleService.getTwitterCountOfArticleTags(id);
 		return tweetData;
 	}
-	
+	 
 	@PostMapping(ApplicationUrlPath.SET_LIKE)
 	public ResponseVO<String> setLike(@RequestHeader HttpHeaders http, @RequestBody Article article){
 		String jwtToken = http.getFirst("jwt-token");
@@ -108,6 +109,6 @@ public class ArticleController extends BaseController {
 		articleService.setLike(article,userName);
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
-	
+	 
 	
 }

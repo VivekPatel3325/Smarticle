@@ -4,22 +4,21 @@ import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.twittertagcount.TwitterTagCountService;
 import com.asdc.smarticle.twittertagcount.TwitterTagCountServiceImpl;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class TwitterTagServiceUnitTests {
 
-
-    @Test
-    public void contextLoads() {
-    }
-
+	@Autowired
     private TwitterTagCountService twitterTagCountService;
 
     @Test

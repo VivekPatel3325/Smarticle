@@ -9,30 +9,32 @@ import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import com.asdc.smarticle.user.exception.ArticleException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
+
 import twitter4j.Twitter;
 
-import java.util.*;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest 
 public class ArticleServiceUnitTest {
 	 	 
  
@@ -58,7 +60,12 @@ public class ArticleServiceUnitTest {
 	
 	@MockBean
 	private FilterPojo filterPojo;
-	 
+	
+	@Mock
+	private List<User> users;
+	
+	@Mock
+	Optional<Article> articleOptional;
 	
 	@Test 
 	void testSaveArticle() throws ArticleException {
@@ -186,10 +193,12 @@ public class ArticleServiceUnitTest {
 		tagSet.add(tag);
 		Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
 		Assert.assertFalse(articleService.isTagListEmpty(filterPojo));
+		
 	}   
 	
 	@Test
 	void TestIsUserListEmpty() {
+
 		List<Long> userIdList = new ArrayList<>();
 
 		Mockito.when(filterPojo.getUserIdList()).thenReturn(null);
@@ -200,7 +209,260 @@ public class ArticleServiceUnitTest {
 		Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
 		Assert.assertFalse(articleService.isUserListEmpty(filterPojo));
 	}
+	
+	
+	//Test case to test with visibility ALL and and both list empty
+	@Test
+	void TestGetArticleScenario1() throws ArticleException {
 
+		Page<Article> pro = Mockito.mock(Page.class);
+
+		Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+		List<Long> userIdList = new ArrayList<>();
+		Set<Tag> tagSet = new HashSet<>();
+
+		Mockito.when(filterPojo.getPage()).thenReturn(0);
+		Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+		Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
+		Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+		Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+
+		Mockito.doReturn(true).when(Mockito.spy(articleService)).isTagListEmpty(filterPojo);
+		Mockito.doReturn(true).when(Mockito.spy(articleService)).isUserListEmpty(filterPojo);
+		Mockito.when(articleRepo.findAll(pagination)).thenReturn(pro);
+
+		articleService.getArticle("ALL", filterPojo);
+		Mockito.verify(articleRepo, Mockito.times(1)).findAll(pagination);
+
+	}
+	
+	//Test case to test with visibility ALL , user list empty and tag list non empty 
+	@Test
+	void TestGetArticleScenario2() throws ArticleException {
+
+		Page<Article> pro = Mockito.mock(Page.class);
+
+		Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+		List<Long> userIdList = new ArrayList<>();
+		Set<Tag> tagSet = new HashSet<>();
+		Tag tag=new Tag();
+		tag.setId((long)1);
+		tag.setTagName("BLOCKCHAIN");
+		tagSet.add(tag);
+		
+		Mockito.when(filterPojo.getPage()).thenReturn(0);
+		Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+		Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
+		Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+		Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+
+		Mockito.doReturn(false).when(Mockito.spy(articleService)).isTagListEmpty(filterPojo);
+		Mockito.doReturn(true).when(Mockito.spy(articleService)).isUserListEmpty(filterPojo);
+		Mockito.when(articleRepo.findAllByTagIdIn(tagSet,pagination)).thenReturn(pro);
+
+		articleService.getArticle("ALL", filterPojo);
+		Mockito.verify(articleRepo, Mockito.times(1)).findAllByTagIdIn(tagSet,pagination);
+ 
+	}
+ 
+	//Test case to test with visibility ALL , user list non empty and tag list empty 
+		@Test
+		void TestGetArticleScenario3() throws ArticleException {
+
+			Page<Article> pro = Mockito.mock(Page.class);
+
+			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			List<Long> userIdList = new ArrayList<>();
+			Set<Tag> tagSet = new HashSet<>();
+			userIdList.add((long)1);
+			
+			Mockito.when(filterPojo.getPage()).thenReturn(0);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
+			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+
+			Mockito.doReturn(false).when(Mockito.spy(articleService)).isTagListEmpty(filterPojo);
+			Mockito.doReturn(true).when(Mockito.spy(articleService)).isUserListEmpty(filterPojo);
+			Mockito.when(userRepository.findByIdIn(userIdList)).thenReturn(users);
+			Mockito.when(articleRepo.findAllByUserIdIn(users,pagination)).thenReturn(pro);
+
+			articleService.getArticle("ALL", filterPojo);
+			Mockito.verify(articleRepo, Mockito.times(1)).findAllByUserIdIn(users,pagination);
+	 
+		}  
+		
+		// Test case to test with visibility ALL , user list and tag list non empty
+		@Test
+		void TestGetArticleScenario4() throws ArticleException {
+
+			Page<Article> pro = Mockito.mock(Page.class);
+
+			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			List<Long> userIdList = new ArrayList<>();
+			Set<Tag> tagSet = new HashSet<>();
+			userIdList.add((long) 1);
+			Tag tag=new Tag();
+			tag.setId((long)1);
+			tag.setTagName("BLOCKCHAIN");
+			tagSet.add(tag);
+
+			Mockito.when(filterPojo.getPage()).thenReturn(0);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
+			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+
+			Mockito.doReturn(false).when(Mockito.spy(articleService)).isTagListEmpty(filterPojo);
+			Mockito.doReturn(true).when(Mockito.spy(articleService)).isUserListEmpty(filterPojo);
+			Mockito.when(userRepository.findByIdIn(userIdList)).thenReturn(users);
+			Mockito.when(articleRepo.findAllByUserIdInAndTagIdIn(users, tagSet, pagination)).thenReturn(pro);
+
+			articleService.getArticle("ALL", filterPojo);
+			Mockito.verify(articleRepo, Mockito.times(1)).findAllByUserIdInAndTagIdIn(users, tagSet, pagination);
+
+		}
+		
+		//Test case to test with visibility 1 and and both list empty
+		@Test
+		void TestGetArticleScenario5() throws ArticleException {
+
+			Page<Article> pro = Mockito.mock(Page.class);
+
+			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			List<Long> userIdList = new ArrayList<>();
+			Set<Tag> tagSet = new HashSet<>();
+
+			Mockito.when(filterPojo.getPage()).thenReturn(0);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
+			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+
+			Mockito.doReturn(true).when(Mockito.spy(articleService)).isTagListEmpty(filterPojo);
+			Mockito.doReturn(true).when(Mockito.spy(articleService)).isUserListEmpty(filterPojo);
+			Mockito.when(articleRepo.findAllByVisibility(true,pagination)).thenReturn(pro);
+
+			articleService.getArticle("1", filterPojo);
+			Mockito.verify(articleRepo, Mockito.times(1)).findAllByVisibility(true,pagination);
+
+		}
+	 
+		// Test case to test with visibility 1 user list empty and tag list non empty 
+		@Test
+		void TestGetArticleScenario6() throws ArticleException {
+
+			Page<Article> pro = Mockito.mock(Page.class);
+
+			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			List<Long> userIdList = new ArrayList<>();
+			Set<Tag> tagSet = new HashSet<>();
+			Tag tag=new Tag();
+			tag.setId((long)1);
+			tag.setTagName("BLOCKCHAIN");
+			tagSet.add(tag);
+
+			Mockito.when(filterPojo.getPage()).thenReturn(0);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
+			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+
+			Mockito.doReturn(true).when(Mockito.spy(articleService)).isTagListEmpty(filterPojo);
+			Mockito.doReturn(true).when(Mockito.spy(articleService)).isUserListEmpty(filterPojo);
+			Mockito.when(articleRepo.findAllByTagIdInAndVisibility(tagSet,true, pagination)).thenReturn(pro);
+
+			
+			articleService.getArticle("1", filterPojo);
+			Mockito.verify(articleRepo, Mockito.times(1)).findAllByTagIdInAndVisibility(tagSet,true, pagination);
+
+		}
+		
+		// Test case to test with visibility 1 user list non empty and tag list empty.
+		@Test
+		void TestGetArticleScenario7() throws ArticleException {
+
+			Page<Article> pro = Mockito.mock(Page.class);
+
+			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			List<Long> userIdList = new ArrayList<>();
+			Set<Tag> tagSet = new HashSet<>();
+			userIdList.add((long) 1);
+
+			Mockito.when(filterPojo.getPage()).thenReturn(0);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
+			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+
+			Mockito.doReturn(true).when(Mockito.spy(articleService)).isTagListEmpty(filterPojo);
+			Mockito.doReturn(true).when(Mockito.spy(articleService)).isUserListEmpty(filterPojo);
+			Mockito.when(userRepository.findByIdIn(userIdList)).thenReturn(users);
+			Mockito.when(articleRepo.findAllByUserIdInAndVisibility(users, true, pagination)).thenReturn(pro);
+
+			articleService.getArticle("1", filterPojo);
+			Mockito.verify(articleRepo, Mockito.times(1)).findAllByUserIdInAndVisibility(users, true, pagination);
+		}
+		
+
+		// Test case to test with visibility 1(public) , user list and tag list non empty
+		@Test
+		void TestGetArticleScenario8() throws ArticleException { 
+
+			Page<Article> pro = Mockito.mock(Page.class);
+
+			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			List<Long> userIdList = new ArrayList<>();
+			Set<Tag> tagSet = new HashSet<>();
+			userIdList.add((long) 1);
+			Tag tag = new Tag();
+			tag.setId((long) 1);
+			tag.setTagName("BLOCKCHAIN");
+			tagSet.add(tag);
+
+			Mockito.when(filterPojo.getPage()).thenReturn(0);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
+			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
+
+			Mockito.doReturn(false).when(Mockito.spy(articleService)).isTagListEmpty(filterPojo);
+			Mockito.doReturn(true).when(Mockito.spy(articleService)).isUserListEmpty(filterPojo);
+			Mockito.when(userRepository.findByIdIn(userIdList)).thenReturn(users);
+			Mockito.when(articleRepo.findAllByUserIdInAndTagIdInAndVisibility(users, tagSet, true, pagination))
+					.thenReturn(pro);
+
+			articleService.getArticle("1", filterPojo);
+			Mockito.verify(articleRepo, Mockito.times(1)).findAllByUserIdInAndTagIdInAndVisibility(users, tagSet, true,
+					pagination);
+
+		}
+		 
+		@Test
+		void testGetArticleByUser() {
+			Page<Article> articleList = Mockito.mock(Page.class);
+			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate"));
+			Mockito.when(userRepository.findByUserName("vivek")).thenReturn(user);
+			Mockito.when(articleRepo.findByUserId(user, pagination)).thenReturn(articleList);
+			articleService.getArticleByUser("vivek", 0, 4);
+			Mockito.verify(articleRepo, Mockito.times(1)).findByUserId(user, pagination);
+		}
+		
+		@Test
+		void testGetArticleById() {
+			
+			
+			Mockito.when(articleRepo.findById((long)1)).thenReturn(articleOptional);
+			Mockito.when(articleOptional.isPresent()).thenReturn(true);
+			Mockito.when(articleOptional.get()).thenReturn(article);
+			
+			Assert.assertEquals(article,articleService.getArticleById((long)1));
+			Mockito.when(articleOptional.isPresent()).thenReturn(false);
+			Assert.assertEquals(null,articleService.getArticleById((long)1));
+			
+		}
+		
+		
 	@Test
 	public void TestNullGetTwitterCountOfArticleTags(){
 
@@ -270,6 +532,8 @@ public class ArticleServiceUnitTest {
 		//Assert
 		Assert.assertNotNull(twitter);
 	}
-}
- 
- 
+}   
+
+   
+   
+  
