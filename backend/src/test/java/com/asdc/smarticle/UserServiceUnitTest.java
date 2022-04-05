@@ -3,16 +3,9 @@ package com.asdc.smarticle;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.keygen.StringKeyGenerator;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,21 +14,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.ListModel;
-
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
 import com.asdc.smarticle.article.Article;
 import com.asdc.smarticle.article.ArticleRepository;
 import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.articletag.TagRepository;
-import com.asdc.smarticle.pswdencrydecry.CipherConfig;
 import com.asdc.smarticle.pswdencrydecry.CipherConfigFactory;
 import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.token.TokenRepository;
@@ -44,14 +29,12 @@ import com.asdc.smarticle.user.PooledPBEStringFactory;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import com.asdc.smarticle.user.UserService;
-import com.asdc.smarticle.user.UserServiceImpl;
 import com.asdc.smarticle.user.userVo.UserProfileRequestVo;
 import com.asdc.smarticle.user.userVo.UserProfileRespVo;
 import com.asdc.smarticle.user.userVo.UserProfileRespVoFactory;
 
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
-import org.jasypt.iv.RandomIvGenerator;
 
 
 @ExtendWith(SpringExtension.class)
@@ -126,10 +109,10 @@ class UserServiceUnitTest {
 		Assert.assertFalse(userService.isEmailIdRegistered(emailIDString));
 	}
 
-	@Test
+	@Test 
 	void testIsUsernameRegistered() {
 
-		String userName = "vkpatel4312";
+		String userName = "vkpatel4312";  
  
 		User userEntity = user;
 

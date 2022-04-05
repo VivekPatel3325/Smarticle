@@ -2,17 +2,14 @@ package com.asdc.smarticle;
 
 import com.asdc.smarticle.articletag.Tag;
 import com.asdc.smarticle.twittertagcount.TwitterTagCountController;
-import com.asdc.smarticle.twittertagcount.TwitterTagCountService;
 import com.asdc.smarticle.twittertagcount.TwitterTagCountServiceImpl;
 import com.asdc.smarticle.user.User;
-import com.asdc.smarticle.user.UserService;
 import com.asdc.smarticle.user.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
