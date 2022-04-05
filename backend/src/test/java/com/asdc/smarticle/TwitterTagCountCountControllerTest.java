@@ -56,7 +56,6 @@ public class TwitterTagCountCountControllerTest {
 
         //Assert
         Assert.assertEquals(expected,actual);
-
     }
 
     @Test

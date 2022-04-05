@@ -258,6 +258,9 @@ public class UserController extends BaseController {
 
 	@GetMapping(ApplicationUrlPath.GET_USER_DETAILS_POSTED_ARTICLE)
 	public List<Map<String, Object>> getUserDetailsPostedArticle(@RequestHeader HttpHeaders http) {
+		if(http == null){
+			return new ArrayList<>();
+		}
 		List<Map<String, Object>> userDetailsOfPostedArticle = new ArrayList<>();
 		try {
 			userDetailsOfPostedArticle = userService.getUsersPostedArticle();
