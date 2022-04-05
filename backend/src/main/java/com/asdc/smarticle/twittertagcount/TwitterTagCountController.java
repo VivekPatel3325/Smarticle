@@ -38,7 +38,10 @@ public class TwitterTagCountController extends BaseController {
     TwitterTagCountService twitterTagCountService;
 
     @GetMapping(ApplicationUrlPath.GET_USER_TAGS)
-    List<Map<String,Object>> fetchUserTags(@RequestHeader HttpHeaders http) {
+    public List<Map<String,Object>> fetchUserTags(@RequestHeader HttpHeaders http) {
+        if(http ==null){
+            return new ArrayList<>();
+        }
         List<Map<String,Object>> responseData = new ArrayList<>();
         try {
             String jwtToken = http.getFirst("jwt-token");
