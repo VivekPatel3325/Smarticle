@@ -26,11 +26,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
+import twitter4j.Twitter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @ExtendWith(SpringExtension.class)
@@ -188,12 +186,10 @@ public class ArticleServiceUnitTest {
 		tagSet.add(tag);
 		Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
 		Assert.assertFalse(articleService.isTagListEmpty(filterPojo));
-		
 	}   
 	
 	@Test
 	void TestIsUserListEmpty() {
-
 		List<Long> userIdList = new ArrayList<>();
 
 		Mockito.when(filterPojo.getUserIdList()).thenReturn(null);
@@ -203,6 +199,76 @@ public class ArticleServiceUnitTest {
 		userIdList.add((long) 1);
 		Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
 		Assert.assertFalse(articleService.isUserListEmpty(filterPojo));
+	}
+
+	@Test
+	public void TestNullGetTwitterCountOfArticleTags(){
+
+		//Arrange
+		Long id = null;
+		List<Map<String,Object>> emptyList = new ArrayList<Map<String,Object>>();
+
+		//Act
+		emptyList = articleServiceImpl.getTwitterCountOfArticleTags(id);
+
+		//Assert
+		Assert.assertTrue(emptyList.isEmpty());
+	}
+
+	/*
+		To test that the id is not present in the system
+	 */
+	@Test
+	public void TestNegativeGetTwitterCountOfArticleTags(){
+
+		//Arrange
+		Long id = Long.valueOf(0);
+		List<Map<String,Object>> emptyList = new ArrayList<Map<String,Object>>();
+
+		//Act
+		emptyList = articleServiceImpl.getTwitterCountOfArticleTags(id);
+
+		//Assert
+		Assert.assertTrue(emptyList.isEmpty());
+	}
+
+	@Test
+	public void TestPositiveGetTwitterCountOfArticleTags(){
+
+		//Arrange
+		Long id = Long.valueOf(1);
+		Article article = new Article();
+		Set<Tag> tags = new HashSet<>();
+		Tag tag = new Tag();
+		List<Map<String,Object>> tweetList = new ArrayList<Map<String,Object>>();
+		int expectedCount = 5;
+
+		//Act
+		tag.setId(Long.valueOf(1));
+		tag.setTagName("Web");
+		tags.add(tag);
+		article.setTagId(tags);
+		Mockito.when(articleRepo.findById(id)).thenReturn(Optional.of(article));
+		tweetList = articleServiceImpl.getTwitterCountOfArticleTags(id);
+		int actualCount = tweetList.size();
+
+		//Assert
+		Assert.assertEquals(expectedCount,actualCount);
+	}
+
+	/*
+	 Test to check if the twitter instance is created
+	 */
+	@Test
+	public void TestTwitterAuthentication(){
+		//Arrange
+		Twitter twitter;
+
+		//Act
+		twitter	= ArticleServiceImpl.authentication();
+
+		//Assert
+		Assert.assertNotNull(twitter);
 	}
 }
  
