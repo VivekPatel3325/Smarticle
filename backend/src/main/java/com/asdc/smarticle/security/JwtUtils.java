@@ -39,6 +39,11 @@ public class JwtUtils {
 	@Value("${app.jwtCookieName}")
 	private String jwtCookie;
 
+	/**
+	 * This method will return the JWT-Token
+	 * @param request is the instance of HttpServletRequest provides with servelet request information
+	 * @return jwt-token if cookie value if not null else return null
+	 * */
 	public String getJwtTokenFromCookies(HttpServletRequest request) {
 		Cookie cookie = WebUtils.getCookie(request, jwtCookie);
 		if (cookie != null) {
@@ -47,7 +52,11 @@ public class JwtUtils {
 			return null;
 		}
 	}
-
+	/**
+	 * This method will generate the JWT-Token based for the given user
+	 * @param userName is the name of the user for whom the token is generated
+	 * @return cookie containing jwt-token
+	 * */
 	public ResponseCookie generateJwtTokenCookie(String userName) {
 		String jwt = generateJwtTokenFromUsername(userName);
 		ResponseCookieBuilder responseCookieBuilder = ResponseCookie.from(jwtCookie, jwt);
@@ -58,15 +67,28 @@ public class JwtUtils {
 		return cookie;
 	}
 
+	/**
+	 * This method will clean the cookie
+	 * @return cookie containing jwt-token
+	 * */
 	public ResponseCookie getCleanJwtTokenCookie() {
 		ResponseCookie cookie = ResponseCookie.from(jwtCookie, null).path("/smarticleapi").build();
 		return cookie;
 	}
 
+	/**
+	 * This username based on JWT-Token
+	 * @param token contain the token number from where the userName is retrieved
+	 * @return usrname
+	 * */
 	public String getUserNameFromJwt(String token) {
 		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
 	}
-
+	/**
+	 * This method will validate th jwt-token based on its expiration date,  validity of token.
+	 * @param contains the token number
+	 * @return return true if validation is successful else false
+	 * */
 	public boolean validateJwt(String authToken) {
 		try {
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
@@ -83,6 +105,11 @@ public class JwtUtils {
 		return false;
 	}
 
+	/**
+	 * @author This method will generate the token for the user
+	 * @param userName contains the username of the user.
+	 * @return returns the instance of jwt.
+	 */
 	public String generateJwtTokenFromUsername(String username) {
 		JwtBuilder jwtBuilder = Jwts.builder();
 		jwtBuilder.setSubject(username);
