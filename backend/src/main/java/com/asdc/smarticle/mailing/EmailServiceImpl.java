@@ -40,7 +40,13 @@ public class EmailServiceImpl implements EmailService {
 
 	@Value("${client.url}")
 	private String clientURl;
- 
+
+	/**
+	 * Send confirmation email to user .
+	 *
+	 * @param user User object
+	 * @param token
+	 */
 	@Override
 	public void sendConfirmationEmail(User user, Token token) throws MessagingException {
 		Context context = contextFactory.getContextInstance();
@@ -85,8 +91,14 @@ public class EmailServiceImpl implements EmailService {
 
 		verificationURl = verificationURl.queryParam("token", token.getValue());
 		return verificationURl.toUriString();
-	} 
+	}
 
+	/**
+	 * Send email to user when the user forgets password .
+	 *
+	 * @param user User object
+	 * @param token
+	 */
 	@Override
 	public void sendForgotPasswordEmail(User user, ResponseCookie token) throws MessagingException {
 		Context context = new Context();

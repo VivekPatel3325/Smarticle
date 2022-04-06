@@ -34,6 +34,12 @@ public class TagController extends BaseController {
 	@Autowired
 	JwtUtils jwtUtils;
 
+	/**
+	 * Fetch the tags associated with user .
+	 *
+	 * @param http request header
+	 * @return list of tags.
+	 */
 	@GetMapping(ApplicationUrlPath.RETRIEVE_USER_PREF_TAG)
 	public List<Tag> getUserTag(@RequestHeader HttpHeaders http) {
 		List<Tag> tags = null;
