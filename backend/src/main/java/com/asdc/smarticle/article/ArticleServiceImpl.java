@@ -204,7 +204,11 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleList;
 	}
 
-
+	/**
+	 * This method retrieve list of articles based on the id.
+	 * @param id is the id of the article
+	 * @return List of article based on the id
+	 */
 	@Override
 	public Article getArticleById(Long id) {
 		Optional<Article> article = articleRepository.findById(id);
@@ -214,6 +218,11 @@ public class ArticleServiceImpl implements ArticleService {
 		return null;
 	}
 
+	/**
+	 * This method retrieve list of articles based on the username for retrieveing article based on authors.
+	 * @param page is the current page
+	 * @return total page is the total number of page that will be shown after applying the pagination
+	 */
 	@Override
 	public Page<Article> getArticleByUser(String userName, int page, int totalPage) {
 		Pageable pagination = PageRequest.of(page, totalPage,Sort.by("creationDate"));
@@ -223,6 +232,11 @@ public class ArticleServiceImpl implements ArticleService {
 		return listArticle;
 	}
 
+	/**
+	 * This method is used to retrieve the count of the tweets containing the tag attached with the particular article.
+	 * @param id is the id of the tag whose total tweet count is needed to be found
+	 * @return the tweets metadata that were retrieved from the twitter
+	 */
 	@Override
 	public List<Map<String,Object>> getTwitterCountOfArticleTags(Long id){
 		if(id==null){
@@ -306,6 +320,9 @@ public class ArticleServiceImpl implements ArticleService {
 		return responseTweetData;
 	}
 
+	/**
+	 * This method is used to aunthenticate the twitter and establish the connection with twitter.
+	 */
 	//Reference: https://www.tabnine.com/code/java/methods/twitter4j.conf.ConfigurationBuilder/setOAuthConsumerKey
 	public static Twitter authentication() {
 		ConfigurationBuilder confBuild = new ConfigurationBuilder();
@@ -336,6 +353,11 @@ public class ArticleServiceImpl implements ArticleService {
 		return new TwitterFactory(confBuild.build()).getInstance();
 	}
 
+	/**
+	 * This method is used to set the like count and remove the like count if user double taps it.
+	 * @param article is the instance of article contains the article details
+	 * @param userName contains the unique username of the user who likes/dislike the article
+	 */
 	@Override
 	public void setLike(Article article, String userName) {
 		User user = userRepository.findByUserName(userName);
