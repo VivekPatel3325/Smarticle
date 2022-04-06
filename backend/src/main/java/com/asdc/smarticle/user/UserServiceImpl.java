@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Services for user entity.
- * 
+ *
  * @author Vivekkumar Patel
  * @version 1.0
  * @since 2022-02-19
@@ -50,13 +50,19 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	ArticleRepository articleRepository;
-	
+
 	@Autowired
 	PooledPBEStringFactory pooledPBEStringFactory;
 
 	@Autowired
 	UserProfileRespVoFactory userProfileRespVoFactory;
 
+	/**
+	 * Verify if the email is registered .
+	 *
+	 * @param email request header
+	 * @return true if email is registered.
+	 */
 	@Override
 	public boolean isEmailIdRegistered(String email) {
 
@@ -71,6 +77,12 @@ public class UserServiceImpl implements UserService {
 		return userExist;
 	}
 
+	/**
+	 * Verify if the username is registered .
+	 *
+	 * @param userName request header
+	 * @return true if username is registered.
+	 */
 	@Override
 	public boolean isUsernameRegistered(String userName) {
 
@@ -84,6 +96,12 @@ public class UserServiceImpl implements UserService {
 		return userNameTaken;
 	}
 
+	/**
+	 * Verify if the user is verified .
+	 *
+	 * @param userName request header
+	 * @return true if user is verified.
+	 */
 	@Override
 	public String isUserVerified(String userName) {
 		String status = "";
@@ -99,6 +117,12 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	/**
+	 * Register new users .
+	 *
+	 * @param user User object
+	 * @return User object which is registered.
+	 */
 	@Override
 	public User registerUser(User user) throws UserExistException {
 
@@ -117,6 +141,12 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	/**
+	 * Encode password for security purpose .
+	 *
+	 * @param pswd Password
+	 * @return encrypted password.
+	 */
 	@Override
 	public String encodePswd(String pswd) {
 
@@ -126,8 +156,14 @@ public class UserServiceImpl implements UserService {
 
 		return cipher.encrypt(pswd);
 
-	} 
- 
+	}
+
+	/**
+	 * Check if the user is verified .
+	 *
+	 * @param token token to verify if the session is activated
+	 * @return true if user is verified.
+	 */
 	@Override
 	public boolean verifyUser(String token) {
 
@@ -156,6 +192,12 @@ public class UserServiceImpl implements UserService {
 		return isAccountActivated;
 	}
 
+	/**
+	 * Set the token for session authentication .
+	 *
+	 * @param username username of the user
+	 * @param value token value
+	 */
 	@Override
 	public void addJwtToken(String username, String value) {
 		User user = userRepository.findByUserName(username);
@@ -165,6 +207,11 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	/**
+	 * Check if the user is verified .
+	 *
+	 * @param value token to verify if the session is activated
+	 */
 	@Override
 	public void removeJwtToken(String value) {
 		User user = userRepository.findByJwtToken(value);
@@ -174,6 +221,12 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	/**
+	 * Fetch user by their email id .
+	 *
+	 * @param emailID Email id of the user
+	 * @return User object.
+	 */
 	@Override
 	public User getUserByEmailID(String emailID) {
 		Optional<User> user = userRepository.findByEmailID(emailID);
@@ -183,6 +236,13 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
+	/**
+	 * Update user's password .
+	 *
+	 * @param userName username of the user
+	 * @param password password of the user
+	 * @return User object with updated password
+	 */
 	@Override
 	public User updateUserPassword(String userName, String password) {
 		User user = userRepository.findByUserName(userName);
@@ -190,19 +250,32 @@ public class UserServiceImpl implements UserService {
 		user.setPswd(encodePswd(password));
 		userRepository.save(user);
 		return user;
-	} 
+	}
 
+	/**
+	 * Fetch user by their username.
+	 *
+	 * @param userName Username of the user
+	 * @return User object.
+	 */
 	@Override
-	public User getUserByUserName(String username) {
-		User user = userRepository.findByUserName(username);
+	public User getUserByUserName(String userName) {
+		User user = userRepository.findByUserName(userName);
 		return user;
 	}
- 
+
+	/**
+	 * Save tags as per users preference.
+	 *
+	 * @param userName Username of the user
+	 * @param tagIdList ids of the tags
+	 * @return User object.
+	 */
 	@Override
 	public User saveUserPrefTags(String userName, Set<Tag> tagIdList) {
 		List<Long> ids = new ArrayList<>();
 		for (Tag tag : tagIdList) {
-			ids.add(tag.getId()); 
+			ids.add(tag.getId());
 		}
 		List<Tag> tagList = tagRepository.findByIdIn(ids);
 
@@ -259,6 +332,11 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	/**
+	 * Fetch the Articles posted by the user.
+	 *
+	 * @return Details of the articles posted by the user.
+	 */
 	@Override
 	public List<Map<String, Object>> getUsersPostedArticle() {
 		List<Map<String, Object>> userDetails = new ArrayList<>();
@@ -278,9 +356,14 @@ public class UserServiceImpl implements UserService {
 
 		userDetails = userDetails.stream().distinct().collect(Collectors.toList());
 		return userDetails;
- 
+
 	}
 
+	/**
+	 * Fetch the list of the users.
+	 * @param userId user ID of the user
+	 * @return List of user objects
+	 */
 	@Override
 	public List<User> getUserList(List<Long> userId) {
 

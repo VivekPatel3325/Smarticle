@@ -72,7 +72,7 @@ public class UserController extends BaseController {
 	 * Create user account with the given credentials.
 	 *
 	 * // * @param ##sser model containing user details.
-	 * 
+	 *
 	 * @return the response entity
 	 * @throws UserExistException If the user is registered with the given email id.
 	 */
@@ -101,12 +101,18 @@ public class UserController extends BaseController {
 	 */
 	@PostMapping(ApplicationUrlPath.USER_ACCOUNT_ACTIVATION_REQ_PATH)
 	public ResponseVO<String> activateUserAccount(@RequestParam String token) {
- 
+
 		userService.verifyUser(token);
 
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
- 
+
+	/**
+	 * Authenticate the user .
+	 *
+	 * @param userRequest user object passed as request body
+	 * @return true if user is authenticated.
+	 */
 	@PostMapping(ApplicationUrlPath.USER_LOGIN)
 	public ResponseVO<Object> authenticateUser(@RequestBody User userRequest) {
 		try {
@@ -125,16 +131,21 @@ public class UserController extends BaseController {
 				data.put("lastName", user.getLastName());
 				data.put("jwt-token", jwtCookie.getValue());
 				data.put("msg", "User Logged in sucessfully");
-				return prepareSuccessResponse(data); 
+				return prepareSuccessResponse(data);
 			}else {
 				return error(HttpStatus.UNPROCESSABLE_ENTITY.value(), isVerified, false);
 			}
-			
+
 		} catch (Exception e) {
 			return error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), false);
 		}
-	}  
+	}
 
+	/**
+	 * Logout the user .
+	 *
+	 * @return true if user is logged out.
+	 */
 	@PostMapping(ApplicationUrlPath.USER_LOGOUT)
 	public ResponseVO<String> logoutUser() {
 		try {
@@ -148,6 +159,12 @@ public class UserController extends BaseController {
 		}
 	}
 
+	/**
+	 * Send email when user forgets the password .
+	 *
+	 * @param userRequest user object passed as request body
+	 * @return true if user is logged out.
+	 */
 	@PostMapping(ApplicationUrlPath.USER_FORGOT_PASSWORD)
 	public ResponseVO<String> forgotPassword(@RequestBody User userRequest) {
 		try {
@@ -165,6 +182,13 @@ public class UserController extends BaseController {
 		}
 	}
 
+	/**
+	 * Updates users password .
+	 *
+	 * @param http request header
+	 * @param uservo user object passed as request body
+	 * @return true if password is updated.
+	 */
 	@PostMapping(ApplicationUrlPath.SET_PASSWORD_PATH)
 	public ResponseVO<String> resetPassword(@RequestHeader HttpHeaders http, @RequestBody User uservo) {
 		try {
@@ -184,6 +208,13 @@ public class UserController extends BaseController {
 		return success(HttpStatus.OK.value(), HttpStatus.OK.name(), true);
 	}
 
+	/**
+	 * Save the user tags .
+	 *
+	 * @param http request header
+	 * @param tagList list of tags
+	 * @return true if user tags are saved.
+	 */
 	@PostMapping(ApplicationUrlPath.SAVE_USER_TAG_PREFERENCE)
 	public ResponseVO<String> saveUserTag(@RequestHeader HttpHeaders http, @RequestBody Set<Tag> tagList) {
 		try {
@@ -236,7 +267,7 @@ public class UserController extends BaseController {
 	 */
 	@PostMapping(ApplicationUrlPath.UPDATE_USER_PROFILE)
 	public ResponseVO<User> updateUserProfile(@RequestHeader HttpHeaders http,
-			@RequestBody UserProfileRequestVo userProfileRequestVo) {
+											  @RequestBody UserProfileRequestVo userProfileRequestVo) {
 		User user = null;
 		try {
 			String jwtToken = http.getFirst("jwt-token");
@@ -254,6 +285,12 @@ public class UserController extends BaseController {
 		return prepareSuccessResponse(user);
 	}
 
+	/**
+	 * Fetch the user details who have posted articles .
+	 *
+	 * @param http request header
+	 * @return true if user tags are saved.
+	 */
 	@GetMapping(ApplicationUrlPath.GET_USER_DETAILS_POSTED_ARTICLE)
 	public List<Map<String, Object>> getUserDetailsPostedArticle(@RequestHeader HttpHeaders http) {
 		List<Map<String, Object>> userDetailsOfPostedArticle = new ArrayList<>();
