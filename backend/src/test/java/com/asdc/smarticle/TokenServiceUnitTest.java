@@ -1,6 +1,7 @@
 package com.asdc.smarticle;
 
 
+import com.asdc.smarticle.comutil.AppConstant;
 import com.asdc.smarticle.token.Token;
 import com.asdc.smarticle.token.TokenFactory;
 import com.asdc.smarticle.token.TokenRepository;
@@ -46,9 +47,9 @@ public class TokenServiceUnitTest {
 	@Test
 	void testTokenExpired() {
 		
-		Mockito.when(token.getExpiryDate()).thenReturn(LocalDateTime.now().minusSeconds(70));
+		Mockito.when(token.getExpiryDate()).thenReturn(LocalDateTime.now().minusSeconds(AppConstant.TEST_TOKEN_VAL_SEC));
 		Assert.assertTrue(tokenService.isTokenExpired(token));
-		
+		 
 		
 	}
 	
