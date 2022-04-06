@@ -37,6 +37,11 @@ public class TwitterTagCountController extends BaseController {
     @Autowired
     TwitterTagCountService twitterTagCountService;
 
+    /**
+     * This method will retrieve the tag followed by the user
+     * @param http header containing jwt token to validate the user.
+     * @return the user tag count by retrieving the tweet metadata
+     * */
     @GetMapping(ApplicationUrlPath.GET_USER_TAGS)
     public List<Map<String,Object>> fetchUserTags(@RequestHeader HttpHeaders http) {
         if(http ==null){
