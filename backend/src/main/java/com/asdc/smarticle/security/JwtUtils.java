@@ -106,7 +106,7 @@ public class JwtUtils {
 	}
 
 	/**
-	 * @author This method will generate the token for the user
+	 * This method will generate the token for the user
 	 * @param userName contains the username of the user.
 	 * @return returns the instance of jwt.
 	 */
