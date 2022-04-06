@@ -15,8 +15,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 /**
- * Services for user entity.
- *
+ * Implementing the tag count functionlity.
  * @author Rushi Patel
  * @version 1.0
  * @since 2022-03-22
@@ -24,6 +23,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class TwitterTagCountServiceImpl implements TwitterTagCountService{
 
+    /**This metho will return the tweets counts which contains the tags associated with the user preferencee
+     * @param tags is the set of tags preferenced by the user
+     * @returns metadata alongwith the tweet counts comtining the tag*/
     @Override
     public List<Map<String,Object>> getTwitterTagCount(Set<Tag> tags) {
 

@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.asdc.smarticle.security.service.UserDetailsServiceImpl;
 
 /**
- * 
+ * This class is used to apply the JWT-Token and parse it
  * @author Sarthak Patel
  * @version 1.0
  * @since 2022-02-19
@@ -33,6 +33,12 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 	@Autowired
 	UsernamePasswordAuthenticationTokenFactory authenticationTokenFactory;
 
+	/**
+	 * This method will parse the JWT-Token
+	 * @param request is the instance of HttpServletRequest provides with servelet request information
+	 * @param response is the instance of HttpServletResponse provides the response from the servelet
+	 * @param filterChain is the instance of FilterChain provides the chain pf filtered request; to invoke next filter in the chain
+	 * */
 	@Override
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -59,6 +65,10 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
+	/**
+	 * This method will parse the JWT-Token
+	 * @param request is the instance of HttpServletRequest provides with servelet request information
+	 * 	 */
 	public String parseJwt(HttpServletRequest request) {
 		String jwt = jwtUtils.getJwtTokenFromCookies(request);
 		return jwt;

@@ -5,6 +5,8 @@ import java.util.Set;
 
 import com.asdc.smarticle.articletag.Tag;
 
+/**This FilterPojo class contains pagination and metadata that is to be applied for filter.
+ * */
 public class FilterPojo {
 
 	private int page;

@@ -4,10 +4,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+/**
+ * This component class to provide authneticate the user
+ *
+ */
 @Component
 public class UsernamePasswordAuthenticationTokenFactory {
 
-
+	/**
+	 * This method will authenticate the user
+	 * @param userDetails is the instance of UserDetails contains the details for user.
+	 * @return returns the instance of UsernamePasswordAuthenticationToken.
+	 */
 	public UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationTokenFactory(UserDetails userDetails) {
 
 		return new UsernamePasswordAuthenticationToken(

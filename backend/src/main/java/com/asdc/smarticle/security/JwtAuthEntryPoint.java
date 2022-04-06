@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * 
+ * This class is used to commence an authentication scheme
  * @author Sarthak Patel
  * @version 1.0
  * @since 2022-02-22
@@ -24,6 +24,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class JwtAuthEntryPoint implements AuthenticationEntryPoint{
+
+	/**
+	 * This class is used to commence an authentication scheme
+	 * @param request is the instance of HttpServletRequest provides with servelet request information
+	 * @param response is the instance of HttpServletResponse provides the response from the servelet
+	 * @param authException is the instance of AuthenticationException throws the exception occur while authenticating the applicaton
+	 */
 	@Override
 	  public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
 	      throws IOException, ServletException {
