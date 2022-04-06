@@ -245,20 +245,58 @@ public class ArticleServiceImpl implements ArticleService {
 			tagNames.add(tag.getTagName());
 		}
 
-		String searchQuery = query.substring(0, query.length()-4);
+		String searchQuery = query.substring(0, query.length()-AppConstant.TOTAL_RECORDS);
 		searchQuery += ")";
 		Twitter twitter = authentication();
 
 		Query search = new Query(searchQuery);
-		search.setCount(5);
-		//search.count(5);
+		search.setCount(AppConstant.TEST_EXP_COUNT_SIZE);
+		//search.count(5); 
 		int count=0;
 		QueryResult tweetData;
 		try {
 			tweetData = twitter.search(search);
 
-			for (Status tweet : tweetData.getTweets()) {
-				Map<String,Object> tweetDataMap = new HashMap();
+			count = iterateTweet(responseTweetData, count, tweetData);
+			setTwitterData(responseTweetData, twitter, search, count);
+
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
+		return responseTweetData;
+	}
+
+	private int iterateTweet(List<Map<String, Object>> responseTweetData, int count, QueryResult tweetData) {
+		for (Status tweet : tweetData.getTweets()) {
+			Map<String,Object> tweetDataMap = new HashMap();
+			String tweetLink = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
+			String removeURL = tweet.getText().replaceAll("((https?|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
+			String transformedTweetText = removeURL.replaceAll("[^\\w\\s]", "");
+			String authorName = tweet.getUser().getName();
+			Date creationDate = tweet.getUser().getCreatedAt();
+			int retweetCount = tweet.getRetweetCount();
+			String userImage = tweet.getUser().getProfileImageURL();
+			tweetDataMap.put("userImageURL",userImage);
+			tweetDataMap.put("authorName",authorName);
+			tweetDataMap.put("tweetLink",tweetLink);
+			tweetDataMap.put("tweetText",transformedTweetText);
+			tweetDataMap.put("creationDate",creationDate);
+			tweetDataMap.put("retweetCount",retweetCount);
+			responseTweetData.add(tweetDataMap);
+			count++;
+		}
+		return count;
+	}
+
+	private void setTwitterData(List<Map<String, Object>> responseTweetData, Twitter twitter, Query search, int count)
+			throws TwitterException {
+		if(count!=AppConstant.MAX_TWEET){
+			QueryResult extraTweetData = twitter.search(search);
+			for(Status tweet : extraTweetData.getTweets()){
+				if(count==AppConstant.MAX_TWEET){
+					break;
+				}
+				Map<String,Object> tweetDataMap1 = new HashMap();
 				String tweetLink = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
 				String removeURL = tweet.getText().replaceAll("((https?|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
 				String transformedTweetText = removeURL.replaceAll("[^\\w\\s]", "");
@@ -266,45 +304,17 @@ public class ArticleServiceImpl implements ArticleService {
 				Date creationDate = tweet.getUser().getCreatedAt();
 				int retweetCount = tweet.getRetweetCount();
 				String userImage = tweet.getUser().getProfileImageURL();
-				tweetDataMap.put("userImageURL",userImage);
-				tweetDataMap.put("authorName",authorName);
-				tweetDataMap.put("tweetLink",tweetLink);
-				tweetDataMap.put("tweetText",transformedTweetText);
-				tweetDataMap.put("creationDate",creationDate);
-				tweetDataMap.put("retweetCount",retweetCount);
-				responseTweetData.add(tweetDataMap);
+				tweetDataMap1.put("userImageURL",userImage);
+				tweetDataMap1.put("authorName",authorName);
+				tweetDataMap1.put("tweetLink",tweetLink);
+				tweetDataMap1.put("tweetText",transformedTweetText);
+				tweetDataMap1.put("creationDate",creationDate);
+				tweetDataMap1.put("retweetCount",retweetCount);
+				responseTweetData.add(tweetDataMap1);
 				count++;
 			}
-			if(count!=5){
-				QueryResult extraTweetData = twitter.search(search);
-				for(Status tweet : extraTweetData.getTweets()){
-					if(count==5){
-						break;
-					}
-					Map<String,Object> tweetDataMap1 = new HashMap();
-					String tweetLink = "https://twitter.com/" + tweet.getUser().getScreenName() + "/status/" + tweet.getId();
-					String removeURL = tweet.getText().replaceAll("((https?|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)", "");
-					String transformedTweetText = removeURL.replaceAll("[^\\w\\s]", "");
-					String authorName = tweet.getUser().getName();
-					Date creationDate = tweet.getUser().getCreatedAt();
-					int retweetCount = tweet.getRetweetCount();
-					String userImage = tweet.getUser().getProfileImageURL();
-					tweetDataMap1.put("userImageURL",userImage);
-					tweetDataMap1.put("authorName",authorName);
-					tweetDataMap1.put("tweetLink",tweetLink);
-					tweetDataMap1.put("tweetText",transformedTweetText);
-					tweetDataMap1.put("creationDate",creationDate);
-					tweetDataMap1.put("retweetCount",retweetCount);
-					responseTweetData.add(tweetDataMap1);
-					count++;
-				}
-			}
-
-		} catch (TwitterException e) {
-			e.printStackTrace();
 		}
-		return responseTweetData;
-	}
+	} 
 
 	//Reference: https://www.tabnine.com/code/java/methods/twitter4j.conf.ConfigurationBuilder/setOAuthConsumerKey
 	public static Twitter authentication() {
@@ -335,7 +345,7 @@ public class ArticleServiceImpl implements ArticleService {
 		confBuild.setOAuthAccessTokenSecret(OAuthAccessTokenSecret);
 		return new TwitterFactory(confBuild.build()).getInstance();
 	}
-
+ 
 	@Override
 	public void setLike(Article article, String userName) {
 		User user = userRepository.findByUserName(userName);

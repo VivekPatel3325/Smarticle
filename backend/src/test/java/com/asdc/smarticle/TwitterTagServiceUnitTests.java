@@ -1,6 +1,7 @@
 package com.asdc.smarticle;
 
 import com.asdc.smarticle.articletag.Tag;
+import com.asdc.smarticle.comutil.AppConstant;
 import com.asdc.smarticle.twittertagcount.TwitterTagCountService;
 import com.asdc.smarticle.twittertagcount.TwitterTagCountServiceImpl;
 import org.junit.Assert;
@@ -22,7 +23,7 @@ public class TwitterTagServiceUnitTests {
     private TwitterTagCountService twitterTagCountService;
 
     @Test
-    public void testNullGetTwitterTagCount(){
+    public void testNullGetTwitterTagCount() throws Exception{
         Set<Tag> tags = null;
         twitterTagCountService = new TwitterTagCountServiceImpl();
         //Denoting the response is empty list.
@@ -33,7 +34,7 @@ public class TwitterTagServiceUnitTests {
     }
 
     @Test
-    public void testPositiveGetTwitterTagCount(){
+    public void testPositiveGetTwitterTagCount() throws Exception{
         Set<Tag> tags = new HashSet<>();
         Tag tag1 = new Tag();
         tag1.setTagName("Web");
@@ -46,15 +47,14 @@ public class TwitterTagServiceUnitTests {
     }
 
     @Test
-    public void testGetTwitterTagCount(){
+    public void testGetTwitterTagCount() throws Exception{
         Set<Tag> tags = new HashSet<>();
 
-        int expectedTwitterTagCountSize = 3;
 
         Tag tag1 = new Tag();
         tag1.setTagName("Web");
         tag1.setId(Long.valueOf(1));
-        Tag tag2 = new Tag();
+        Tag tag2 = new Tag(); 
         tag2.setTagName("Cloud");
         Tag tag3 = new Tag();
         tag3.setTagName("Sports");
@@ -64,11 +64,11 @@ public class TwitterTagServiceUnitTests {
 
         twitterTagCountService = new TwitterTagCountServiceImpl();
 
-        Assert.assertEquals(expectedTwitterTagCountSize,twitterTagCountService.getTwitterTagCount(tags).size());
+        Assert.assertEquals(AppConstant.TEST_TAG_COUNT_SIZE,twitterTagCountService.getTwitterTagCount(tags).size());
     }
 
     @Test
-    public void testNegativeGetTwitterTagCount(){
+    public void testNegativeGetTwitterTagCount() throws Exception{
         Set<Tag> tags = new HashSet<>();
         Tag tag = new Tag();
         //tagName is not set so there is essentially no tag name here to fetch the tweet count of this tag

@@ -25,9 +25,10 @@ import org.springframework.stereotype.Service;
 public class TwitterTagCountServiceImpl implements TwitterTagCountService{
 
     @Override
-    public List<Map<String,Object>> getTwitterTagCount(Set<Tag> tags) {
+    public List<Map<String,Object>> getTwitterTagCount(Set<Tag> tags) throws Exception {
 
         FileInputStream in = null;
+        Properties props=null;
         String url = "";
         String getMethod = "";
         String authorizationKey= " ";
@@ -37,15 +38,10 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
 
         try {
             in = new FileInputStream("src/main/resources/application.properties");
-            Properties props = new Properties();
+            props = new Properties();
             props.load(in);
-            in.close();
-            url = props.get("url").toString();
-            getMethod = props.get("getMethod").toString();
-            authorizationKey = props.get("authorization.key").toString();
-            authorizationValue = props.get("authorization.value").toString();
-            cookieKey = props.get("cookie.key").toString();
-            cookieValue = props.get("cookie.value").toString();
+            
+         
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,8 +52,37 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
         HashMap<String,Integer> tagCount = new HashMap<>();
         List<String> tagNameList = new ArrayList<>();
         List<Map<String,Object>> finalResponse = new ArrayList<>();
-        for(Tag tag : tags){
-            Map<String,Object> data = new HashMap<>();
+        ieterateTag(tags, tagNameList,
+				finalResponse,props); 
+
+        int n = finalResponse.size();
+        for (int i = 0; i < n-1; i++) {
+            for (int j = 0; j < (n - i-1); j++) {
+                if ((int) finalResponse.get(j).get("tweetCount") < (int) finalResponse.get(j+1).get("tweetCount")) {
+                    Map<String, Object> temp = finalResponse.get(j);
+                    finalResponse.set(j, finalResponse.get(j+1));
+                    finalResponse.set(j+1, temp);
+                }
+            }
+        }
+        
+        in.close();
+        return finalResponse;
+    } 
+
+	private void ieterateTag(Set<Tag> tags,List<String> tagNameList,
+			List<Map<String, Object>> finalResponse,Properties props) {
+		
+		
+		String   url = props.get("url").toString();
+		String   getMethod = props.get("getMethod").toString();
+		String authorizationKey = props.get("authorization.key").toString();
+		String authorizationValue = props.get("authorization.value").toString();
+		String cookieKey = props.get("cookie.key").toString();
+		String cookieValue = props.get("cookie.value").toString();
+		
+		for(Tag tag : tags){
+            Map<String,Object> data = new HashMap<>(); 
             String tagName = tag.getTagName();
             if(tagName==null){
                 continue;
@@ -73,36 +98,29 @@ public class TwitterTagCountServiceImpl implements TwitterTagCountService{
                     .build();
             try {
                 Response response = client.newCall(request).execute();
-                JSONObject jsonObject = new JSONObject(response.peekBody(153600).string());
+                JSONObject jsonObject = new JSONObject(response.peekBody(AppConstant.BYTE_COUNT).string());
                 System.out.println(jsonObject.toString());
                 org.json.JSONArray jsonArray = jsonObject.getJSONArray("data");
 
-                for(int i=0;i<jsonArray.length();i++){
-                    if(i==jsonArray.length()-1){
-                        org.json.JSONObject jsonObject1 = (org.json.JSONObject) jsonArray.get(i);
-                        Integer tweetCount = (Integer)jsonObject1.get("tweet_count");
-                        data.put("tagName",tagName);
-                        data.put("tweetCount",tweetCount);
-                        finalResponse.add(data);
-                    }
-                }
+                iterateJsonArray(finalResponse, data, tagName, jsonArray);
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(); 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+	}
 
-        int n = finalResponse.size();
-        for (int i = 0; i < n-1; i++) {
-            for (int j = 0; j < (n - i-1); j++) {
-                if ((int) finalResponse.get(j).get("tweetCount") < (int) finalResponse.get(j+1).get("tweetCount")) {
-                    Map<String, Object> temp = finalResponse.get(j);
-                    finalResponse.set(j, finalResponse.get(j+1));
-                    finalResponse.set(j+1, temp);
-                }
-            }
-        }
-        return finalResponse;
-    }
+	private void iterateJsonArray(List<Map<String, Object>> finalResponse, Map<String, Object> data, String tagName,
+			org.json.JSONArray jsonArray) {
+		for(int i=0;i<jsonArray.length();i++){
+		    if(i==jsonArray.length()-1){
+		        org.json.JSONObject jsonObject1 = (org.json.JSONObject) jsonArray.get(i);
+		        Integer tweetCount = (Integer)jsonObject1.get("tweet_count");
+		        data.put("tagName",tagName);
+		        data.put("tweetCount",tweetCount);
+		        finalResponse.add(data);
+		    }
+		}
+	}
 }

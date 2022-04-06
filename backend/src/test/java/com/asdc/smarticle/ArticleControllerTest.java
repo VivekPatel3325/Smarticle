@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.asdc.smarticle.article.Article;
 import com.asdc.smarticle.article.ArticleService;
 import com.asdc.smarticle.article.FilterPojo;
+import com.asdc.smarticle.comutil.AppConstant;
 import com.asdc.smarticle.security.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -68,7 +69,7 @@ public class ArticleControllerTest {
 		mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
 	}
 
-	@Test
+	@Test 
 	void testSaveArticle() throws Exception {
 
 		Page<Article> pro = Mockito.mock(Page.class);
@@ -99,7 +100,7 @@ public class ArticleControllerTest {
 	@Test
 	void testGetArticleByUser() throws Exception {
 
-		Article article = new Article();
+		Article article = new Article(); 
 		List<Article> articleList = new ArrayList<>();
 		articleList.add(article);
 
@@ -107,15 +108,15 @@ public class ArticleControllerTest {
 
 		Mockito.when(http.getFirst("jwt-token")).thenReturn("vkpatel4312");
 		Mockito.when(jwtUtils.getUserNameFromJwt("vkpatel4312")).thenReturn("vivek");
-		Mockito.when(articleService.getArticleByUser("vivek", 0, 4)).thenReturn(articleListPage);
+		Mockito.when(articleService.getArticleByUser("vivek", AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS)).thenReturn(articleListPage);
 
 		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.get("/smarticleapi/article/getArticleByUser")
-				.contentType(MediaType.APPLICATION_JSON).header("jwt-token", "vkpatel4312").param("page", "0")
-				.param("totalPage", "4");
+				.contentType(MediaType.APPLICATION_JSON).header("jwt-token", "vkpatel4312").param("page", String.valueOf(AppConstant.DEFAULT_PAGE))
+				.param("totalPage", String.valueOf(AppConstant.TOTAL_RECORDS));
 
 		mockMvc.perform(mockRequest).andExpect(status().isOk()).andReturn();
 	}
-
+  
 	@Test
 	void testGetTweetDatarById() throws Exception {
 

@@ -18,3 +18,4 @@ public class ApiError {
 
 	public static final String ARTICLE_NOT_PRESENT= "No article published yet";
 }
+ 

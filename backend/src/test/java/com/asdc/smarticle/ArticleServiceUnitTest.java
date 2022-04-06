@@ -6,6 +6,7 @@ import com.asdc.smarticle.article.ArticleService;
 import com.asdc.smarticle.article.ArticleServiceImpl;
 import com.asdc.smarticle.article.FilterPojo;
 import com.asdc.smarticle.articletag.Tag;
+import com.asdc.smarticle.comutil.AppConstant;
 import com.asdc.smarticle.user.User;
 import com.asdc.smarticle.user.UserRepository;
 import com.asdc.smarticle.user.exception.ArticleException;
@@ -217,14 +218,14 @@ public class ArticleServiceUnitTest {
 
 		Page<Article> pro = Mockito.mock(Page.class);
 
-		Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+		Pageable pagination = PageRequest.of(AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS, Sort.by("creationDate").descending());
 		List<Long> userIdList = new ArrayList<>();
 		Set<Tag> tagSet = new HashSet<>();
 
-		Mockito.when(filterPojo.getPage()).thenReturn(0);
-		Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+		Mockito.when(filterPojo.getPage()).thenReturn(AppConstant.DEFAULT_PAGE);
+		Mockito.when(filterPojo.getTotalPage()).thenReturn(AppConstant.TOTAL_RECORDS);
 		Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
-		Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
+		Mockito.when(filterPojo.getTagList()).thenReturn(tagSet); 
 		Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
 
 		Mockito.doReturn(true).when(Mockito.spy(articleService)).isTagListEmpty(filterPojo);
@@ -242,7 +243,7 @@ public class ArticleServiceUnitTest {
 
 		Page<Article> pro = Mockito.mock(Page.class);
 
-		Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+		Pageable pagination = PageRequest.of(AppConstant.DEFAULT_PAGE,AppConstant.TOTAL_RECORDS, Sort.by("creationDate").descending());
 		List<Long> userIdList = new ArrayList<>();
 		Set<Tag> tagSet = new HashSet<>();
 		Tag tag=new Tag();
@@ -250,8 +251,8 @@ public class ArticleServiceUnitTest {
 		tag.setTagName("BLOCKCHAIN");
 		tagSet.add(tag);
 		
-		Mockito.when(filterPojo.getPage()).thenReturn(0);
-		Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+		Mockito.when(filterPojo.getPage()).thenReturn(AppConstant.DEFAULT_PAGE);
+		Mockito.when(filterPojo.getTotalPage()).thenReturn(AppConstant.TOTAL_RECORDS);
 		Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
 		Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
 		Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
@@ -271,13 +272,13 @@ public class ArticleServiceUnitTest {
 
 			Page<Article> pro = Mockito.mock(Page.class);
 
-			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			Pageable pagination = PageRequest.of(AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS, Sort.by("creationDate").descending());
 			List<Long> userIdList = new ArrayList<>();
 			Set<Tag> tagSet = new HashSet<>();
 			userIdList.add((long)1);
 			
-			Mockito.when(filterPojo.getPage()).thenReturn(0);
-			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getPage()).thenReturn(AppConstant.DEFAULT_PAGE);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(AppConstant.TOTAL_RECORDS);
 			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
 			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
 			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
@@ -298,7 +299,7 @@ public class ArticleServiceUnitTest {
 
 			Page<Article> pro = Mockito.mock(Page.class);
 
-			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			Pageable pagination = PageRequest.of(AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS, Sort.by("creationDate").descending());
 			List<Long> userIdList = new ArrayList<>();
 			Set<Tag> tagSet = new HashSet<>();
 			userIdList.add((long) 1);
@@ -307,8 +308,8 @@ public class ArticleServiceUnitTest {
 			tag.setTagName("BLOCKCHAIN");
 			tagSet.add(tag);
 
-			Mockito.when(filterPojo.getPage()).thenReturn(0);
-			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getPage()).thenReturn(AppConstant.DEFAULT_PAGE);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(AppConstant.TOTAL_RECORDS);
 			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
 			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
 			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
@@ -329,12 +330,12 @@ public class ArticleServiceUnitTest {
 
 			Page<Article> pro = Mockito.mock(Page.class);
 
-			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			Pageable pagination = PageRequest.of(AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS, Sort.by("creationDate").descending());
 			List<Long> userIdList = new ArrayList<>();
 			Set<Tag> tagSet = new HashSet<>();
 
-			Mockito.when(filterPojo.getPage()).thenReturn(0);
-			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getPage()).thenReturn(AppConstant.DEFAULT_PAGE);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(AppConstant.TOTAL_RECORDS);
 			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
 			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
 			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
@@ -354,7 +355,7 @@ public class ArticleServiceUnitTest {
 
 			Page<Article> pro = Mockito.mock(Page.class);
 
-			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			Pageable pagination = PageRequest.of(AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS, Sort.by("creationDate").descending());
 			List<Long> userIdList = new ArrayList<>();
 			Set<Tag> tagSet = new HashSet<>();
 			Tag tag=new Tag();
@@ -362,8 +363,8 @@ public class ArticleServiceUnitTest {
 			tag.setTagName("BLOCKCHAIN");
 			tagSet.add(tag);
 
-			Mockito.when(filterPojo.getPage()).thenReturn(0);
-			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getPage()).thenReturn(AppConstant.DEFAULT_PAGE);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(AppConstant.TOTAL_RECORDS);
 			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
 			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
 			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
@@ -384,13 +385,13 @@ public class ArticleServiceUnitTest {
 
 			Page<Article> pro = Mockito.mock(Page.class);
 
-			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			Pageable pagination = PageRequest.of(AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS, Sort.by("creationDate").descending());
 			List<Long> userIdList = new ArrayList<>();
 			Set<Tag> tagSet = new HashSet<>();
 			userIdList.add((long) 1);
 
-			Mockito.when(filterPojo.getPage()).thenReturn(0);
-			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getPage()).thenReturn(AppConstant.DEFAULT_PAGE);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(AppConstant.TOTAL_RECORDS);
 			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
 			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
 			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
@@ -411,7 +412,7 @@ public class ArticleServiceUnitTest {
 
 			Page<Article> pro = Mockito.mock(Page.class);
 
-			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate").descending());
+			Pageable pagination = PageRequest.of(AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS, Sort.by("creationDate").descending());
 			List<Long> userIdList = new ArrayList<>();
 			Set<Tag> tagSet = new HashSet<>();
 			userIdList.add((long) 1);
@@ -420,8 +421,8 @@ public class ArticleServiceUnitTest {
 			tag.setTagName("BLOCKCHAIN");
 			tagSet.add(tag);
 
-			Mockito.when(filterPojo.getPage()).thenReturn(0);
-			Mockito.when(filterPojo.getTotalPage()).thenReturn(4);
+			Mockito.when(filterPojo.getPage()).thenReturn(AppConstant.DEFAULT_PAGE);
+			Mockito.when(filterPojo.getTotalPage()).thenReturn(AppConstant.TOTAL_RECORDS);
 			Mockito.when(filterPojo.getSortBy()).thenReturn("creationDate");
 			Mockito.when(filterPojo.getTagList()).thenReturn(tagSet);
 			Mockito.when(filterPojo.getUserIdList()).thenReturn(userIdList);
@@ -441,10 +442,10 @@ public class ArticleServiceUnitTest {
 		@Test
 		void testGetArticleByUser() {
 			Page<Article> articleList = Mockito.mock(Page.class);
-			Pageable pagination = PageRequest.of(0, 4, Sort.by("creationDate"));
+			Pageable pagination = PageRequest.of(AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS, Sort.by("creationDate"));
 			Mockito.when(userRepository.findByUserName("vivek")).thenReturn(user);
 			Mockito.when(articleRepo.findByUserId(user, pagination)).thenReturn(articleList);
-			articleService.getArticleByUser("vivek", 0, 4);
+			articleService.getArticleByUser("vivek", AppConstant.DEFAULT_PAGE, AppConstant.TOTAL_RECORDS);
 			Mockito.verify(articleRepo, Mockito.times(1)).findByUserId(user, pagination);
 		}
 		
@@ -466,7 +467,7 @@ public class ArticleServiceUnitTest {
 	@Test
 	public void TestNullGetTwitterCountOfArticleTags(){
 
-		//Arrange
+		//Arrange 
 		Long id = null;
 		List<Map<String,Object>> emptyList = new ArrayList<Map<String,Object>>();
 
@@ -503,11 +504,10 @@ public class ArticleServiceUnitTest {
 		Set<Tag> tags = new HashSet<>();
 		Tag tag = new Tag();
 		List<Map<String,Object>> tweetList = new ArrayList<Map<String,Object>>();
-		int expectedCount = 5;
 
 		//Act
 		tag.setId(Long.valueOf(1));
-		tag.setTagName("Web");
+		tag.setTagName("Web"); 
 		tags.add(tag);
 		article.setTagId(tags);
 		Mockito.when(articleRepo.findById(id)).thenReturn(Optional.of(article));
@@ -515,7 +515,7 @@ public class ArticleServiceUnitTest {
 		int actualCount = tweetList.size();
 
 		//Assert
-		Assert.assertEquals(expectedCount,actualCount);
+		Assert.assertEquals(AppConstant.TEST_EXP_COUNT_SIZE,actualCount);
 	}
 
 	/*
