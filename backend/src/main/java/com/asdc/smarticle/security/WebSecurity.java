@@ -16,7 +16,7 @@ import com.asdc.smarticle.pswdencrydecry.CipherConfig;
 import com.asdc.smarticle.security.service.UserDetailsServiceImpl;
 
 /**
- * 
+ * This class provides the web security for authenticating the application
  * @author Sarthak Patel
  * @version 1.0
  * @since 2022-02-22
