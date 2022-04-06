@@ -10,6 +10,12 @@ import org.springframework.http.HttpStatus;
 */
 public class BaseController {
 
+	/**
+	 * prepare success response .
+	 *
+	 * @param data request header
+	 * @return Response object.
+	 */
 	protected <D> ResponseVO<D> prepareSuccessResponse(D data) {
 
 		ResponseVO<D> responseVO = new ResponseVO<D>();
@@ -20,6 +26,12 @@ public class BaseController {
 		return responseVO;
 	}
 
+	/**
+	 * prepare error response .
+	 *
+	 * @param data request header
+	 * @return Response object.
+	 */
 	protected <D> ResponseVO<D> prepareErrorResponse(D data) {
 
 		ResponseVO<D> responseVO = new ResponseVO<D>();
@@ -30,6 +42,14 @@ public class BaseController {
 		return responseVO;
 	}
 
+	/**
+	 * Success response .
+	 *
+	 * @param statusCode
+	 * @param message
+	 * @param status
+	 * @return Response object.
+	 */
 	protected <D> ResponseVO<D> success(int statusCode, String message, boolean status) {
 
 		ResponseVO<D> responseVO = new ResponseVO<D>();
@@ -39,6 +59,14 @@ public class BaseController {
 		return responseVO;
 	}
 
+	/**
+	 * Error response .
+	 *
+	 * @param statusCode
+	 * @param message
+	 * @param status
+	 * @return Response object.
+	 */
 	protected <D> ResponseVO<D> error(int statusCode, String message, boolean status) {
 
 		ResponseVO<D> responseVO = new ResponseVO<D>();
