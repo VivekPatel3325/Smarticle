@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+/** This class represents the model of the article entity
+* the data are stored in articles table
+ * */
 @Entity
 @Table(name = "articles")
 public class Article {
@@ -48,7 +51,8 @@ public class Article {
 
 	@Column(columnDefinition = "integer default 0")
   	private int likeCount;
-	
+
+	//getter and setter
 	public Long getId() {
 		return id;
 	}
