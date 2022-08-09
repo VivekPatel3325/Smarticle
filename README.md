@@ -1,4 +1,5 @@
-<h1>Smarticle</h1>
+## Smarticle
+
 - [Introduction](#introduction)
 - [Authors](#authors)
 - [Built With](#built-with)
