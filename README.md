@@ -26,6 +26,16 @@ Smarticle has been build with following technology stack.
 </ul>
 <h4>Installation</h4>
 
+## Authors
+
+* [Vivekkumar Patel]  - *(Developer)*
+* [Kavan Patel](https://github.com/Kavan03) - *(Developer)*
+* [Sarthak Patel] *(Developer)*
+* [Rushi Patel] *(Developer)*
+* [Khusboo Patel] *(Developer)*
+* [Angela Ghilhotra Patel] *(Developer)*
+
+
 For Frontend:-
 
 1. cd frontend
@@ -117,3 +127,16 @@ For Backend:-
 [Mysql-url]: https://www.mysql.com/
 
 
+## Acknowledgments
+
+* [JDK](https://www.oracle.com/java/technologies/downloads/)
+* [Spring boot](https://spring.io/projects/spring-boot)
+* [Agile Development](https://www.techtarget.com/searchsoftwarequality/definition/agile-software-development)
+* [Unit Testing](https://www.guru99.com/unit-testing-guide.html)
+* [Code smell](https://refactoring.guru/refactoring/smells)
+* [Mockito](https://site.mockito.org/)
+* [Hibernate](https://hibernate.org/orm/)
+* [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
+* [CICD](https://about.gitlab.com/topics/ci-cd/)
+* [SOLID Principle](https://www.freecodecamp.org/news/solid-principles-explained-in-plain-english/)
+* [Maven](https://maven.apache.org/)

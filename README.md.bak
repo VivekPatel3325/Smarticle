@@ -12,7 +12,10 @@ Smarticle has been build with following technology stack.
 * [![Jwt][Jwt.com]][Jwt-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 * [![Java][Java.com]][Java-url]
-
+* [![Spring][Spring.com]][Spring-url]
+* [![CI][CI.com]][CI-url]
+* [![Heroku][Heroku.com]][Heroku-url]
+* [![Mysql][Mysql.com]][Mysql-url]
 
 <h3>Getting Started</h3>
 <h4>Prerequisites</h4>
@@ -22,6 +25,16 @@ Smarticle has been build with following technology stack.
 <li>MySQL Version 8</li>
 </ul>
 <h4>Installation</h4>
+
+## Authors
+
+* [Vivekkumar Patel]  - *(Developer)*
+* [Kavan Patel](https://github.com/Kavan03) - *(Developer)*
+* [Sarthak Patel] *(Developer)*
+* [Rushi Patel] *(Developer)*
+* [Khusboo Patel] *(Developer)*
+* [Angela Ghilhotra Patel] *(Developer)*
+
 
 For Frontend:-
 
@@ -114,3 +127,16 @@ For Backend:-
 [Mysql-url]: https://www.mysql.com/
 
 
+## Acknowledgments
+
+* [JDK](https://nodejs.org/en/docs/)
+* [Spring boot](https://spring.io/projects/spring-boot)
+* [Agile Development](https://www.techtarget.com/searchsoftwarequality/definition/agile-software-development)
+* [Unit Testing](https://www.guru99.com/unit-testing-guide.html)
+* [Code smell](https://refactoring.guru/refactoring/smells)
+* [Mockito](https://site.mockito.org/)
+* [Hibernate](https://hibernate.org/orm/)
+* [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
+* [CICD](https://about.gitlab.com/topics/ci-cd/)
+* [SOLID Principle](https://www.freecodecamp.org/news/solid-principles-explained-in-plain-english/)
+* [Maven](https://maven.apache.org/)
