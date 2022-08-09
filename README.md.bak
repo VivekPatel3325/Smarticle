@@ -1,6 +1,25 @@
 <h1>Smarticle</h1>
-<h3>Overview</h3>
+- [Introduction](#introduction)
+- [Authors](#authors)
+- [Built With](#built-with)
+- [Getting Started](#getting-started)
+- [Application Screenshots](#getting-started)
+- [Acknowledgments](#acknowledgments)
+
+## Introduction
+
 <p>Smarticle is useful for anyone who wants to access the article via the web app and read the article of their choice. The application will allow users to post and like articles. As long as the user is not logged in, they can only see the public articles, the top five tweets according to the tags associated with each article, and the number of likes. Moreover, users can create their tags while posting an article, can filter the articles by authors, and categories, and can sort articles by date and number of likes. Upon registration, all features will be accessible to the user such as according to their tag preferences, the user can access both public and private articles. Furthermore, users can like or dislike an article. Apart from this, users can also update their profile, view their posted articles, and tweet count for each tag they added to their preference list.</p>
+
+## Authors
+
+* [Vivekkumar Patel]  - *(Developer)*
+* [Kavan Patel](https://github.com/Kavan03) - *(Developer)*
+* [Sarthak Patel] *(Developer)*
+* [Rushi Patel] *(Developer)*
+* [Khusboo Patel] *(Developer)*
+* [Angela Ghilhotra Patel] *(Developer)*
+
+
 ## Built With
 
 Smarticle has been build with following technology stack.
@@ -17,7 +36,9 @@ Smarticle has been build with following technology stack.
 * [![Heroku][Heroku.com]][Heroku-url]
 * [![Mysql][Mysql.com]][Mysql-url]
 
-<h3>Getting Started</h3>
+
+## Getting Started
+
 <h4>Prerequisites</h4>
 <ul>
 <li>Java Version 11</li>
@@ -25,16 +46,6 @@ Smarticle has been build with following technology stack.
 <li>MySQL Version 8</li>
 </ul>
 <h4>Installation</h4>
-
-## Authors
-
-* [Vivekkumar Patel]  - *(Developer)*
-* [Kavan Patel](https://github.com/Kavan03) - *(Developer)*
-* [Sarthak Patel] *(Developer)*
-* [Rushi Patel] *(Developer)*
-* [Khusboo Patel] *(Developer)*
-* [Angela Ghilhotra Patel] *(Developer)*
-
 
 For Frontend:-
 
@@ -48,7 +59,8 @@ For Backend:-
 2. mvn clean install
 3. mvnw spring-boot:run
 
-<h3>Application Screenshots</h3>
+## Application Screenshots
+
 <h4>Registering new user</h4>
 <img width="500" alt="login" src="https://user-images.githubusercontent.com/49091989/183278626-cd5346d5-cb94-4517-a17d-d4fa0ad022b0.png">
 <h4>Validations</h4>
@@ -129,7 +141,7 @@ For Backend:-
 
 ## Acknowledgments
 
-* [JDK](https://nodejs.org/en/docs/)
+* [JDK](https://www.oracle.com/java/technologies/downloads/)
 * [Spring boot](https://spring.io/projects/spring-boot)
 * [Agile Development](https://www.techtarget.com/searchsoftwarequality/definition/agile-software-development)
 * [Unit Testing](https://www.guru99.com/unit-testing-guide.html)
